@@ -1,16 +1,17 @@
 {
-  "name": "adapt-authoring-core",
+  "name": "adapt-authoring-docs",
   "version": "0.0.1",
-  "description": "Core module for the Adapt authoring tool",
+  "description": "Tools for aut-generating documentation for the Adapt authoring tool",
   "main": "index.js",
-  "adapt_authoring": {
-    "documentation": {
-      "enable": true,
-      "include": "lib/*"
-    }
-  },
   "dependencies": {
     "async": "2.6.1",
-    "axios": "0.18.0"
+    "axios": "0.18.0",
+    "esdoc": "1.1.0",
+    "esdoc-importpath-plugin": "1.0.2",
+    "esdoc-inject-style-plugin": "1.0.0",
+    "esdoc-node": "1.0.4",
+    "esdoc-standard-plugin": "1.0.0",
+    "fs-extra": "7.0.1",
+    "minimatch": "3.0.4"
   }
 }
