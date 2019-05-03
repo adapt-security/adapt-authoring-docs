@@ -1,0 +1,16 @@
+{
+  "name": "adapt-authoring-core",
+  "version": "0.0.1",
+  "description": "Core module for the Adapt authoring tool",
+  "main": "index.js",
+  "adapt_authoring": {
+    "documentation": {
+      "enable": true,
+      "include": "lib/*"
+    }
+  },
+  "dependencies": {
+    "async": "2.6.1",
+    "axios": "0.18.0"
+  }
+}
