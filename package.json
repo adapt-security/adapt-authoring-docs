@@ -12,6 +12,6 @@
     "esdoc-node": "1.0.4",
     "esdoc-standard-plugin": "1.0.0",
     "fs-extra": "7.0.1",
-    "minimatch": "3.0.4"
+    "glob": "7.1.3"
   }
 }
