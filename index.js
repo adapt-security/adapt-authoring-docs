@@ -57,19 +57,17 @@ function getIncludes() {
   let includes = [];
   Object.keys(pkg.dependencies).forEach(dep => {
     try {
-      const basedir = path.join(cwd, dep);
-      const docConfig = fs.readJsonSync(path.join(basedir, 'package.json')).adapt_authoring.documentation;
+      const docConfig = fs.readJsonSync(path.join(cwd, dep, 'package.json')).adapt_authoring.documentation;
 
       if(!docConfig.enable) return;
 
-      let include = path.join(basedir, docConfig.include || `!(node_modules)${path.sep}*.js`);
-      includes = includes.concat(glob.sync(include));
+      let include = path.join(cwd, dep, (docConfig.include || `!(node_modules)${path.sep}*.js`));
+      includes = includes.concat(glob.sync(include).map(p => `^${p.replace(cwd,'').slice(1)}`));
 
     } catch(e) {} // couldn't read the pkg attribute but don't need to do anything
   });
   // HACK include temp file created by our 'externals-plugin'...fix this
-  includes.push('externals.js$');
-  return includes;
+  return includes.concat(['^externals.js$']);
 }
 
 function docs() {
