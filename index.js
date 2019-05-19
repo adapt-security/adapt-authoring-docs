@@ -11,10 +11,12 @@ const cwd = localModulesPath ? localModulesPath : path.join(process.cwd(), 'node
 const pkg = require(path.join(process.cwd(), 'package.json'));
 const outputdir = path.join(__dirname, "build");
 
+const cachedConfigs = cacheConfigs();
+
 const esconfig = {
   source: localModulesPath || path.join(process.cwd(), "./node_modules"),
   destination: outputdir,
-  includes: getIncludes(),
+  includes: getSourceIncludes(),
   index: path.join(__dirname, "INDEX.md"),
   plugins: [
     {
@@ -49,23 +51,31 @@ const esconfig = {
   ]
 };
 /**
+* Caches loaded JSON so we don't load multiple times
+*/
+function cacheConfigs() {
+  const cache = [];
+  Object.keys(pkg.dependencies).forEach(dep => {
+    try {
+      const config = fs.readJsonSync(path.join(cwd, dep, 'package.json')).adapt_authoring.documentation;
+      config.name = dep;
+      if(config.enable) cache.push(config);
+    } catch(e) {} // couldn't read the pkg attribute but don't need to do anything
+  });
+  return cache;
+}
+/**
 * Creates a list of modules to include
 * Documentation for a module can be enabled in
 * package.json > adapt_authoring.documentation.enable
 */
-function getIncludes() {
+function getSourceIncludes() {
   let includes = [];
-  Object.keys(pkg.dependencies).forEach(dep => {
-    try {
-      const docConfig = fs.readJsonSync(path.join(cwd, dep, 'package.json')).adapt_authoring.documentation;
-
-      if(!docConfig.enable) return;
-
-      let include = path.join(cwd, dep, (docConfig.include || `!(node_modules)${path.sep}*.js`));
-      includes = includes.concat(glob.sync(include).map(p => `^${p.replace(cwd,'').slice(1)}`));
-
-    } catch(e) {} // couldn't read the pkg attribute but don't need to do anything
-  });
+  cachedConfigs.reduce((includes, config) => {
+    const include = path.join(cwd, config.name, (config.include || `!(node_modules)${path.sep}*.js`));
+    return includes.concat(glob.sync(include).map(p => `^${p.replace(cwd,'').slice(1)}`));
+  }, []);
+  console.log(includes);
   // HACK include temp file created by our 'externals-plugin'...fix this
   return includes.concat(['^externals.js$']);
 }
