@@ -73,14 +73,15 @@ function cacheConfigs() {
 * package.json > adapt_authoring.documentation.enable
 */
 function getSourceIncludes() {
-  let includes = [];
-  cachedConfigs.reduce((includes, config) => {
+  return cachedConfigs.reduce((includes, config) => {
     const include = path.join(cwd, config.name, (config.include || `!(node_modules)${path.sep}*.js`));
     return includes.concat(glob.sync(include).map(p => `^${p.replace(cwd,'').slice(1)}`));
-  }, []);
-  console.log(includes);
-  // HACK include temp file created by our 'externals-plugin'...fix this
-  return includes.concat(['^externals.js$']);
+  }, []).concat(['^externals.js$']); // HACK include temp file created by our 'externals-plugin'...fix this
+}
+
+function getManualIncludes() {
+  let includes = glob.sync(path.join(manualDir, '*.md')).filter(p => p !== manualIndex);
+  return cachedConfigs.reduce((i, c) => i.concat(glob.sync(path.join(cwd, c.name, 'docs', '*.md'))), includes);
 }
 
 function docs() {
