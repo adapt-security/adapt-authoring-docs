@@ -11,6 +11,9 @@ const cwd = localModulesPath ? localModulesPath : path.join(process.cwd(), 'node
 const pkg = require(path.join(process.cwd(), 'package.json'));
 const outputdir = path.join(__dirname, "build");
 
+const manualDir = path.resolve(path.join(__dirname, 'manual'));
+const manualIndex = path.resolve(path.join(manualDir, 'index.md'));
+
 const cachedConfigs = cacheConfigs();
 
 const esconfig = {
