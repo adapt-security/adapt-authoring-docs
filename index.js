@@ -75,7 +75,7 @@ function cacheConfigs() {
   return cache;
 }
 /**
-* Creates a list of modules to include
+* Returns a list of modules to include
 * Documentation for a module can be enabled in
 * package.json > adapt_authoring.documentation.enable
 */
@@ -85,7 +85,11 @@ function getSourceIncludes() {
     return includes.concat(glob.sync(include).map(p => `^${p.replace(cwd,'').slice(1)}`));
   }, []).concat(['^externals.js$']); // HACK include temp file created by our 'externals-plugin'...fix this
 }
-
+/**
+* Returns a list of markdown files to include in the manual
+* Documentation for a module can be enabled in
+* package.json > adapt_authoring.documentation.enable
+*/
 function getManualIncludes() {
   let includes = glob.sync(path.join(manualDir, '*.md')).filter(p => p !== manualIndex);
   return cachedConfigs.reduce((i, c) => i.concat(glob.sync(path.join(cwd, c.name, 'docs', '*.md'))), includes);
