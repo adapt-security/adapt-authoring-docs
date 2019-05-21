@@ -34,6 +34,13 @@ const esconfig = {
         }
       }
     },
+    {
+      name: "esdoc-integrate-manual-plugin-fork",
+      option: {
+        index: manualIndex,
+        files: getManualIncludes()
+      }
+    },
     { name: "esdoc-node" },
     { name: path.resolve(path.join(__dirname, "externals-plugin.js")) },
     {
