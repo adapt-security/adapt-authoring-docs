@@ -11,6 +11,9 @@ const cwd = localModulesPath ? localModulesPath : path.join(process.cwd(), 'node
 const pkg = require(path.join(process.cwd(), 'package.json'));
 const outputdir = path.join(__dirname, "build");
 
+const defaultSourceIncludes = `!(node_modules)${path.sep}*.js`;
+const defaultDocsIncludes = path.join('docs', '*.md');
+
 const manualDir = path.resolve(path.join(__dirname, 'manual'));
 const manualIndex = path.resolve(path.join(manualDir, 'index.md'));
 
@@ -69,6 +72,7 @@ function cacheConfigs() {
     try {
       const config = fs.readJsonSync(path.join(cwd, dep, 'package.json')).adapt_authoring.documentation;
       config.name = dep;
+      if(!config.includes) config.includes = {};
       if(config.enable) cache.push(config);
     } catch(e) {} // couldn't read the pkg attribute but don't need to do anything
   });
@@ -80,9 +84,9 @@ function cacheConfigs() {
 * package.json > adapt_authoring.documentation.enable
 */
 function getSourceIncludes() {
-  return cachedConfigs.reduce((includes, config) => {
-    const include = path.join(cwd, config.name, (config.include || `!(node_modules)${path.sep}*.js`));
-    return includes.concat(glob.sync(include).map(p => `^${p.replace(cwd,'').slice(1)}`));
+  return cachedConfigs.reduce((i, c) => {
+    const include = path.join(cwd, c.name, (c.includes.source || defaultSourceIncludes));
+    return i.concat(glob.sync(include).map(p => `^${p.replace(cwd,'').slice(1)}`));
   }, []).concat(['^externals.js$']); // HACK include temp file created by our 'externals-plugin'...fix this
 }
 /**
@@ -92,7 +96,7 @@ function getSourceIncludes() {
 */
 function getManualIncludes() {
   let includes = glob.sync(path.join(manualDir, '*.md')).filter(p => p !== manualIndex);
-  return cachedConfigs.reduce((i, c) => i.concat(glob.sync(path.join(cwd, c.name, 'docs', '*.md'))), includes);
+  return cachedConfigs.reduce((i, c) => i.concat(glob.sync(path.join(cwd, c.name, c.includes.docs || defaultDocsIncludes))), includes);
 }
 
 function docs() {
