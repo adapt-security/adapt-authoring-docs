@@ -28,7 +28,8 @@ html {
   overflow-x: hidden;
   overflow-y: auto;
 }
-.navigation .nav-dir-path {
+.navigation .nav-dir-path,
+body.manual-root .navigation .manual-toc [class^="indent-h1"] a {
   font-size: 110%;
   color: #34bee0;
   font-weight: normal;
@@ -85,3 +86,16 @@ table.summary > tbody > tr > td:first-child,
 .detail span.access {
   display: none;
 }
+
+/**
+* Manual stuff
+*/
+body.manual-root .navigation {
+  padding: 20px 10px 40px 10px;
+  height: 100%;
+  margin-top: 5vh;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+body.manual-root .navigation .manual-toc [class^="indent-h"] a { color: white; }
+body.manual-root .navigation .manual-toc [class^="indent-h1"] a { color: #34bee0; }
