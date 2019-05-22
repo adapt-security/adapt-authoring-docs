@@ -64,7 +64,9 @@ const esconfig = {
   ]
 };
 /**
-* Caches loaded JSON so we don't load multiple times
+* Caches loaded JSON so we don't load multiple times.
+* Documentation for a module can be enabled in:
+* package.json > adapt_authoring.documentation.enable
 */
 function cacheConfigs() {
   const cache = [];
@@ -79,9 +81,9 @@ function cacheConfigs() {
   return cache;
 }
 /**
-* Returns a list of modules to include
-* Documentation for a module can be enabled in
-* package.json > adapt_authoring.documentation.enable
+* Returns a list of modules to include.
+* defaultDocsIncludes is used if no adapt_authoring.documentation.includes.docs
+* is found.
 */
 function getSourceIncludes() {
   return cachedConfigs.reduce((i, c) => {
@@ -91,8 +93,8 @@ function getSourceIncludes() {
 }
 /**
 * Returns a list of markdown files to include in the manual
-* Documentation for a module can be enabled in
-* package.json > adapt_authoring.documentation.enable
+* defaultDocsIncludes is used if no adapt_authoring.documentation.includes.docs
+* is found.
 */
 function getManualIncludes() {
   let includes = glob.sync(path.join(manualDir, '*.md')).filter(p => p !== manualIndex);
