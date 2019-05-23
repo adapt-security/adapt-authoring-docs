@@ -14,8 +14,8 @@ const outputdir = path.join(__dirname, "build");
 const defaultSourceIncludes = `!(node_modules)${path.sep}*.js`;
 const defaultDocsIncludes = path.join('docs', '*.md');
 
-const manualDir = path.resolve(path.join(__dirname, 'manual'));
-const manualIndex = path.resolve(path.join(manualDir, 'index.md'));
+let manualIndex; // populated in cacheConfigs
+let sourceIndex; // populated in cacheConfigs
 
 const cachedConfigs = cacheConfigs();
 
@@ -23,7 +23,7 @@ const esconfig = {
   source: localModulesPath || path.join(process.cwd(), "./node_modules"),
   destination: outputdir,
   includes: getSourceIncludes(),
-  index: path.join(__dirname, "INDEX.md"),
+  index: sourceIndex,
   plugins: [
     {
       name: "esdoc-standard-plugin",
@@ -34,14 +34,11 @@ const esconfig = {
         brand: {
           title: "Adapt authoring tool",
           logo: path.join(__dirname, "assets", "logo.png")
+        },
+        manual: {
+          index: manualIndex,
+          files: getManualIncludes()
         }
-      }
-    },
-    {
-      name: "esdoc-integrate-manual-plugin-fork",
-      option: {
-        index: manualIndex,
-        files: getManualIncludes()
       }
     },
     { name: "esdoc-node" },
@@ -71,16 +68,25 @@ const esconfig = {
 function cacheConfigs() {
   const cache = [];
   Object.keys(pkg.dependencies).forEach(dep => {
+    const depDir = path.join(cwd, dep);
     let config;
     let include = false;
     try {
-      config = fs.readJsonSync(path.join(cwd, dep, 'package.json')).adapt_authoring.documentation;
+      config = fs.readJsonSync(path.join(depDir, 'package.json')).adapt_authoring.documentation;
       include = config.enable;
     } catch(e) { // couldn't read the pkg attribute but don't need to do anything
       return console.log(`Omitting ${dep}, config is invalid: ${e}`);
     }
     if(!include) {
       return console.log(`Omitting ${dep}, adapt_authoring.documentation.enable is false`);
+    }
+    if(config.manualIndex) {
+      if(manualIndex) return console.log(`${dep}: manualIndex has been specified by another module as ${manualIndex}`);
+      manualIndex = path.join(depDir, config.manualIndex);
+    }
+    if(config.sourceIndex) {
+      if(sourceIndex) return console.log(`${dep}: sourceIndex has been specified by another module as ${sourceIndex}`);
+      sourceIndex = path.join(depDir, config.sourceIndex);
     }
     cache.push(Object.assign(config, { name: dep, includes: config.includes || {} }));
   });
@@ -103,8 +109,23 @@ function getSourceIncludes() {
 * is found.
 */
 function getManualIncludes() {
-  let includes = glob.sync(path.join(manualDir, '*.md')).filter(p => p !== manualIndex);
-  return cachedConfigs.reduce((i, c) => i.concat(glob.sync(path.join(cwd, c.name, c.includes.docs || defaultDocsIncludes))), includes);
+  return cachedConfigs.reduce((i, c) => {
+    return i.concat(glob.sync(path.join(cwd, c.name, c.includes.docs || defaultDocsIncludes)).filter(i => {
+      return i !== manualIndex && i !== sourceIndex;
+    }));
+  }, []);
+}
+
+function augmentSearch() {
+  const searchIndexPath = path.join(outputdir, 'script', 'search_index.js');
+  const contents = fs.readFileSync(searchIndexPath).toString();
+  const searchIndexes = JSON.parse(contents.slice(contents.indexOf('[')));
+  searchIndexes.push([
+    "adapt_authoring_restructure/adapt-authoring-users/lib/module.js",
+    "file/adapt_authoring_restructure/adapt-authoring-users/lib/module.js.html",
+    "adapt_authoring_restructure/adapt-authoring-users/lib/module.js",
+    "file"
+  ]);
 }
 
 function docs() {
