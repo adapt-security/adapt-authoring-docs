@@ -4,10 +4,7 @@ const fs = require('fs-extra');
 const glob = require('glob');
 const path = require('path');
 
-let localModulesPath;
-try { localModulesPath = require(path.join(process.cwd(), '.dev.json')).localModulesPath; } catch(e) {}
-
-const cwd = localModulesPath ? localModulesPath : path.join(process.cwd(), 'node_modules');
+const cwd = process.env.aat_local_modules_path || path.join(process.cwd(), 'node_modules');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 const outputdir = path.join(__dirname, "build");
 
@@ -20,7 +17,7 @@ let sourceIndex; // populated in cacheConfigs
 const cachedConfigs = cacheConfigs();
 
 const esconfig = {
-  source: localModulesPath || path.join(process.cwd(), "./node_modules"),
+  source: cwd,
   destination: outputdir,
   includes: getSourceIncludes(),
   index: sourceIndex,
@@ -129,7 +126,7 @@ function augmentSearch() {
 }
 
 function docs() {
-  console.log('Generating documentation...\n');
+  console.log(`\nGenerating documentation using modules at ${cwd}...\n`);
   esdoc.generate(esconfig);
   console.log(`\nDone.\nDocs can be launched from '${path.join(path.resolve(esconfig.destination), 'index.html')}'\n`);
 }
