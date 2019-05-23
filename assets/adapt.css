@@ -99,3 +99,8 @@ body.manual-root .navigation {
 }
 body.manual-root .navigation .manual-toc [class^="indent-h"] a { color: white; }
 body.manual-root .navigation .manual-toc [class^="indent-h1"] a { color: #34bee0; }
+
+pre > code {
+  padding: 20px;
+  border: 1px solid #e2e2e2;
+}
