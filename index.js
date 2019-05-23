@@ -129,8 +129,9 @@ function augmentSearch() {
 function docs() {
   console.log(`\nGenerating documentation using modules at ${cwd}...\n`);
   esdoc.generate(esconfig);
+
   const docspath = path.join(path.resolve(esconfig.destination), 'index.html');
-  console.log(`\nDocs can be launched from '${docspath}'\n`);
+  console.log(`\nDocs can be launched from '${docspath}'`);
   if(process.env.aat_open) open(docspath);
 }
 
