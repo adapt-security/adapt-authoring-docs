@@ -2,6 +2,7 @@ const async = require('async');
 const esdoc = require('esdoc').default;
 const fs = require('fs-extra');
 const glob = require('glob');
+const open = require('open');
 const path = require('path');
 
 const cwd = process.env.aat_local_modules_path || path.join(process.cwd(), 'node_modules');
@@ -128,7 +129,9 @@ function augmentSearch() {
 function docs() {
   console.log(`\nGenerating documentation using modules at ${cwd}...\n`);
   esdoc.generate(esconfig);
-  console.log(`\nDone.\nDocs can be launched from '${path.join(path.resolve(esconfig.destination), 'index.html')}'\n`);
+  const docspath = path.join(path.resolve(esconfig.destination), 'index.html');
+  console.log(`\nDone.\nDocs can be launched from '${docspath}'\n`);
+  if(process.env.aat_open) open(docspath);
 }
 
 module.exports = docs;
