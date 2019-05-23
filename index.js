@@ -71,12 +71,18 @@ const esconfig = {
 function cacheConfigs() {
   const cache = [];
   Object.keys(pkg.dependencies).forEach(dep => {
+    let config;
+    let include = false;
     try {
-      const config = fs.readJsonSync(path.join(cwd, dep, 'package.json')).adapt_authoring.documentation;
-      config.name = dep;
-      if(!config.includes) config.includes = {};
-      if(config.enable) cache.push(config);
-    } catch(e) {} // couldn't read the pkg attribute but don't need to do anything
+      config = fs.readJsonSync(path.join(cwd, dep, 'package.json')).adapt_authoring.documentation;
+      include = config.enable;
+    } catch(e) { // couldn't read the pkg attribute but don't need to do anything
+      return console.log(`Omitting ${dep}, config is invalid: ${e}`);
+    }
+    if(!include) {
+      return console.log(`Omitting ${dep}, adapt_authoring.documentation.enable is false`);
+    }
+    cache.push(Object.assign(config, { name: dep, includes: config.includes || {} }));
   });
   return cache;
 }
