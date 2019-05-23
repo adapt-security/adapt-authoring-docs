@@ -65,7 +65,7 @@ const esconfig = {
 */
 function cacheConfigs() {
   const cache = [];
-  Object.keys(pkg.dependencies).forEach(dep => {
+  Object.keys(Object.assign({}, pkg.dependencies, pkg.devDependencies)).forEach(dep => {
     const depDir = path.join(cwd, dep);
     let config;
     let include = false;
