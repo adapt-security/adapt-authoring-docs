@@ -121,7 +121,12 @@ function docs() {
 
   const docspath = path.join(path.resolve(esconfig.destination), 'index.html');
   console.log(`\nDocs can be launched from '${docspath}'`);
-  if(process.env.aat_open) open(docspath);
+  if(process.env.aat_open) {
+    open(docspath);
+  } else {
+    console.log('(tip: pass the --open flag when calling this command to open automatically in a browser window)');
+
+  }
 }
 
 module.exports = docs;
