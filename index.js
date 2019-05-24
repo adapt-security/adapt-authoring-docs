@@ -115,18 +115,6 @@ function getManualIncludes() {
   }, []);
 }
 
-function augmentSearch() {
-  const searchIndexPath = path.join(outputdir, 'script', 'search_index.js');
-  const contents = fs.readFileSync(searchIndexPath).toString();
-  const searchIndexes = JSON.parse(contents.slice(contents.indexOf('[')));
-  searchIndexes.push([
-    "adapt_authoring_restructure/adapt-authoring-users/lib/module.js",
-    "file/adapt_authoring_restructure/adapt-authoring-users/lib/module.js.html",
-    "adapt_authoring_restructure/adapt-authoring-users/lib/module.js",
-    "file"
-  ]);
-}
-
 function docs() {
   console.log(`\nGenerating documentation using modules at ${cwd}...\n`);
   esdoc.generate(esconfig);
