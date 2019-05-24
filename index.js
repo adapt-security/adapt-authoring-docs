@@ -41,6 +41,7 @@ const esconfig = {
     },
     { name: "esdoc-node" },
     { name: path.resolve(path.join(__dirname, "externals-plugin.js")) },
+    { name: path.resolve(path.join(__dirname, "coreplugins-plugin.js")) },
     {
       name: "esdoc-importpath-plugin",
       option: {
