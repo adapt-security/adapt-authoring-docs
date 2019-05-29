@@ -1,16 +1,16 @@
 # Writing documentation
 The Adapt authoring tool makes use of automatically generated documentation (powered by [ESDoc](https://esdoc.org/)).
 
-There are two different areas to the documentation which you should be concerned with when writing your code:
+**Source code reference** *mandatory* <br>
+Requires annotated code (see below), but otherwise completely automated.
 
-**Source code reference** *mandatory* requires annotated code, completely automated.
-
-Developer manual: **optional** developer guides which offer advice on using your code in practical scenarios, requires handwritten markdown.  
+**Developer manual** *optional*<br>
+Requires handwritten markdown. Provides extra advice on using your code in practical scenarios.
 
 ## Documenting code
-The source code reference is completely automated, and shouldn't need much input from you as a developer (provided your code has been ).
+The source code reference is completely automated, and shouldn't need much input from you as a developer (provided your code has been correctly annotated).
 
-Tags https://esdoc.org/manual/tags.html
+If you're not familiar with the JSDoc notation, you can find a list of accepted tags as well as examples of usage in the [ESDoc docs](https://esdoc.org/manual/tags.html) (you can also of course check the source code for any of the [core-supported Adapt authoring modules]() which are fully documented).
 
 ## Writing developer guides
 Developer guides go a step further than the source code reference, and provide more user-friendly how-to guides on how to actually *use* your code in a practical scenario.
