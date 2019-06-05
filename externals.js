@@ -74,4 +74,9 @@ module.exports = {
 */
   'express~App': 'https://expressjs.com/en/4x/api.html#app',
   'express~Router': 'https://expressjs.com/en/4x/api.html#router',
+  /**
+  * Mongoose.js
+  * https://mongoosejs.com/docs/api.html
+  */
+  'mongoose~Schematype': 'https://mongoosejs.com/docs/api.html#Schematype',
 };
