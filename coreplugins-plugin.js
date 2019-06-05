@@ -12,11 +12,10 @@ class Plugin {
       return 0;
     }).forEach(([dep, v]) => {
       const { name, version, description, homepage, adapt_authoring } = this.getDepPkg(dep);
-      if(!adapt_authoring || !adapt_authoring.module) {
-        console.log(`Omitting ${dep} from 'List of core modules', not a module`);
+      if(!adapt_authoring) {
         return;
       }
-      output += `| ${homepage ? `[${name}](${homepage})` : name} | ${version} | ${description} |\n`;
+      output += `| ${homepage ? `[${name}](${homepage})` : name} | ${version} | ${adapt_authoring.module || false} | ${description} |\n`;
     });
     fs.writeFileSync(path.join(__dirname, 'docs', 'coreplugins.md'), output);
   }
