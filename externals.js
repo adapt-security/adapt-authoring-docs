@@ -61,6 +61,9 @@ module.exports = {
   // Reflection
   'Reflect': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect',
   'Proxy': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy',
+  // Misc
+  'Class': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes',
+  'class': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes',
 /**
 * Node.js
 * https://nodejs.org/api/
@@ -78,5 +81,6 @@ module.exports = {
   * Mongoose.js
   * https://mongoosejs.com/docs/api.html
   */
+  'mongoose~Schema': 'https://mongoosejs.com/docs/api.html#Schema',
   'mongoose~Schematype': 'https://mongoosejs.com/docs/api.html#Schematype',
 };
