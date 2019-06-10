@@ -34,7 +34,7 @@ class Plugin {
   }
 
   writeManualFile() {
-    let output = '# External type reference\n| Name | Link |\n| ---- | ---- |\n';
+    let output = '# External type reference\nBelow is a list of types which will automatically link to their official documentation when included in ESDoc comments.\n\n| Name | Link |\n| ---- | ---- |\n';
     Object.entries(externals).sort((a,b) => {
       if(a[0] < b[0]) return -1;
       if(a[0] > b[0]) return 1;
