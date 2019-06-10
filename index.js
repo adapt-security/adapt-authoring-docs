@@ -10,7 +10,6 @@ const pkg = require(path.join(process.cwd(), 'package.json'));
 const outputdir = path.join(__dirname, "build");
 
 const defaultSourceIncludes = `!(node_modules)${path.sep}*.js`;
-const defaultDocsIncludes = path.join('docs', '*.md');
 
 let manualIndex; // populated in cacheConfigs
 let sourceIndex; // populated in cacheConfigs
@@ -112,8 +111,9 @@ function getManualIncludes() {
   try {
     rootIncludes.push(...glob.sync(path.join(process.cwd(), pkg.adapt_authoring.documentation.includes.docs)));
   } catch(e) {} // do nothing
-  
+
   return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
+    if(!c.includes.docs) return i; // don't include docs by default
     return i.concat(glob.sync(path.join(cwd, c.name, c.includes.docs || defaultDocsIncludes)).filter(i => {
       return i !== manualIndex && i !== sourceIndex;
     }));
