@@ -1,7 +1,8 @@
 {
   "name": "adapt-authoring-docs",
   "version": "0.0.1",
-  "description": "Tools for aut-generating documentation for the Adapt authoring tool",
+  "description": "Tools for auto-generating documentation for the Adapt authoring tool",
+  "homepage": "https://github.com/taylortom/adapt-authoring-docs",
   "main": "index.js",
   "adapt_authoring": {
     "documentation": {
