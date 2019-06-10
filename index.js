@@ -108,11 +108,16 @@ function getSourceIncludes() {
 * is found.
 */
 function getManualIncludes() {
-  return cachedConfigs.reduce((i, c) => {
+  const rootIncludes = [];
+  try {
+    rootIncludes.push(...glob.sync(path.join(process.cwd(), pkg.adapt_authoring.documentation.includes.docs)));
+  } catch(e) {} // do nothing
+  
+  return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
     return i.concat(glob.sync(path.join(cwd, c.name, c.includes.docs || defaultDocsIncludes)).filter(i => {
       return i !== manualIndex && i !== sourceIndex;
     }));
-  }, []);
+  }, []));
 }
 
 function docs() {
