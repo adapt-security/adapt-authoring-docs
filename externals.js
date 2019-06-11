@@ -81,6 +81,7 @@ module.exports = {
   * Mongoose.js
   * https://mongoosejs.com/docs/api.html
   */
+  'mongoose~Connection': 'https://mongoosejs.com/docs/api.html#Connection',
   'mongoose~Schema': 'https://mongoosejs.com/docs/api.html#Schema',
   'mongoose~Schematype': 'https://mongoosejs.com/docs/api.html#Schematype',
 };
