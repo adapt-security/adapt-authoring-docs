@@ -38,9 +38,6 @@ const esconfig = {
         }
       }
     },
-    { name: "esdoc-node" },
-    { name: path.resolve(path.join(__dirname, "externals-plugin.js")) },
-    { name: path.resolve(path.join(__dirname, "coreplugins-plugin.js")) },
     {
       name: "esdoc-importpath-plugin",
       option: {
@@ -51,11 +48,12 @@ const esconfig = {
       }
     },
     {
-      name: "esdoc-inject-style-plugin",
-      option: {
-        styles: [path.join(__dirname, "assets", "adapt.css")]
-      }
-    }
+      name: "esdoc-publish-html-plugin",
+      option: { template: path.join(__dirname, "template") }
+    },
+    { name: "esdoc-node" },
+    { name: path.resolve(path.join(__dirname, "externals-plugin.js")) },
+    { name: path.resolve(path.join(__dirname, "coreplugins-plugin.js")) }
   ]
 };
 /**
