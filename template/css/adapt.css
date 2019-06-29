@@ -72,11 +72,21 @@ body.manual-root .navigation .manual-toc [class^="indent-h1"] a {
   margin-left: 300px;
   padding: 30px 60px;
 }
+.content .github-markdown h1,
 .content .github-markdown h2,
 .content .github-markdown h3,
 .content .github-markdown h4,
 .content .github-markdown h5 {
   font-weight: 300;
+}
+.content .github-markdown h1 {
+  font-size: 2.25em;
+}
+
+.content .github-markdown img {
+  box-shadow: none;
+  display: block;
+  margin: 0 auto;
 }
 
 .inherited-summary thead a {
@@ -108,4 +118,13 @@ body.manual-root .navigation .manual-toc [class^="indent-h1"] a { color: #34bee0
 pre > code {
   padding: 20px;
   border: 1px solid #e2e2e2;
+}
+
+footer {
+  border: none;
+  margin: 0;
+  padding: 30px 20px 60px 20px;
+  background: #36cde8;
+  color: white;
+  font-style: normal;
 }
