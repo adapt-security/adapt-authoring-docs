@@ -29,8 +29,7 @@ const esconfig = {
           access: ["public", "protected"]
         },
         brand: {
-          title: "Adapt authoring tool",
-          logo: path.join(__dirname, "assets", "logo.png")
+          title: "Adapt authoring tool"
         },
         manual: {
           index: manualIndex,
