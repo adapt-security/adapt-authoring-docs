@@ -17,6 +17,10 @@ html {
   color: #263944;
   margin: 0 15px;
 }
+.layout-container > header > a.adapt {
+  display: flex;
+  align-items: center;
+}
 
 .navigation {
   width: 300px;
