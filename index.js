@@ -51,10 +51,14 @@ const esconfig = {
       option: { template: path.join(__dirname, "template") }
     },
     { name: "esdoc-node" },
-    { name: path.resolve(path.join(__dirname, "externals-plugin.js")) },
-    { name: path.resolve(path.join(__dirname, "coreplugins-plugin.js")) }
+    { name: getPluginDir("externals.js") },
+    { name: getPluginDir("coreplugins.js") },
+    { name: getPluginDir("restapi.js") }
   ]
 };
+function getPluginDir(pluginName) {
+  return path.join(__dirname, "plugins", pluginName);
+}
 /**
 * Caches loaded JSON so we don't load multiple times.
 * Documentation for a module can be enabled in:
