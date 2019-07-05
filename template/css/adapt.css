@@ -127,4 +127,10 @@ footer {
   background: #36cde8;
   color: white;
   font-style: normal;
+  font-weight: bold;
+}
+
+footer a {
+  color: white;
+  text-decoration: underline;
 }
