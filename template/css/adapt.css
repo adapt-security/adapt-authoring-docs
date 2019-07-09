@@ -123,11 +123,19 @@ pre > code {
 footer {
   border: none;
   margin: 0;
-  padding: 30px 20px 60px 20px;
+  padding: 30px;
+  padding-bottom: 60px;
   background: #36cde8;
   color: white;
   font-style: normal;
   font-weight: bold;
+}
+
+footer .left {
+  float: left;
+}
+footer .right {
+  float: right;
 }
 
 footer a {
