@@ -15,12 +15,6 @@ class Plugin {
       if(!adapt_authoring) {
         return;
       }
-      /*
-      if(!adapt_authoring || !adapt_authoring.module) {
-        console.log(`Omitting ${dep} from 'List of core modules', not a module`);
-        return;
-      }
-      */
       output += `| ${homepage ? `[${name}](${homepage})` : name} | ${version} | ${adapt_authoring.module || false} | ${description} |\n`;
     });
     fs.writeFileSync(path.join(__dirname, '..', 'docs', 'coreplugins.md'), output);
