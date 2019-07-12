@@ -121,9 +121,8 @@ function getManualIncludes() {
 
   return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
     if(!c.includes.docs) return i; // don't include docs by default
-    return i.concat(glob.sync(path.join(cwd, c.name, c.includes.docs || defaultDocsIncludes)).filter(i => {
-      return i !== manualIndex && i !== sourceIndex;
-    }));
+    const include = path.join(cwd, c.name, c.includes.docs || defaultDocsIncludes);
+    return i.concat(glob.sync(include).filter(i => i !== manualIndex && i !== sourceIndex));
   }, []));
 }
 
