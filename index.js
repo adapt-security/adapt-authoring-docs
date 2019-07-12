@@ -5,7 +5,8 @@ const glob = require('glob');
 const open = require('open');
 const path = require('path');
 
-const cwd = process.env.aat_local_modules_path || path.join(process.cwd(), 'node_modules');
+const config = require(path.join(process.cwd(), 'conf', `${process.env.NODE_ENV}.config.js`));
+const cwd = config && config.app && config.app.local_modules_path || path.join(process.cwd(), 'node_modules');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 const outputdir = path.join(__dirname, "build");
 
@@ -53,7 +54,7 @@ const esconfig = {
     { name: "esdoc-node" },
     { name: getPluginDir("externals.js") },
     { name: getPluginDir("coreplugins.js") },
-    { name: getPluginDir("restapi.js") }
+    { name: getPluginDir("configuration.js") }
   ]
 };
 function getPluginDir(pluginName) {
@@ -68,26 +69,31 @@ function cacheConfigs() {
   const cache = [];
   Object.keys(Object.assign({}, pkg.dependencies, pkg.devDependencies)).forEach(dep => {
     const depDir = path.join(cwd, dep);
-    let config;
-    let include = false;
+    let c;
     try {
-      config = fs.readJsonSync(path.join(depDir, 'package.json')).adapt_authoring.documentation;
-      include = config.enable;
+      const pkg = fs.readJsonSync(path.join(depDir, 'package.json'));
+      if(!pkg.adapt_authoring) {
+        throw new Error(`No 'adapt_authoring' settings specified`);
+      }
+      if(!pkg.adapt_authoring.documentation) {
+        throw new Error(`No 'documentation' settings specified`);
+      }
+      c = pkg.adapt_authoring.documentation;
     } catch(e) { // couldn't read the pkg attribute but don't need to do anything
       return console.log(`Omitting ${dep}, config is invalid: ${e}`);
     }
-    if(!include) {
+    if(!c.enable) {
       return console.log(`Omitting ${dep}, adapt_authoring.documentation.enable is false`);
     }
-    if(config.manualIndex) {
+    if(c.manualIndex) {
       if(manualIndex) return console.log(`${dep}: manualIndex has been specified by another module as ${manualIndex}`);
-      manualIndex = path.join(depDir, config.manualIndex);
+      manualIndex = path.join(depDir, c.manualIndex);
     }
-    if(config.sourceIndex) {
+    if(c.sourceIndex) {
       if(sourceIndex) return console.log(`${dep}: sourceIndex has been specified by another module as ${sourceIndex}`);
-      sourceIndex = path.join(depDir, config.sourceIndex);
+      sourceIndex = path.join(depDir, c.sourceIndex);
     }
-    cache.push(Object.assign(config, { name: dep, includes: config.includes || {} }));
+    cache.push(Object.assign(c, { name: dep, includes: c.includes || {} }));
   });
   return cache;
 }
