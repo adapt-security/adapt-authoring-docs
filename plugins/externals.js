@@ -40,7 +40,7 @@ class Plugin {
       if(a[0] > b[0]) return 1;
       return 0;
     }).forEach(([name, link]) => output += `| ${name} | ${link} |\n`);
-    fs.writeFileSync(path.join(__dirname, '..', 'docs', 'externals.md'), output);
+    fs.writeFileSync(path.join(__dirname, '..', 'docs', 'temp-externals.md'), output);
   }
 }
 /**

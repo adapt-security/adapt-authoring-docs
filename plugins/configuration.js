@@ -45,7 +45,7 @@ class Plugin {
   writeFile(content) {
     const input = fs.readFileSync(path.join(__dirname, '..', 'docspartials', 'configuration.md')).toString();
     const output = input.replace('{{{REPLACE_ME}}}', content);
-    fs.writeFileSync(path.join(__dirname, '..', 'docs', 'configuration.md'), output);
+    fs.writeFileSync(path.join(__dirname, '..', 'docs', 'temp-configuration.md'), output);
   }
 }
 

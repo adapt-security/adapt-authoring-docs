@@ -17,7 +17,7 @@ class Plugin {
       }
       output += `| ${homepage ? `[${name}](${homepage})` : name} | ${version} | ${adapt_authoring.module || false} | ${description} |\n`;
     });
-    fs.writeFileSync(path.join(__dirname, '..', 'docs', 'coreplugins.md'), output);
+    fs.writeFileSync(path.join(__dirname, '..', 'docs', 'temp-coreplugins.md'), output);
   }
 }
 
