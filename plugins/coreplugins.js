@@ -11,22 +11,13 @@ class Plugin {
       if(a[0] > b[0]) return 1;
       return 0;
     }).forEach(([dep, v]) => {
-      const { name, version, description, homepage, adapt_authoring } = this.getDepPkg(dep);
+      const { name, version, description, homepage, adapt_authoring } = require('.' + path.join(process.cwd(), 'node_modules', dep, 'package.json'))
       if(!adapt_authoring) {
         return;
       }
       output += `| ${homepage ? `[${name}](${homepage})` : name} | ${version} | ${adapt_authoring.module || false} | ${description} |\n`;
     });
     fs.writeFileSync(path.join(__dirname, '..', 'docs', 'coreplugins.md'), output);
-  }
-
-  getDepPkg(dep) {
-    try {
-      return require('.' + process.env.aat_local_modules_path, dep, 'package.json');
-    } catch(e) {}
-    try {
-      return require('.' + path.join(process.cwd(), 'node_modules', dep, 'package.json'));
-    } catch(e) {}
   }
 }
 
