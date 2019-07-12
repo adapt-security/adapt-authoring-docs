@@ -5,7 +5,7 @@ const pkg = require(path.join(process.cwd(), 'package.json'));
 
 class Plugin {
   onHandleConfig(ev) {
-    let output = `# List of core modules\n**The following modules are included in Adapt authoring v${pkg.version}, and supported by the core dev team.**\n\nThe 'Module' column refers to whether the dependency is booted as an authoring tool module, or simply used as a regular Node dependency (see [this page](module-definition.html) for more information).\n\n| Name | Version | Module | Description |\n| ---- | :-----: | :----: | ----------- |\n`;
+    let content = ``;
     Object.entries(Object.assign({}, pkg.dependencies, pkg.devDependencies)).sort((a,b) => {
       if(a[0] < b[0]) return -1;
       if(a[0] > b[0]) return 1;
@@ -15,8 +15,10 @@ class Plugin {
       if(!adapt_authoring) {
         return;
       }
-      output += `| ${homepage ? `[${name}](${homepage})` : name} | ${version} | ${adapt_authoring.module || false} | ${description} |\n`;
+      content += `| ${homepage ? `[${name}](${homepage})` : name} | ${version} | ${adapt_authoring.module || false} | ${description} |\n`;
     });
+    const input = fs.readFileSync(path.join(__dirname, '..', 'docspartials', 'coreplugins.md')).toString();
+    const output = input.replace('{{{REPLACE_ME}}}', content);
     fs.writeFileSync(path.join(__dirname, '..', 'docs', 'temp-coreplugins.md'), output);
   }
 }

@@ -34,12 +34,14 @@ class Plugin {
   }
 
   writeManualFile() {
-    let output = '# External type reference\nBelow is a list of types which will automatically link to their official documentation when included in ESDoc comments.\n\n| Name | Link |\n| ---- | ---- |\n';
+    let content = '';
     Object.entries(externals).sort((a,b) => {
       if(a[0] < b[0]) return -1;
       if(a[0] > b[0]) return 1;
       return 0;
-    }).forEach(([name, link]) => output += `| ${name} | ${link} |\n`);
+    }).forEach(([name, link]) => content += `| ${name} | ${link} |\n`);
+    const input = fs.readFileSync(path.join(__dirname, '..', 'docspartials', 'externals.md')).toString();
+    const output = input.replace('{{{REPLACE_ME}}}', content);
     fs.writeFileSync(path.join(__dirname, '..', 'docs', 'temp-externals.md'), output);
   }
 }
