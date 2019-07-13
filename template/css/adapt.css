@@ -120,6 +120,10 @@ pre > code {
   border: 1px solid #e2e2e2;
 }
 
+table {
+  width: 100%;
+}
+
 footer {
   border: none;
   margin: 0;
