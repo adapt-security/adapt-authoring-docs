@@ -127,15 +127,16 @@ function getManualIncludes() {
 }
 
 function docs() {
-  console.log(`\nGenerating documentation using modules at ${cwd}...\n`);
+  console.log(`\nGenerating documentation using modules at ${cwd}\nThis might take a minute or two...\n`);
   esdoc.generate(esconfig);
 
+  console.log(`Documentation build complete.`);
+
   const docspath = path.join(path.resolve(esconfig.destination), 'index.html');
-  console.log(`\nDocs can be launched from '${docspath}'`);
   if(process.env.aat_open) {
     open(docspath);
   } else {
-    console.log('(tip: pass the --open flag when calling this command to open automatically in a browser window)');
+    console.log(`\nDocs can be launched from '${docspath}'(tip: pass the --open flag when calling this command to open automatically in a browser window)`);
 
   }
 }
