@@ -141,4 +141,9 @@ function docs() {
   }
 }
 
+const __log = console.log;
+console.log = (...args) => {
+  if(!args.toString().match(/^parse|resolve|output:/)) __log(...args);
+ }
+
 module.exports = docs;
