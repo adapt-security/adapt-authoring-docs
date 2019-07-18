@@ -137,7 +137,6 @@ function docs() {
     open(docspath);
   } else {
     console.log(`\nDocs can be launched from '${docspath}'\n(tip: pass the --open flag when calling this command to open automatically in a browser window)`);
-
   }
 }
 
