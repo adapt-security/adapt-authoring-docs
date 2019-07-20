@@ -127,7 +127,8 @@ function getManualIncludes() {
 }
 
 function docs() {
-  console.log(`\nGenerating documentation using modules at ${cwd}\nThis might take a minute or two...\n`);
+  console.log(`\nGenerating documentation for ${pkg.name}@${pkg.version}\n`);
+  console.log(`Using modules at ${cwd}\nThis might take a minute or two...\n`);
   esdoc.generate(esconfig);
 
   console.log(`Documentation build complete.`);
