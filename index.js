@@ -39,15 +39,6 @@ const esconfig = {
       }
     },
     {
-      name: "esdoc-importpath-plugin",
-      option: {
-        stripPackageName: true,
-        replaces: [
-          { "from": "node_modules/", "to": "" }
-        ]
-      }
-    },
-    {
       name: "esdoc-publish-html-plugin",
       option: { template: path.join(__dirname, "template") }
     },
