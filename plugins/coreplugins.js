@@ -15,7 +15,7 @@ class Plugin {
       if(!adapt_authoring) {
         return;
       }
-      content += `| ${homepage ? `[${name}](${homepage})` : name} | ${version} | ${adapt_authoring.module || false} | ${description} |\n`;
+      content += `| ${homepage ? `[${name}](${homepage})` : name} | ${version} | ${adapt_authoring.module || false} | ${adapt_authoring.utility || ''} | ${description} |\n`;
     });
     const input = fs.readFileSync(path.join(__dirname, '..', 'docspartials', 'coreplugins.md')).toString();
     const output = input.replace('{{{REPLACE_ME}}}', content);
