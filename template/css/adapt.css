@@ -89,6 +89,27 @@ body.manual-root .navigation .manual-toc [class^="indent-h1"] a {
   margin: 0 auto;
 }
 
+.content .github-markdown .attribute {
+  margin-bottom: 15px;
+}
+.content .github-markdown .attribute .title {
+  margin-bottom: 5px;
+}
+.content .github-markdown .attribute .title > span {
+  font-weight: bold;
+}
+.content .github-markdown .attribute .item {
+  margin-left: 10px;
+  margin-bottom: 3px;
+}
+.content .github-markdown .attribute .item.small {
+  font-size: 95%;
+}
+.content .github-markdown .attribute .item > pre {
+  display: inline;
+  white-space: pre-wrap;
+}
+
 .inherited-summary thead a {
   color: black;
 }
@@ -118,6 +139,7 @@ body.manual-root .navigation .manual-toc [class^="indent-h1"] a { color: #34bee0
 pre > code {
   padding: 20px;
   border: 1px solid #e2e2e2;
+  white-space: pre-wrap;
 }
 
 table {

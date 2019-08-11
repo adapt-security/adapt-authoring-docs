@@ -41,13 +41,15 @@ class Plugin {
     let output = '';
 
     Object.entries(schemas).forEach(([dep, schema]) => {
-      output += `### ${dep}\n\n`
+      output += `<h3 class="dep">${dep}</h3>\n\n`;
       Object.entries(schema).forEach(([attr, config]) => {
-        output += `**${attr}** (${config.type || ''}, ${config.required ? 'required' : 'optional'})<br>`;
-        output += `${config.description}\n\n`;
-        output += `Default: \`${this.defaultToMd(config)}\`\n\n`;
+        output += '<div class="attribute">';
+        output += `<div class="title"><span>${attr}</span> (${config.type || ''}, ${config.required ? 'required' : 'optional'})</div>`;
+        output += `<div class="item">${config.description}</div>`;
+        output += `<div class="item small">Default: <pre>${this.defaultToMd(config)}</pre></div>`;
+        output += '</div>'
       });
-      output += `***\n\n`;
+      output += `\n\n`;
     });
 
     return output;
