@@ -72,7 +72,7 @@ function cacheConfigs() {
       }
       c = pkg.adapt_authoring.documentation;
     } catch(e) { // couldn't read the pkg attribute but don't need to do anything
-      return console.log(`Omitting ${dep}, config is invalid: ${e}`);
+      return console.log(`Omitting ${dep}, config is invalid: ${e.message}`);
     }
     if(!c.enable) {
       return console.log(`Omitting ${dep}, adapt_authoring.documentation.enable is false`);
