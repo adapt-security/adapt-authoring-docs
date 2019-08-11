@@ -14,40 +14,41 @@ const defaultSourceIncludes = `!(node_modules)${path.sep}*.js`;
 
 let manualIndex; // populated in cacheConfigs
 let sourceIndex; // populated in cacheConfigs
+let cachedConfigs;
 
-const cachedConfigs = cacheConfigs();
-
-const esconfig = {
-  source: cwd,
-  destination: outputdir,
-  includes: getSourceIncludes(),
-  index: sourceIndex,
-  plugins: [
-    {
-      name: "esdoc-standard-plugin",
-      option: {
-        accessor: {
-          access: ["public", "protected"]
-        },
-        brand: {
-          title: "Adapt authoring tool"
-        },
-        manual: {
-          index: manualIndex,
-          files: getManualIncludes()
+const getConfig = () => {
+  return {
+    source: cwd,
+    destination: outputdir,
+    includes: getSourceIncludes(),
+    index: sourceIndex,
+    plugins: [
+      {
+        name: "esdoc-standard-plugin",
+        option: {
+          accessor: {
+            access: ["public", "protected"]
+          },
+          brand: {
+            title: "Adapt authoring tool"
+          },
+          manual: {
+            index: manualIndex,
+            files: getManualIncludes()
+          }
         }
-      }
-    },
-    {
-      name: "esdoc-publish-html-plugin",
-      option: { template: path.join(__dirname, "template") }
-    },
-    { name: "esdoc-node" },
-    { name: getPluginDir("externals.js") },
-    { name: getPluginDir("coreplugins.js") },
-    { name: getPluginDir("configuration.js") }
-  ]
-};
+      },
+      {
+        name: "esdoc-publish-html-plugin",
+        option: { template: path.join(__dirname, "template") }
+      },
+      { name: "esdoc-node" },
+      { name: getPluginDir("externals.js") },
+      { name: getPluginDir("coreplugins.js") },
+      { name: getPluginDir("configuration.js") }
+    ]
+  };
+}
 function getPluginDir(pluginName) {
   return path.join(__dirname, "plugins", pluginName);
 }
@@ -118,13 +119,18 @@ function getManualIncludes() {
 }
 
 function docs() {
-  console.log(`\nGenerating documentation for ${pkg.name}@${pkg.version}\n`);
-  console.log(`Using modules at ${cwd}\nThis might take a minute or two...\n`);
-  esdoc.generate(esconfig);
+  console.log(`Generating documentation for ${pkg.name}@${pkg.version}\nUsing modules at ${cwd}\n`);
+
+  cachedConfigs = cacheConfigs()
+  const config = getConfig();
+
+  console.log(`\nThis might take a minute or two...\n`);
+
+  esdoc.generate(config);
 
   console.log(`Documentation build complete.`);
 
-  const docspath = path.join(path.resolve(esconfig.destination), 'index.html');
+  const docspath = path.join(path.resolve(config.destination), 'index.html');
   if(process.env.aat_open) {
     open(docspath);
   } else {
