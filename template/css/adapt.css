@@ -25,20 +25,30 @@ html {
 .navigation {
   width: 300px;
   background: #263944;
-  padding: 0 10px 40px 10px;
+  padding: 10px 15px;
   height: 95vh;
   margin-top: 5vh;
   margin-bottom: 5vh;
   overflow-x: hidden;
   overflow-y: auto;
 }
+body.manual-root .navigation .manual-toc {
+  margin-bottom: 10px;
+}
+body.manual-root .navigation .manual-toc [class^="indent-h1"] {
+  margin-bottom: 0;
+  padding: 0;
+}
 .navigation .nav-dir-path,
 body.manual-root .navigation .manual-toc [class^="indent-h1"] a {
   font-size: 110%;
   color: #34bee0;
   font-weight: normal;
-  margin-bottom: 0.5em;
-  padding: 10px 0 0 5px;
+  margin-bottom: 0;
+  padding: 0;
+}
+body.manual-root .navigation .manual-toc [class^="indent-h3"] {
+  margin-left: 1em;
 }
 .navigation li a {
   color: white;
