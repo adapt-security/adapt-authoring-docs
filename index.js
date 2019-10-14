@@ -97,7 +97,7 @@ function cacheConfigs() {
 function getSourceIncludes() {
   return cachedConfigs.reduce((i, c) => {
     const include = path.join(cwd, c.name, (c.includes.source || defaultSourceIncludes));
-    return i.concat(glob.sync(include).map(p => `^${p.replace(cwd,'').slice(1)}`));
+    return i.concat(glob.sync(include).map(p => `^${p.replace(cwd.replace(/\\/g,'/'),'').slice(1)}`));
   }, []).concat(['^externals.js$']); // HACK include temp file created by our 'externals-plugin'...fix this
 }
 /**

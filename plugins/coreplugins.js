@@ -11,7 +11,7 @@ class Plugin {
       if(a[0] > b[0]) return 1;
       return 0;
     }).forEach(([dep, v]) => {
-      const { name, version, description, homepage, adapt_authoring } = require('.' + path.join(process.cwd(), 'node_modules', dep, 'package.json'))
+      const { name, version, description, homepage, adapt_authoring } = require(path.join(process.cwd(), 'node_modules', dep, 'package.json'))
       if(!adapt_authoring) {
         return;
       }
