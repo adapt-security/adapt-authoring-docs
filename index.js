@@ -4,13 +4,12 @@ const fs = require('fs-extra');
 const glob = require('glob');
 const open = require('open');
 const path = require('path');
+const { App, Utils } = require('adapt-authoring-core');
 
-const config = require(path.join(process.cwd(), 'conf', `${process.env.NODE_ENV}.config.js`));
-const cwd = config && config.app && config.app.local_modules_path || path.join(process.cwd(), 'node_modules');
-const pkg = require(path.join(process.cwd(), 'package.json'));
+const processCwd = process.cwd();
+const config = require(path.join(processCwd, 'conf', `${process.env.NODE_ENV}.config.js`));
+const pkg = require(path.join(processCwd, 'package.json'));
 const outputdir = path.join(__dirname, "build");
-
-const defaultSourceIncludes = `!(node_modules)${path.sep}*.js`;
 
 let manualIndex; // populated in cacheConfigs
 let sourceIndex; // populated in cacheConfigs
@@ -18,7 +17,7 @@ let cachedConfigs;
 
 const getConfig = () => {
   return {
-    source: cwd,
+    source: Utils.getModuleDir(),
     destination: outputdir,
     includes: getSourceIncludes(),
     index: sourceIndex,
@@ -43,14 +42,11 @@ const getConfig = () => {
         option: { template: path.join(__dirname, "template") }
       },
       { name: "esdoc-node" },
-      { name: getPluginDir("externals.js") },
-      { name: getPluginDir("coreplugins.js") },
-      { name: getPluginDir("configuration.js") }
+      { name: getPluginPath("externals.js") },
+      { name: getPluginPath("coreplugins.js") },
+      { name: getPluginPath("configuration.js") }
     ]
   };
-}
-function getPluginDir(pluginName) {
-  return path.join(__dirname, "plugins", pluginName);
 }
 /**
 * Caches loaded JSON so we don't load multiple times.
@@ -59,19 +55,12 @@ function getPluginDir(pluginName) {
 */
 function cacheConfigs() {
   const cache = [];
-  Object.keys(Object.assign({}, pkg.dependencies, pkg.devDependencies)).forEach(dep => {
-    const depDir = path.join(cwd, dep);
+  Object.keys(App.instance.dependencies).forEach(dep => {
+    const depDir = resolveModDir(dep);
     let c;
     try {
-      const pkg = fs.readJsonSync(path.join(depDir, 'package.json'));
-      if(!pkg.adapt_authoring) {
-        throw new Error(`No 'adapt_authoring' settings specified`);
-      }
-      if(!pkg.adapt_authoring.documentation) {
-        throw new Error(`No 'documentation' settings specified`);
-      }
-      c = pkg.adapt_authoring.documentation;
-    } catch(e) { // couldn't read the pkg attribute but don't need to do anything
+      c = getDocConfig(depDir);
+    } catch(e) { // couldn't read the config but don't need to do anything
       return console.log(`Omitting ${dep}, config is invalid: ${e.message}`);
     }
     if(!c.enable) {
@@ -85,43 +74,81 @@ function cacheConfigs() {
       if(sourceIndex) return console.log(`${dep}: sourceIndex has been specified by another module as ${sourceIndex}`);
       sourceIndex = path.join(depDir, c.sourceIndex);
     }
-    cache.push(Object.assign(c, { name: dep, includes: c.includes || {} }));
+    cache.push({ ...c, ...{ name: dep, includes: c.includes || {} }});
   });
   return cache;
 }
 /**
 * Returns a list of modules to include.
-* defaultDocsIncludes is used if no adapt_authoring.documentation.includes.docs
-* is found.
+* @note Source files must be located in /lib
+* @hack do externals.js better...
 */
 function getSourceIncludes() {
   return cachedConfigs.reduce((i, c) => {
-    const include = path.join(cwd, c.name, (c.includes.source || defaultSourceIncludes));
-    return i.concat(glob.sync(include).map(p => `^${p.replace(cwd.replace(/\\/g,'/'),'').slice(1)}`));
-  }, []).concat(['^externals.js$']); // HACK include temp file created by our 'externals-plugin'...fix this
+    return i.concat(getModFiles(c.name, path.join('lib', '*')));
+  }, ['^externals.js$']);
 }
 /**
-* Returns a list of markdown files to include in the manual
-* defaultDocsIncludes is used if no adapt_authoring.documentation.includes.docs
-* is found.
+* Returns a list of markdown files to include in the manual is found.
+* @note No index files are included (if defined)
 */
 function getManualIncludes() {
   const rootIncludes = [];
   try {
-    rootIncludes.push(...glob.sync(path.join(process.cwd(), pkg.adapt_authoring.documentation.includes.docs)));
-  } catch(e) {} // do nothing
-
+    rootIncludes.push(...getModFiles(processCwd, pkg.adapt_authoring.documentation.includes.docs));
+  } catch(e) {} // no root doc files
   return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
     if(!c.includes.docs) return i; // don't include docs by default
-    const include = path.join(cwd, c.name, c.includes.docs || defaultDocsIncludes);
-    return i.concat(glob.sync(include).filter(i => i !== manualIndex && i !== sourceIndex));
+    i.concat(getModFiles(c.name, path.join('docs', '*')).filter(filterIndexManuals));
   }, []));
 }
 
-function docs() {
-  console.log(`Generating documentation for ${pkg.name}@${pkg.version}\nUsing modules at ${cwd}\n`);
+function filterIndexManuals(filepath, index) {
+  return index !== manualIndex && index !== sourceIndex;
+}
 
-  cachedConfigs = cacheConfigs()
+function getDocConfig(depDir) {
+  let dPkg;
+  try {
+    dPkg = fs.readJsonSync(path.join(depDir, 'package.json'));
+  } catch(e) {
+    throw new Error('No package.json');
+  }
+  if(!dPkg.adapt_authoring) {
+    throw new Error(`No 'adapt_authoring' settings specified`);
+  }
+  if(!dPkg.adapt_authoring.documentation) {
+    throw new Error(`No 'documentation' settings specified`);
+  }
+  return dPkg.adapt_authoring.documentation;
+}
+
+function getModFiles(mod, includes, relative = false) {
+  const globFiles = glob.sync(includes, { cwd: resolveModDir(mod), absolute: true });
+  if(relative) {
+    const root = resolveModDir();
+    globFiles = globFiles.map(f => `^${path.relative(root, f)}`);
+  }
+  return globFiles;
+}
+
+function resolveModDir(mod, ...args) {
+  return path.join(Utils.getModuleDir(mod), ...args);
+}
+
+function getPluginPath(pluginName) {
+  return path.join(__dirname, "plugins", pluginName);
+}
+
+const __log = console.log;
+console.log = (...args) => {
+  if(!args.toString().match(/^parse|resolve|output:/)) __log(...args);
+};
+
+function docs() {
+  console.log(`Generating documentation for ${pkg.name}@${pkg.version}`);
+
+  cachedConfigs = cacheConfigs();
   const config = getConfig();
 
   console.log(`\nThis might take a minute or two...\n`);
@@ -137,10 +164,5 @@ function docs() {
     console.log(`\nDocs can be launched from '${docspath}'\n(tip: pass the --open flag when calling this command to open automatically in a browser window)`);
   }
 }
-
-const __log = console.log;
-console.log = (...args) => {
-  if(!args.toString().match(/^parse|resolve|output:/)) __log(...args);
- }
 
 module.exports = docs;
