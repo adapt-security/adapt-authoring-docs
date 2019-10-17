@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
+const { App, Utils } = require('adapt-authoring-core');
 
 const pkg = require(path.join(process.cwd(), 'package.json'));
 const schemas = [];
@@ -13,11 +14,16 @@ class Plugin {
     });
   }
   loadSchemas() {
-    Object.keys(Object.assign({}, pkg.dependencies, pkg.devDependencies)).forEach(dep => {
+    Object.values(App.instance.dependencies).forEach(c => {
+      const confDir = path.join(Utils.getModuleDir(c.name), 'conf');
       try {
-        schemas[dep] = require('.' + path.join(process.cwd(), 'node_modules', dep, 'conf', 'config.schema.js')).definition;
+        fs.accessSync(confDir);
       } catch(e) {
         return;
+      }
+      try {
+        schemas[c.name] = require(path.join(confDir, 'config.schema.js')).definition;
+      } catch(e) {
       }
     });
   }
