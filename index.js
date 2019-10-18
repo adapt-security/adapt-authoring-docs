@@ -85,7 +85,7 @@ function cacheConfigs() {
 */
 function getSourceIncludes() {
   return cachedConfigs.reduce((i, c) => {
-    return i.concat(getModFiles(c.name, path.join('lib', '*')));
+    return i.concat(getModFiles(c.name, path.join('lib/**/*.js')));
   }, ['^externals.js$']);
 }
 /**
@@ -93,13 +93,13 @@ function getSourceIncludes() {
 * @note No index files are included (if defined)
 */
 function getManualIncludes() {
+  const includes = 'docs/*';
   const rootIncludes = [];
   try {
-    rootIncludes.push(...getModFiles(processCwd, pkg.adapt_authoring.documentation.includes.docs));
+    rootIncludes.push(...getModFiles(processCwd, includes));
   } catch(e) {} // no root doc files
   return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
-    if(!c.includes.docs) return i; // don't include docs by default
-    i.concat(getModFiles(c.name, path.join('docs', '*')).filter(filterIndexManuals));
+    return i.concat(getModFiles(c.name, includes, true).filter(filterIndexManuals));
   }, []));
 }
 
@@ -123,13 +123,12 @@ function getDocConfig(depDir) {
   return dPkg.adapt_authoring.documentation;
 }
 
-function getModFiles(mod, includes, relative = false) {
-  const globFiles = glob.sync(includes, { cwd: resolveModDir(mod), absolute: true });
-  if(relative) {
-    const root = resolveModDir();
-    globFiles = globFiles.map(f => `^${path.relative(root, f)}`);
+function getModFiles(mod, includes, absolute = false) {
+  let globFiles = glob.sync(includes, { cwd: resolveModDir(mod), absolute: absolute });
+  if(absolute) {
+    return globFiles;
   }
-  return globFiles;
+  return globFiles.map(f => `^${mod}${path.sep}${f}`);
 }
 
 function resolveModDir(mod, ...args) {
