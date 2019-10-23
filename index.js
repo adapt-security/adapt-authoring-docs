@@ -38,6 +38,10 @@ const getConfig = () => {
         }
       },
       {
+        name: "esdoc-ecmascript-proposal-plugin",
+        option: { all: true }
+      },
+      {
         name: "esdoc-publish-html-plugin",
         option: { template: path.join(__dirname, "template") }
       },
