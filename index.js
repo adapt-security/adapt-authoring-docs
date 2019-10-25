@@ -100,7 +100,7 @@ function getManualIncludes() {
   const includes = 'docs/*';
   const rootIncludes = [];
   try {
-    rootIncludes.push(...getModFiles(processCwd, includes));
+    rootIncludes.push(...getModFiles(processCwd, includes, true));
   } catch(e) {} // no root doc files
   return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
     return i.concat(getModFiles(c.name, includes, true).filter(filterIndexManuals));
