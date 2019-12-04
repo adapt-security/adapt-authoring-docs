@@ -125,6 +125,11 @@ externals = {
   'express~App': 'https://expressjs.com/en/4x/api.html#app',
   'express~Router': 'https://expressjs.com/en/4x/api.html#router',
   /**
+  * MongoDB
+  * https://mongodb.github.io/node-mongodb-native/3.3/api/index.html
+  */
+  'mongodb~Collection': 'https://mongodb.github.io/node-mongodb-native/3.3/api/Db.html#collection',
+  /**
   * Mongoose.js
   * https://mongoosejs.com/docs/api.html
   */
