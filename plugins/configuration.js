@@ -15,27 +15,21 @@ class Plugin {
   }
   loadSchemas() {
     Object.values(App.instance.dependencies).forEach(c => {
-      const confDir = path.join(Utils.getModuleDir(c.name), 'conf');
+      const confDir = path.join(c.rootDir, 'conf');
       try {
-        fs.accessSync(confDir);
-      } catch(e) {
-        return;
-      }
-      try {
-        schemas[c.name] = require(path.join(confDir, 'config.schema.js')).definition;
-      } catch(e) {
-      }
+        schemas[c.name] = require(path.join(confDir, 'config.schema.json'));
+      } catch(e) {}
     });
   }
   generateCodeExample() {
     let output = '\`\`\`javascript\nmodule.exports = {\n';
-
     Object.entries(schemas).forEach(([dep, schema]) => {
       output += `  '${dep}': {\n`;
-      Object.entries(schema).forEach(([attr, config]) => {
+      Object.entries(schema.properties).forEach(([attr, config]) => {
+        console.log(schema.required);
+        const required = schema.required && schema.required.includes(attr);
         if(config.description) output += `    // ${config.description}\n`;
-        if(config.help) output += `    // ${config.help}\n`;
-        output += `    ${attr}: ${this.defaultToMd(config)} // ${config.type}, ${config.required ? 'required' : 'optional'}\n`;
+        output += `    ${attr}: ${this.defaultToMd(config)} // ${config.type}, ${required ? 'required' : 'optional'}\n`;
       });
       output += `  }\n`;
     });
