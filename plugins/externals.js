@@ -118,6 +118,7 @@ externals = {
   'events~EventEmitter': 'https://nodejs.org/api/events.html#events_class_eventemitter',
   'http~ClientRequest': 'https://nodejs.org/api/http.html#http_class_http_clientrequest',
   'http~ServerResponse': 'https://nodejs.org/api/http.html#http_class_http_serverresponse',
+  'net~Server': 'https://nodejs.org/api/net.html#net_class_net_server'
 /**
 * Express.js
 * https://expressjs.com/en/4x/api.html
@@ -136,6 +137,11 @@ externals = {
   'mongoose~Connection': 'https://mongoosejs.com/docs/api.html#Connection',
   'mongoose~Schema': 'https://mongoosejs.com/docs/api.html#Schema',
   'mongoose~Schematype': 'https://mongoosejs.com/docs/api.html#Schematype',
+  /**
+  * Polyglot.js
+  * https://github.com/airbnb/polyglot.js
+  */
+  'polyglot~Polyglot': 'https://github.com/airbnb/polyglot.js#usage'
 };
 
 module.exports = new Plugin();
