@@ -4,11 +4,6 @@
   "description": "Tools for auto-generating documentation for the Adapt authoring tool",
   "homepage": "https://github.com/taylortom/adapt-authoring-docs",
   "main": "index.js",
-  "adapt_authoring": {
-    "documentation": {
-      "enable": true
-    }
-  },
   "dependencies": {
     "async": "2.6.1",
     "esdoc": "1.1.0",
