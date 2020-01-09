@@ -59,26 +59,25 @@ const getConfig = () => {
 */
 function cacheConfigs() {
   const cache = [];
-  Object.keys(App.instance.dependencies).forEach(dep => {
-    const depDir = resolveModDir(dep);
+  Object.values(App.instance.dependencies).forEach(dep => {
     let c;
     try {
-      c = getDocConfig(depDir);
+      c = getDocConfig(dep.rootDir);
     } catch(e) { // couldn't read the config but don't need to do anything
       return console.log(`Omitting ${dep}, config is invalid: ${e.message}`);
     }
     if(!c.enable) {
-      return console.log(`Omitting ${dep}, adapt_authoring.documentation.enable is false`);
+      return console.log(`Omitting ${dep}, documentation.enable is false`);
     }
     if(c.manualIndex) {
       if(manualIndex) return console.log(`${dep}: manualIndex has been specified by another module as ${manualIndex}`);
-      manualIndex = path.join(depDir, c.manualIndex);
+      manualIndex = path.join(dep.rootDir, c.manualIndex);
     }
     if(c.sourceIndex) {
       if(sourceIndex) return console.log(`${dep}: sourceIndex has been specified by another module as ${sourceIndex}`);
-      sourceIndex = path.join(depDir, c.sourceIndex);
+      sourceIndex = path.join(dep.rootDir, c.sourceIndex);
     }
-    cache.push({ ...c, ...{ name: dep, includes: c.includes || {} }});
+    cache.push({ ...c, ...{ name: dep.name, rootDir: dep.rootDir, includes: c.includes || {} }});
   });
   return cache;
 }
@@ -112,31 +111,25 @@ function filterIndexManuals(filepath, index) {
 }
 
 function getDocConfig(depDir) {
-  let dPkg;
+  let config;
   try {
-    dPkg = fs.readJsonSync(path.join(depDir, 'package.json'));
+    config = fs.readJsonSync(path.join(depDir, 'adapt.json'));
   } catch(e) {
-    throw new Error('No package.json');
+    throw new Error('No adapt.json');
   }
-  if(!dPkg.adapt_authoring) {
-    throw new Error(`No 'adapt_authoring' settings specified`);
-  }
-  if(!dPkg.adapt_authoring.documentation) {
+  if(!config.documentation) {
     throw new Error(`No 'documentation' settings specified`);
   }
-  return dPkg.adapt_authoring.documentation;
+  return config.documentation;
 }
 
 function getModFiles(mod, includes, absolute = false) {
-  let globFiles = glob.sync(includes, { cwd: resolveModDir(mod), absolute: absolute });
+  const config = cachedConfigs.filter(c => c.name === mod)[0];
+  let globFiles = glob.sync(includes, { cwd: config.rootDir, absolute: absolute });
   if(absolute) {
     return globFiles;
   }
   return globFiles.map(f => `^${mod}${path.sep}${f}`);
-}
-
-function resolveModDir(mod, ...args) {
-  return path.join(Utils.getModuleDir(mod), ...args);
 }
 
 function getPluginPath(pluginName) {
@@ -148,8 +141,10 @@ console.log = (...args) => {
   if(!args.toString().match(/^parse|resolve|output:/)) __log(...args);
 };
 
-function docs() {
+async function docs() {
   console.log(`Generating documentation for ${pkg.name}@${pkg.version}`);
+
+  await App.instance.onReady();
 
   cachedConfigs = cacheConfigs();
   const config = getConfig();
