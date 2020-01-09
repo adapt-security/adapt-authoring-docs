@@ -26,7 +26,6 @@ class Plugin {
     Object.entries(schemas).forEach(([dep, schema]) => {
       output += `  '${dep}': {\n`;
       Object.entries(schema.properties).forEach(([attr, config]) => {
-        console.log(schema.required);
         const required = schema.required && schema.required.includes(attr);
         if(config.description) output += `    // ${config.description}\n`;
         output += `    ${attr}: ${this.defaultToMd(config)} // ${config.type}, ${required ? 'required' : 'optional'}\n`;
