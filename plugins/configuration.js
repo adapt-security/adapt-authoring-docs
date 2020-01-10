@@ -42,8 +42,9 @@ class Plugin {
     Object.entries(schemas).forEach(([dep, schema]) => {
       output += `<h3 class="dep">${dep}</h3>\n\n`;
       Object.entries(schema.properties).forEach(([attr, config]) => {
+        const required = schema.required && schema.required.includes(attr);
         output += '<div class="attribute">';
-        output += `<div class="title"><span>${attr}</span> (${config.type || ''}, ${config.required ? 'required' : 'optional'})</div>`;
+        output += `<div class="title"><span>${attr}</span> (${config.type || ''}, ${required ? 'required' : 'optional'})</div>`;
         output += `<div class="item">${config.description}</div>`;
         output += `<div class="item small">Default: <pre>${this.defaultToMd(config)}</pre></div>`;
         output += '</div>'
