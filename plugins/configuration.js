@@ -57,19 +57,8 @@ class Plugin {
   * Returns a string formatted nicely for markdown
   */
   defaultToMd(config) {
-    if(config.default === undefined) {
-      return config.default;
-    }
-    switch(config.type.toLowerCase()) {
-      case 'array':
-        return `[${config.default}]`;
-      case 'string':
-        return `"${config.default}"`;
-      default:
-        return config.default;
-    }
+    return JSON.stringify(config.default);
   }
-
   writeFile(data) {
     let file = fs.readFileSync(path.join(__dirname, '..', 'docspartials', 'configuration.md')).toString();
     Object.entries(data).forEach(([key,value]) => file = file.replace(`{{{${key}}}}`, value));
