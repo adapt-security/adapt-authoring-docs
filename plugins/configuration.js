@@ -41,7 +41,7 @@ class Plugin {
 
     Object.entries(schemas).forEach(([dep, schema]) => {
       output += `<h3 class="dep">${dep}</h3>\n\n`;
-      Object.entries(schema).forEach(([attr, config]) => {
+      Object.entries(schema.properties).forEach(([attr, config]) => {
         output += '<div class="attribute">';
         output += `<div class="title"><span>${attr}</span> (${config.type || ''}, ${config.required ? 'required' : 'optional'})</div>`;
         output += `<div class="item">${config.description}</div>`;
