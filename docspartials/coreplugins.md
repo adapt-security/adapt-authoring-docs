@@ -3,6 +3,6 @@
 
 The 'Module' column refers to whether the dependency is booted as an authoring tool module, or simply used as a regular Node dependency (see [this page](module-definition.html) for more information).
 
-| Name | Version | Module | Utility | Description |
-| ---- | :-----: | :----: | :-----: | ----------- |
+| Name | Version | Module | Description |
+| ---- | :-----: | :----: | ----------- |
 {{{REPLACE_ME}}}
