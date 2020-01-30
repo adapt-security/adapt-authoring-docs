@@ -113,9 +113,9 @@ function filterIndexManuals(filepath, index) {
 function getDocConfig(depDir) {
   let config;
   try {
-    config = fs.readJsonSync(path.join(depDir, 'adapt.json'));
+    config = fs.readJsonSync(path.join(depDir, Utils.metadataFileName));
   } catch(e) {
-    throw new Error('No adapt.json');
+    throw new Error(`No ${Utils.metadataFileName}`);
   }
   if(!config.documentation) {
     throw new Error(`No 'documentation' settings specified`);
