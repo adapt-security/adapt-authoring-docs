@@ -8,7 +8,7 @@ const { App, Utils } = require('adapt-authoring-core');
 
 const processCwd = process.cwd();
 const config = require(path.join(processCwd, 'conf', `${process.env.NODE_ENV}.config.js`));
-const pkg = require(path.join(processCwd, 'package.json'));
+const pkg = Utils.requirePackage();
 const outputdir = path.join(__dirname, "build");
 
 let manualIndex; // populated in cacheConfigs

@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const { App, Utils } = require('adapt-authoring-core');
 
-const pkg = require(path.join(process.cwd(), 'package.json'));
+const pkg = Utils.requirePackage();
 const schemas = [];
 
 class Plugin {
