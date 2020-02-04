@@ -60,24 +60,19 @@ const getConfig = () => {
 function cacheConfigs() {
   const cache = [];
   Object.values(App.instance.dependencies).forEach(dep => {
-    let c;
-    try {
-      c = getDocConfig(dep.rootDir);
-    } catch(e) { // couldn't read the config but don't need to do anything
-      return console.log(`Omitting ${dep}, config is invalid: ${e.message}`);
-    }
-    if(!c.enable) {
-      return console.log(`Omitting ${dep}, documentation.enable is false`);
+    const c = dep.documentation;
+    if(!c || !c.enable) {
+      return console.log(`Omitting ${dep.name}, no documentation config defined, or documentation.enable is set to false`);
     }
     if(c.manualIndex) {
-      if(manualIndex) return console.log(`${dep}: manualIndex has been specified by another module as ${manualIndex}`);
+      if(manualIndex) return console.log(`${dep.name}: manualIndex has been specified by another module as ${manualIndex}`);
       manualIndex = path.join(dep.rootDir, c.manualIndex);
     }
     if(c.sourceIndex) {
-      if(sourceIndex) return console.log(`${dep}: sourceIndex has been specified by another module as ${sourceIndex}`);
+      if(sourceIndex) return console.log(`${dep.name}: sourceIndex has been specified by another module as ${sourceIndex}`);
       sourceIndex = path.join(dep.rootDir, c.sourceIndex);
     }
-    cache.push({ ...c, ...{ name: dep.name, rootDir: dep.rootDir, includes: c.includes || {} }});
+    cache.push({ ...c, name: dep.name, rootDir: dep.rootDir, includes: c.includes || {} });
   });
   return cache;
 }
