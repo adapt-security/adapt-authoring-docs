@@ -8,9 +8,9 @@ const { App, Utils } = require('adapt-authoring-core');
 
 const processCwd = process.cwd();
 const config = require(path.join(processCwd, 'conf', `${process.env.NODE_ENV}.config.js`));
-const pkg = Utils.requirePackage();
 const outputdir = path.join(__dirname, "build");
 
+let pkg;
 let manualIndex; // populated in cacheConfigs
 let sourceIndex; // populated in cacheConfigs
 let cachedConfigs;
@@ -142,15 +142,17 @@ console.log = (...args) => {
 };
 
 async function docs() {
+  pkg = await Utils.requirePackage();
+
   console.log(`Generating documentation for ${pkg.name}@${pkg.version}`);
 
   await App.instance.onReady();
 
   cachedConfigs = cacheConfigs();
-  const config = getConfig();
 
   console.log(`\nThis might take a minute or two...\n`);
 
+  const config = getConfig();
   esdoc.generate(config);
 
   console.log(`Documentation build complete.`);
