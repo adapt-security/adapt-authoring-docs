@@ -147,12 +147,12 @@ async function docs() {
 
   console.log(`\nThis might take a minute or two...\n`);
 
-  const config = getConfig();
-  esdoc.generate(config);
+  const esconfig = getConfig();
+  esdoc.generate(esconfig);
 
   console.log(`Documentation build complete.`);
 
-  const docspath = path.join(path.resolve(config.destination), 'index.html');
+  const docspath = path.join(path.resolve(esconfig.destination), 'index.html');
   if(process.env.aat_open) {
     open(docspath);
   } else {
