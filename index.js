@@ -6,8 +6,6 @@ const open = require('open');
 const path = require('path');
 const { App, Utils } = require('adapt-authoring-core');
 
-const processCwd = process.cwd();
-const config = require(path.join(processCwd, 'conf', `${process.env.NODE_ENV}.config.js`));
 const outputdir = path.join(__dirname, "build");
 
 let pkg;
@@ -94,7 +92,7 @@ function getManualIncludes() {
   const includes = 'docs/*';
   const rootIncludes = [];
   try {
-    rootIncludes.push(...getModFiles(processCwd, includes, true));
+    rootIncludes.push(...getModFiles(process.cwd(), includes, true));
   } catch(e) {} // no root doc files
   return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
     return i.concat(getModFiles(c.name, includes, true).filter(filterIndexManuals));
@@ -103,19 +101,6 @@ function getManualIncludes() {
 
 function filterIndexManuals(filepath, index) {
   return index !== manualIndex && index !== sourceIndex;
-}
-
-function getDocConfig(depDir) {
-  let config;
-  try {
-    config = fs.readJsonSync(path.join(depDir, Utils.metadataFileName));
-  } catch(e) {
-    throw new Error(`No ${Utils.metadataFileName}`);
-  }
-  if(!config.documentation) {
-    throw new Error(`No 'documentation' settings specified`);
-  }
-  return config.documentation;
 }
 
 function getModFiles(mod, includes, absolute = false) {
