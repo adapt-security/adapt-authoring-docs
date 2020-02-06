@@ -7,6 +7,7 @@ const path = require('path');
 const { App, Utils } = require('adapt-authoring-core');
 
 const app = App.instance;
+let modsDir;
 let outputdir;
 
 let pkg;
@@ -82,7 +83,7 @@ function cacheConfigs() {
 */
 function getSourceIncludes() {
   return cachedConfigs.reduce((i, c) => {
-    return i.concat(getModFiles(c.name, path.join('lib/**/*.js')));
+    return i.concat(getModFiles(c.rootDir, path.join('lib/**/*.js'), false));
   }, ['^externals.js$']);
 }
 /**
@@ -93,10 +94,10 @@ function getManualIncludes() {
   const includes = 'docs/*';
   const rootIncludes = [];
   try {
-    rootIncludes.push(...getModFiles(process.cwd(), includes, true));
+    rootIncludes.push(...getModFiles(process.cwd(), includes));
   } catch(e) {} // no root doc files
   return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
-    return i.concat(getModFiles(c.name, includes, true).filter(filterIndexManuals));
+    return i.concat(getModFiles(c.rootDir, includes).filter(filterIndexManuals));
   }, []));
 }
 
@@ -104,13 +105,12 @@ function filterIndexManuals(filepath, index) {
   return index !== manualIndex && index !== sourceIndex;
 }
 
-function getModFiles(mod, includes, absolute = false) {
-  const config = cachedConfigs.filter(c => c.name === mod)[0];
-  let globFiles = glob.sync(includes, { cwd: config.rootDir, absolute: absolute });
+function getModFiles(modDir, includes, absolute = true) {
+  const globFiles = glob.sync(includes, { cwd: modDir, absolute });
   if(absolute) {
-    return globFiles;
+    return globFiles
   }
-  return globFiles.map(f => `^${mod}${path.sep}${f}`);
+  return globFiles.map(f => `^${modDir.replace(modsDir, '')}${path.sep}${f}`);
 }
 
 function getPluginPath(pluginName) {
@@ -131,6 +131,7 @@ async function docs() {
 
   const config = await app.waitForModule('config');
   outputdir = config.get(`${require('./package.json').name}.output_dir`);
+  modsDir = `${app.getConfig('root_dir')}/node_modules/`;
 
   cachedConfigs = cacheConfigs();
 
