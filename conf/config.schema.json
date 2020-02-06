@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "output_dir": {
+      "description": "Path to store documentation build files",
+      "type": "string"
+    }
+  },
+  "required": ["output_dir"]
+}

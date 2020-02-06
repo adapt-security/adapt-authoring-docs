@@ -6,7 +6,8 @@ const open = require('open');
 const path = require('path');
 const { App, Utils } = require('adapt-authoring-core');
 
-const outputdir = path.join(__dirname, "build");
+const app = App.instance;
+let outputdir;
 
 let pkg;
 let manualIndex; // populated in cacheConfigs
@@ -126,7 +127,10 @@ async function docs() {
 
   console.log(`Generating documentation for ${pkg.name}@${pkg.version}`);
 
-  await App.instance.onReady();
+  await app.onReady();
+
+  const config = await app.waitForModule('config');
+  outputdir = config.get(`${require('./package.json').name}.output_dir`);
 
   cachedConfigs = cacheConfigs();
 
