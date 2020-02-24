@@ -3,7 +3,7 @@ const path = require('path');
 const { App } = require('adapt-authoring-core');
 
 class Plugin {
-  onHandleConfig(ev) {
+  onHandleConfig() {
     let content = ``;
     Object.entries(App.instance.dependencies).sort((a,b) => {
       if(a[0] < b[0]) return -1;

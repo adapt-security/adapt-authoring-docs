@@ -1,12 +1,11 @@
 const fs = require('fs-extra');
 const path = require('path');
-const { App, Utils } = require('adapt-authoring-core');
+const { App } = require('adapt-authoring-core');
 
-const pkg = Utils.requirePackage();
 const schemas = [];
 
 class Plugin {
-  onHandleConfig(ev) {
+  onHandleConfig() {
     this.loadSchemas();
     this.writeFile({
       'CODE_EXAMPLE': this.generateCodeExample(),
@@ -47,7 +46,7 @@ class Plugin {
         output += `<div class="title"><span>${attr}</span> (${config.type || ''}, ${required ? 'required' : 'optional'})</div>`;
         output += `<div class="item">${config.description}</div>`;
         output += `<div class="item small">Default: <pre>${this.defaultToMd(config)}</pre></div>`;
-        output += '</div>'
+        output += '</div>';
       });
       output += `\n\n`;
     });

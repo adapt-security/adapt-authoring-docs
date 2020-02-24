@@ -19,20 +19,18 @@ class Plugin {
 
     this.writeManualFile();
   }
-
   onHandleDocs(ev) {
     if (!this._option.enable) return;
     // remove temp file
     fs.removeSync(externalsOut);
     // set all externals as builtinExternal
-    const name = path.basename(path.resolve(this._config.source)) + '/' + externalsFilename;
+    const name = `${path.basename(path.resolve(this._config.source))}/${externalsFilename}`;
     for (const doc of ev.data.docs) {
       if (doc.kind === 'external' && doc.memberof === name) doc.builtinExternal = true;
     }
     const tagIndex = ev.data.docs.findIndex(doc => doc.kind === 'file' && doc.name === name);
     ev.data.docs.splice(tagIndex, 1);
   }
-
   writeManualFile() {
     let content = '';
     Object.entries(externals).sort((a,b) => {

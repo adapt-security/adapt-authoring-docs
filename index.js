@@ -1,6 +1,4 @@
-const async = require('async');
 const esdoc = require('esdoc').default;
-const fs = require('fs-extra');
 const glob = require('glob');
 const open = require('open');
 const path = require('path');
@@ -15,7 +13,7 @@ let manualIndex; // populated in cacheConfigs
 let sourceIndex; // populated in cacheConfigs
 let cachedConfigs;
 
-const getConfig = () => {
+function getConfig() {
   return {
     source: Utils.getModuleDir(),
     destination: outputdir,
@@ -108,7 +106,7 @@ function filterIndexManuals(filepath, index) {
 function getModFiles(modDir, includes, absolute = true) {
   const globFiles = glob.sync(includes, { cwd: modDir, absolute });
   if(absolute) {
-    return globFiles
+    return globFiles;
   }
   return globFiles.map(f => `^${modDir.replace(modsDir, '')}${path.sep}${f}`);
 }
