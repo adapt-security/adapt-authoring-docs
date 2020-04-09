@@ -136,7 +136,12 @@ async function docs() {
   console.log(`\nThis might take a minute or two...\n`);
 
   const esconfig = getConfig();
-  esdoc.generate(esconfig);
+  try {
+    esdoc.generate(esconfig);
+  } catch(e) {
+    console.log(e);
+    process.exit(1);
+  }
 
   console.log(`Documentation build complete.`);
 
