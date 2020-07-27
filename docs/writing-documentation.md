@@ -12,6 +12,12 @@ The source code reference is completely automated, and shouldn't need much input
 
 If you're not familiar with the JSDoc notation, you can find a list of accepted tags as well as examples of usage in the [ESDoc docs](https://esdoc.org/manual/tags.html) (you can also of course check the source code for any of the [core-supported Adapt authoring modules](coreplugins.html) which are fully documented).
 
+### Useful tips
+Below are some useful tips/gotchas for any budding documentation writers.
+
+#### Instance variables must be initialised
+Any declared instance variables must be initialised in order to be picked up by the documentation generator, even if they don't need a value (in which case `this.var = undefined` is fine).
+
 ## Writing developer guides
 Developer guides go a step further than the source code reference, and provide more user-friendly "how-to" guides on how to actually *use* your code in a practical scenario.
 
