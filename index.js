@@ -129,7 +129,7 @@ async function docs() {
 
   const config = await app.waitForModule('config');
   outputdir = config.get(`${require('./package.json').name}.output_dir`);
-  modsDir = `${app.getConfig('root_dir')}/node_modules/`;
+  modsDir = `${app.getConfig('rootDir')}/node_modules/`;
 
   cachedConfigs = cacheConfigs();
 
