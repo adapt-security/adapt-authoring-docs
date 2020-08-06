@@ -128,7 +128,7 @@ async function docs() {
   await app.onReady();
 
   const config = await app.waitForModule('config');
-  outputdir = config.get(`${require('./package.json').name}.output_dir`);
+  outputdir = config.get(`${require('./package.json').name}.outputDir`);
   modsDir = `${app.getConfig('rootDir')}/node_modules/`;
 
   cachedConfigs = cacheConfigs();
