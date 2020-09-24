@@ -54,8 +54,8 @@ class Plugin {
     return output;
   }
   /**
-  * Returns a string formatted nicely for markdown
-  */
+   * Returns a string formatted nicely for markdown
+   */
   defaultToMd(config) {
     return JSON.stringify(config.default);
   }

@@ -9,9 +9,9 @@ class Plugin {
   onHandleConfig(ev) {
     this._config = ev.data.config;
     this._option = ev.data.option || {};
-    if (!('enable' in this._option)) this._option.enable = true;
+    if(!('enable' in this._option)) this._option.enable = true;
 
-    if (!this._option.enable) return;
+    if(!this._option.enable) return;
 
     externalsOut = path.resolve(this._config.source, externalsFilename);
     // write temp file
@@ -20,13 +20,13 @@ class Plugin {
     this.writeManualFile();
   }
   onHandleDocs(ev) {
-    if (!this._option.enable) return;
+    if(!this._option.enable) return;
     // remove temp file
     fs.removeSync(externalsOut);
     // set all externals as builtinExternal
     const name = `${path.basename(path.resolve(this._config.source))}/${externalsFilename}`;
-    for (const doc of ev.data.docs) {
-      if (doc.kind === 'external' && doc.memberof === name) doc.builtinExternal = true;
+    for(const doc of ev.data.docs) {
+      if(doc.kind === 'external' && doc.memberof === name) doc.builtinExternal = true;
     }
     const tagIndex = ev.data.docs.findIndex(doc => doc.kind === 'file' && doc.name === name);
     ev.data.docs.splice(tagIndex, 1);
@@ -44,13 +44,13 @@ class Plugin {
   }
 }
 /**
-* The following can be used as datatypes
-*/
+ * The following can be used as datatypes
+ */
 externals = {
 /**
-* Mozilla
-* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
-*/
+ * Mozilla
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+ */
   'Infinity': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity',
   'NaN': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN',
   'undefined': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objecs/undefined',
@@ -109,37 +109,37 @@ externals = {
   // Misc
   'Class': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes',
   'class': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes',
-/**
-* Node.js
-* https://nodejs.org/api/
-*/
+  /**
+   * Node.js
+   * https://nodejs.org/api/
+   */
   'events~EventEmitter': 'https://nodejs.org/api/events.html#events_class_eventemitter',
   'http~ClientRequest': 'https://nodejs.org/api/http.html#http_class_http_clientrequest',
   'http~ServerResponse': 'https://nodejs.org/api/http.html#http_class_http_serverresponse',
   'net~Server': 'https://nodejs.org/api/net.html#net_class_net_server',
-/**
-* Express.js
-* https://expressjs.com/en/4x/api.html
-*/
+  /**
+   * Express.js
+   * https://expressjs.com/en/4x/api.html
+   */
   'express~App': 'https://expressjs.com/en/4x/api.html#app',
   'express~Router': 'https://expressjs.com/en/4x/api.html#router',
   /**
-  * MongoDB
-  * https://mongodb.github.io/node-mongodb-native/3.3/api/index.html
-  */
+   * MongoDB
+   * https://mongodb.github.io/node-mongodb-native/3.3/api/index.html
+   */
   'mongodb~Collection': 'https://mongodb.github.io/node-mongodb-native/3.4/api/Db.html#collection',
   'mongodb~ObjectID': 'https://mongodb.github.io/node-mongodb-native/3.4/api/ObjectID.html',
   /**
-  * Mongoose.js
-  * https://mongoosejs.com/docs/api.html
-  */
+   * Mongoose.js
+   * https://mongoosejs.com/docs/api.html
+   */
   'mongoose~Connection': 'https://mongoosejs.com/docs/api.html#Connection',
   'mongoose~Schema': 'https://mongoosejs.com/docs/api.html#Schema',
   'mongoose~Schematype': 'https://mongoosejs.com/docs/api.html#Schematype',
   /**
-  * Polyglot.js
-  * https://github.com/airbnb/polyglot.js
-  */
+   * Polyglot.js
+   * https://github.com/airbnb/polyglot.js
+   */
   'polyglot~Polyglot': 'https://github.com/airbnb/polyglot.js#usage'
 };
 

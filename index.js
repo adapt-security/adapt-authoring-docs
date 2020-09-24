@@ -1,3 +1,4 @@
+/* eslint no-console: 0 */
 const esdoc = require('esdoc').default;
 const glob = require('glob');
 const open = require('open');
@@ -51,10 +52,10 @@ function getConfig() {
   };
 }
 /**
-* Caches loaded JSON so we don't load multiple times.
-* Documentation for a module can be enabled in:
-* package.json > adapt_authoring.documentation.enable
-*/
+ * Caches loaded JSON so we don't load multiple times.
+ * Documentation for a module can be enabled in:
+ * package.json > adapt_authoring.documentation.enable
+ */
 function cacheConfigs() {
   const cache = [];
   Object.values(App.instance.dependencies).forEach(dep => {
@@ -75,19 +76,19 @@ function cacheConfigs() {
   return cache;
 }
 /**
-* Returns a list of modules to include.
-* @note Source files must be located in /lib
-* @hack do externals.js better...
-*/
+ * Returns a list of modules to include.
+ * @note Source files must be located in /lib
+ * @hack do externals.js better...
+ */
 function getSourceIncludes() {
   return cachedConfigs.reduce((i, c) => {
     return i.concat(getModFiles(c.rootDir, path.join('lib/**/*.js'), false));
   }, ['^externals.js$']);
 }
 /**
-* Returns a list of markdown files to include in the manual is found.
-* @note No index files are included (if defined)
-*/
+ * Returns a list of markdown files to include in the manual is found.
+ * @note No index files are included (if defined)
+ */
 function getManualIncludes() {
   const includes = 'docs/*';
   const rootIncludes = [];
