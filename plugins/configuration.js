@@ -45,7 +45,9 @@ class Plugin {
         output += '<div class="attribute">';
         output += `<div class="title"><span>${attr}</span> (${config.type || ''}, ${required ? 'required' : 'optional'})</div>`;
         output += `<div class="item">${config.description}</div>`;
-        output += `<div class="item small">Default: <pre>${this.defaultToMd(config)}</pre></div>`;
+        if(!required) {
+          output += `<div class="item small">Default: <pre>${this.defaultToMd(config)}</pre></div>`;
+        }
         output += '</div>';
       });
       output += `\n\n`;
