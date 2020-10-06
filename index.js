@@ -46,8 +46,7 @@ function getConfig() {
       },
       { name: "esdoc-node" },
       { name: getPluginPath("externals.js") },
-      { name: getPluginPath("coreplugins.js") },
-      { name: getPluginPath("configuration.js") }
+      ...getPluginConfig()
     ]
   };
 }
@@ -98,6 +97,10 @@ function getManualIncludes() {
   return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
     return i.concat(getModFiles(c.rootDir, includes).filter(filterIndexManuals));
   }, []));
+}
+function getPluginConfig() {
+  const globFiles = getModFiles(modsDir, '*/docs/plugins/*.js');
+  return globFiles.map(f => Object.assign({ name: f }));
 }
 
 function filterIndexManuals(filepath, index) {
