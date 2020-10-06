@@ -89,7 +89,7 @@ function getSourceIncludes() {
  * @note No index files are included (if defined)
  */
 function getManualIncludes() {
-  const includes = 'docs/*';
+  const includes = 'docs/*.md';
   const rootIncludes = [];
   try {
     rootIncludes.push(...getModFiles(process.cwd(), includes));
