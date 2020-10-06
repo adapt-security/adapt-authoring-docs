@@ -38,7 +38,7 @@ class Plugin {
       if(a[0] > b[0]) return 1;
       return 0;
     }).forEach(([name, link]) => content += `| ${name} | ${link} |\n`);
-    const input = fs.readFileSync(path.join(__dirname, '..', 'docspartials', 'externals.md')).toString();
+    const input = fs.readFileSync(path.join(__dirname, 'externals.md')).toString();
     const output = input.replace('{{{REPLACE_ME}}}', content);
     fs.writeFileSync(path.join(__dirname, '..', 'docs', 'temp-externals.md'), output);
   }
