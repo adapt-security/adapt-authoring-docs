@@ -128,6 +128,7 @@ externals = {
    * https://mongodb.github.io/node-mongodb-native/3.3/api/index.html
    */
   'mongodb~Collection': 'https://mongodb.github.io/node-mongodb-native/3.4/api/Db.html#collection',
+  'mongodb~MongoClient': 'https://mongodb.github.io/node-mongodb-native/3.6/api/MongoClient.html',
   'mongodb~ObjectID': 'https://mongodb.github.io/node-mongodb-native/3.4/api/ObjectID.html',
   /**
    * Mongoose.js
