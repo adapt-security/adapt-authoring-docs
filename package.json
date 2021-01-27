@@ -4,14 +4,14 @@
   "description": "Tools for auto-generating documentation for the Adapt authoring tool",
   "homepage": "https://github.com/adaptlearning/adapt-authoring-docs",
   "license": "GPL-3.0",
-  "repository": "github:adaptlearning/adapt-authoring-docs",
+  "repository": "adaptlearning/adapt-authoring-docs",
   "main": "index.js",
   "dependencies": {
     "esdoc": "1.1.0",
     "esdoc-ecmascript-proposal-plugin": "1.0.0",
     "esdoc-importpath-plugin": "1.0.2",
     "esdoc-inject-style-plugin": "1.0.0",
-    "esdoc-integrate-manual-plugin-fork": "git+https://github.com/taylortom/esdoc-integrate-manual-plugin.git",
+    "esdoc-integrate-manual-plugin-fork": "taylortom/esdoc-integrate-manual-plugin",
     "esdoc-node": "1.0.4",
     "esdoc-standard-plugin": "1.0.0",
     "fs-extra": "7.0.1",
@@ -19,6 +19,6 @@
     "open": "6.3.0"
   },
   "peerDependencies": {
-    "adapt-authoring-core": "github:adapt-security/adapt-authoring-core.git"
+    "adapt-authoring-core": "adapt-security/adapt-authoring-core"
   }
 }
