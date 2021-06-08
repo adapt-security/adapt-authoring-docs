@@ -7,6 +7,5 @@
       "type": "string",
       "default": "temp/docs"
     }
-  },
-  "required": ["outputDir"]
+  }
 }
