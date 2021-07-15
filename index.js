@@ -46,6 +46,7 @@ function getConfig() {
       },
       { name: "esdoc-node" },
       { name: getPluginPath("externals.js") },
+      { name: getPluginPath("optional-chaining.js") },
       ...getPluginConfig()
     ]
   };
