@@ -7,7 +7,7 @@
   "repository": "adaptlearning/adapt-authoring-docs",
   "main": "index.js",
   "dependencies": {
-    "esdoc": "1.1.0",
+    "esdoc": "github:taylortom/esdoc",
     "esdoc-ecmascript-proposal-plugin": "1.0.0",
     "esdoc-importpath-plugin": "1.0.2",
     "esdoc-inject-style-plugin": "1.0.0",
