@@ -138,6 +138,11 @@ externals = {
   'mongoose~Schema': 'https://mongoosejs.com/docs/api.html#Schema',
   'mongoose~Schematype': 'https://mongoosejs.com/docs/api.html#Schematype',
   /**
+   * Nodemailer
+   * https://nodemailer.com/about/
+   */
+  'Nodemailer~Transport': 'https://nodemailer.com/smtp/',
+  /**
    * Polyglot.js
    * https://github.com/airbnb/polyglot.js
    */
