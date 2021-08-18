@@ -13,6 +13,20 @@ h1, h2, h3 {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
 }
+h1.page-title {
+  font-size: 36px;
+}
+h4.name {
+  background: #34bee0;
+}
+h4.name a,
+.signature,
+.type-signature {
+  color: #263944;
+}
+.type-signature:last-child {
+  color: #3a7da4;
+}
 
 nav {
   padding-left: 20px;
@@ -34,16 +48,4 @@ nav ul ul a {
   border-left-color: #00dd95;
   color: #b7b7b7 !important;
   font-size: 13px !important;
-}
-
-h4.name {
-  background: #34bee0;
-}
-h4.name a,
-.signature,
-.type-signature {
-  color: #263944;
-}
-.type-signature:last-child {
-  color: #3a7da4;
 }
