@@ -8,7 +8,7 @@ const { App, Utils } = require('adapt-authoring-core');
 const execPromise = promisify(require('child_process').exec);
 
 const app = App.instance;
-const configPath = `${__dirname}/jsdocConfig.json`;
+const configPath = `${__dirname}/.jsdocConfig.json`;
 let outputdir;
 
 let pkg;
@@ -18,13 +18,13 @@ let cachedConfigs;
 
 async function writeConfig() {
   return fs.writeJson(configPath, {
-    "plugins": [],
     "source": { 
       "include": getSourceIncludes() 
     },
     "docdash": {
       "collapse": true,
       "typedefs": true,
+      "search": true,
       "menu": {
         "Project Website": {
           "href":"https://www.adaptlearning.org/",
@@ -77,7 +77,6 @@ function cacheConfigs() {
 /**
  * Returns a list of modules to include.
  * @note Source files must be located in /lib
- * @hack do externals.js better...
  */
 function getSourceIncludes() {
   return cachedConfigs.reduce((i, c) => {
@@ -85,26 +84,13 @@ function getSourceIncludes() {
   }, []);
 }
 /**
- * Returns a list of markdown files to include in the manual is found.
- * @note No index files are included (if defined)
+ * Copies all tutorial files ready for the generator
  */
-/*
-function getManualIncludes() {
-  const includes = 'docs/*.md';
-  const rootIncludes = [];
-  try {
-    rootIncludes.push(...getModFiles(process.cwd(), includes));
-  } catch(e) {} // no root doc files
-  return rootIncludes.concat(cachedConfigs.reduce((i, c) => {
-    return i.concat(getModFiles(c.rootDir, includes).filter(filterIndexManuals));
-  }, []));
+async function copyTutorials() {
+  const files = cachedConfigs.reduce((i, c) => i.concat(getModFiles(c.rootDir, 'docs/*.md', false)), []);
+  return Promise.all(files.map(f => fs.copy(f, `${outputdir}/tutorials/${path.basename(f)}`)));
 }
-*/
-/*
-function filterIndexManuals(filepath, index) {
-  return index !== manualIndex && index !== sourceIndex;
-}
-*/
+
 function getModFiles(modDir, includes) {
   return glob.sync(includes, { cwd: modDir, absolute: true });
 }
@@ -131,9 +117,12 @@ async function docs() {
   await writeConfig();
   try {
     await fs.remove(outputdir);
+    // await copyTutorials();
     await execPromise(`npx jsdoc -c ${configPath}`);
-    await fs.copy(`${__dirname}/styles/adapt.css`, `${outputdir}/styles/adapt.css`);
-    await fs.copy(`${__dirname}/assets`, `${outputdir}/assets`);
+    await Promise.all([
+      fs.copy(`${__dirname}/styles/adapt.css`, `${outputdir}/styles/adapt.css`),
+      fs.copy(`${__dirname}/assets`, `${outputdir}/assets`)
+    ]);
   } catch(e) {
     console.log(e);
     process.exit(1);
