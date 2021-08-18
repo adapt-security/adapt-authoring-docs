@@ -1,12 +1,14 @@
-/* eslint no-console: 0 */
-const esdoc = require('esdoc').default;
+const fs = require('fs-extra');
 const glob = require('glob');
 const open = require('open');
 const path = require('path');
+const { promisify } = require('util');
 const { App, Utils } = require('adapt-authoring-core');
 
+const execPromise = promisify(require('child_process').exec);
+
 const app = App.instance;
-let modsDir;
+const configPath = `${__dirname}/jsdocConfig.json`;
 let outputdir;
 
 let pkg;
@@ -14,42 +16,39 @@ let manualIndex; // populated in cacheConfigs
 let sourceIndex; // populated in cacheConfigs
 let cachedConfigs;
 
-function getConfig() {
-  return {
-    source: Utils.getModuleDir(),
-    destination: outputdir,
-    includes: getSourceIncludes(),
-    index: sourceIndex,
-    plugins: [
-      {
-        name: "esdoc-standard-plugin",
-        option: {
-          accessor: {
-            access: ["public", "protected"]
-          },
-          brand: {
-            title: "Adapt authoring tool"
-          },
-          manual: {
-            index: manualIndex,
-            files: getManualIncludes()
-          }
+async function writeConfig() {
+  return fs.writeJson(configPath, {
+    "plugins": [],
+    "source": { 
+      "include": getSourceIncludes() 
+    },
+    "docdash": {
+      "collapse": true,
+      "typedefs": true,
+      "menu": {
+        "Project Website": {
+          "href":"https://www.adaptlearning.org/",
+          "target":"_blank",
+          "class":"menu-item",
+          "id":"website_link"
+        },
+        "Technical Discussion Forum": {
+          "href":"https://community.adaptlearning.org/mod/forum/view.php?id=4",
+          "target":"_blank",
+          "class":"menu-item",
+          "id":"forum_link"
         }
       },
-      {
-        name: "esdoc-ecmascript-proposal-plugin",
-        option: { all: true }
+      "meta": {
+        "title": "Adapt authoring tool API documentation"
       },
-      {
-        name: "esdoc-publish-html-plugin",
-        option: { template: path.join(__dirname, "template") }
-      },
-      { name: "esdoc-node" },
-      { name: getPluginPath("externals.js") },
-      { name: getPluginPath("optional-chaining.js") },
-      ...getPluginConfig()
-    ]
-  };
+      "scripts": ['styles/adapt.css'],
+    },
+    "opts": {
+      "destination": outputdir,
+      "template": "node_modules/docdash"
+    }
+  }, { spaces: 2 });
 }
 /**
  * Caches loaded JSON so we don't load multiple times.
@@ -83,12 +82,13 @@ function cacheConfigs() {
 function getSourceIncludes() {
   return cachedConfigs.reduce((i, c) => {
     return i.concat(getModFiles(c.rootDir, path.join('lib/**/*.js'), false));
-  }, ['^externals.js$']);
+  }, []);
 }
 /**
  * Returns a list of markdown files to include in the manual is found.
  * @note No index files are included (if defined)
  */
+/*
 function getManualIncludes() {
   const includes = 'docs/*.md';
   const rootIncludes = [];
@@ -99,25 +99,14 @@ function getManualIncludes() {
     return i.concat(getModFiles(c.rootDir, includes).filter(filterIndexManuals));
   }, []));
 }
-function getPluginConfig() {
-  const globFiles = getModFiles(modsDir, '*/docs/plugins/*.js');
-  return globFiles.map(f => Object.assign({ name: f }));
-}
-
+*/
+/*
 function filterIndexManuals(filepath, index) {
   return index !== manualIndex && index !== sourceIndex;
 }
-
-function getModFiles(modDir, includes, absolute = true) {
-  const globFiles = glob.sync(includes, { cwd: modDir, absolute });
-  if(absolute) {
-    return globFiles;
-  }
-  return globFiles.map(f => `^${modDir.replace(modsDir, '')}${path.sep}${f}`);
-}
-
-function getPluginPath(pluginName) {
-  return path.join(__dirname, "plugins", pluginName);
+*/
+function getModFiles(modDir, includes) {
+  return glob.sync(includes, { cwd: modDir, absolute: true });
 }
 
 const __log = console.log;
@@ -133,16 +122,18 @@ async function docs() {
   await app.onReady();
 
   const config = await app.waitForModule('config');
-  outputdir = config.get(`${require('./package.json').name}.outputDir`);
-  modsDir = `${app.rootDir}/node_modules/`;
+  outputdir = path.resolve(process.cwd(), config.get(`${require('./package.json').name}.outputDir`));
 
   cachedConfigs = cacheConfigs();
 
   console.log(`\nThis might take a minute or two...\n`);
 
-  const esconfig = getConfig();
+  await writeConfig();
   try {
-    esdoc.generate(esconfig);
+    await fs.remove(outputdir);
+    await execPromise(`npx jsdoc -c ${configPath}`);
+    await fs.copy(`${__dirname}/styles/adapt.css`, `${outputdir}/styles/adapt.css`);
+    await fs.copy(`${__dirname}/assets`, `${outputdir}/assets`);
   } catch(e) {
     console.log(e);
     process.exit(1);
@@ -150,7 +141,7 @@ async function docs() {
 
   console.log(`Documentation build complete.`);
 
-  const docspath = path.join(path.resolve(esconfig.destination), 'index.html');
+  const docspath = path.join(`${outputdir}/index.html`);
   if(process.env.aat_open) {
     open(docspath);
   } else {
