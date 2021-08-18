@@ -5,7 +5,9 @@
   "homepage": "https://github.com/adaptlearning/adapt-authoring-docs",
   "license": "GPL-3.0",
   "repository": "adaptlearning/adapt-authoring-docs",
-  "main": "index.js",
+  "bin": {
+    "generate-adapt-authoring-docs": "./index.js"
+  },
   "dependencies": {
     "docdash": "^1.2.0",
     "fs-extra": "7.0.1",

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require('fs-extra');
 const glob = require('glob');
 const open = require('open');
@@ -139,4 +140,4 @@ async function docs() {
   process.exit();
 }
 
-module.exports = docs;
+module.exports = docs();
