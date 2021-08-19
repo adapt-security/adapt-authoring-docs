@@ -58,7 +58,7 @@ async function docs() {
   try {
     await fs.remove(outputdir);
     await jsdoc3(cachedConfigs, outputdir, pkg);
-    await docsify(cachedConfigs, outputdir);
+    await docsify(cachedConfigs, outputdir, manualIndex);
   } catch(e) {
     console.log(e);
     process.exit(1);
