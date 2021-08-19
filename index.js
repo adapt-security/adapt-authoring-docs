@@ -96,7 +96,7 @@ function cacheConfigs() {
 function getSourceIncludes() {
   return cachedConfigs.reduce((i, c) => {
     return i.concat(getModFiles(c.rootDir, path.join('lib/**/*.js'), false));
-  }, []);
+  }, [sourceIndex]);
 }
 /**
  * Copies all tutorial files ready for the generator
