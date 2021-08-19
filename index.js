@@ -43,9 +43,7 @@ console.log = (...args) => {
 };
 
 async function docs() {
-  const pkg = await Utils.requirePackage();
-
-  console.log(`Generating documentation for ${pkg.name}@${pkg.version}`);
+  console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version}`);
 
   await app.onReady();
 
@@ -58,8 +56,8 @@ async function docs() {
 
   try {
     await fs.remove(outputdir);
-    await jsdoc3(cachedConfigs, outputdir, pkg);
-    await docsify(cachedConfigs, outputdir, manualIndex, sourceIndex);
+    await jsdoc3(app, cachedConfigs, outputdir, sourceIndex);
+    await docsify(app, cachedConfigs, outputdir, manualIndex, sourceIndex);
   } catch(e) {
     console.log(e);
     process.exit(1);
