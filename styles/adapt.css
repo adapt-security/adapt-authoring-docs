@@ -15,7 +15,7 @@ h1, h2, h3 {
   font-weight: 300;
 }
 h1.page-title {
-  font-size: 36px;
+  font-size: 33px;
   margin-bottom: 0;
 }
 .main-page-title {
@@ -28,11 +28,11 @@ h1.page-title {
 }
 .main-page-title h1 {
   margin: 0;
-  font-size: 46px;
+  font-size: 40px;
 }
 .main-page-title h2 {
   margin: 0;
-  font-size: 34px;
+  font-size: 28px;
 }
 
 h4.name {
