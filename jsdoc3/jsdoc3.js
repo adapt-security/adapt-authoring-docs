@@ -7,14 +7,12 @@ const execPromise = promisify(require('child_process').exec);
 
 const configPath = `${__dirname}/.jsdocConfig.json`;
 
-let pkg;
 let cachedConfigs;
-let sourceIndex;
 
-async function writeConfig(outputdir) {
+async function writeConfig(app, outputdir, indexFile) {
   return fs.writeJson(configPath, {
     "source": { 
-      "include": getSourceIncludes() 
+      "include": getSourceIncludes(indexFile) 
     },
     "docdash": {
       "collapse": true,
@@ -22,7 +20,7 @@ async function writeConfig(outputdir) {
       "search": false,
       "static": true,
       "menu": {
-        [`<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool API documentation<br><span class="version">v${pkg.version}</span>`]: {
+        [`<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool API documentation<br><span class="version">v${app.pkg.version}</span>`]: {
           "class":"menu-title"
         },
         "Home": {
@@ -46,7 +44,7 @@ async function writeConfig(outputdir) {
       },
       "meta": {
         "title": "Adapt authoring tool API documentation",
-        "keyword": `v${pkg.version}`
+        "keyword": `v${app.pkg.version}`
       },
       "scripts": [
         'styles/adapt.css',
@@ -63,24 +61,18 @@ async function writeConfig(outputdir) {
  * Returns a list of modules to include.
  * @note Source files must be located in /lib
  */
-function getSourceIncludes() {
+function getSourceIncludes(indexFile) {
   const includes = cachedConfigs.reduce((i, c) => {
-    return i.concat(getModFiles(c.rootDir, path.join('lib/**/*.js'), false));
+    return i.concat(glob.sync('lib/**/*.js', { cwd: c.rootDir, absolute: true }));
   }, []);
-  if(sourceIndex) includes.push(sourceIndex);
+  if(indexFile) includes.push(indexFile);
   return includes;
 }
 
-function getModFiles(modDir, includes) {
-  return glob.sync(includes, { cwd: modDir, absolute: true });
-}
-
-async function jsdoc3(configs, outputdir, packageJson, sourceIndexFile) {
+async function jsdoc3(app, configs, outputdir, sourceIndexFile) {
   cachedConfigs = configs;
-  pkg = packageJson;
-  sourceIndex = sourceIndexFile;
   const dir = `${outputdir}/jsdoc3`;
-  await writeConfig(dir);
+  await writeConfig(app, dir, sourceIndexFile);
   await execPromise(`npx jsdoc -c ${configPath}`);
   await Promise.all([
     fs.copy(`${__dirname}/styles/adapt.css`, `${dir}/styles/adapt.css`),
