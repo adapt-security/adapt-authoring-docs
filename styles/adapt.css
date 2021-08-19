@@ -35,6 +35,13 @@ nav {
 nav h2 {
   font-size: 14px;
 }
+nav h2:first-child {
+  display: none;
+}
+nav h2:nth-child(2) > a {
+  font-size: 18px !important;
+  font-weight: bold;
+}
 nav h3 {
   color: #34bee0;
 }
