@@ -99,11 +99,27 @@ function getSourceIncludes() {
   }, [sourceIndex]);
 }
 /**
- * Copies all tutorial files ready for the generator
+ * Copies all doc files ready for the generator
  */
-async function copyTutorials() {
-  const files = cachedConfigs.reduce((i, c) => i.concat(getModFiles(c.rootDir, 'docs/*.md', false)), []);
-  return Promise.all(files.map(f => fs.copy(f, `${outputdir}/tutorials/${path.basename(f)}`)));
+async function copyDocs() {
+  let sidebarMd = '';
+  const files = cachedConfigs.reduce((i, c) => {
+    const docFiles = getModFiles(c.rootDir, 'docs/*.md', false);
+
+    if(docFiles.length) {
+      sidebarMd += `* ${c.name}\n`;
+      docFiles.forEach(i2 => sidebarMd += `  * [${path.basename(i2)}](${path.basename(i2)})\n`);
+    }
+    return i.concat(docFiles);
+  }, []);
+  const dir = path.resolve(`${outputdir}/../docsify`);
+  await fs.ensureDir(dir);
+  console.log('fdhjglkfdhsgjfhdks');
+  console.log(`npx docsify init ${dir}`);
+  await execPromise(`npx docsify init ${dir}`);
+  await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
+  await fs.copy('./docsify.html', );
+  await Promise.all(files.map(f => fs.copy(f, `${dir}/${path.basename(f)}`)));
 }
 
 function getModFiles(modDir, includes) {
@@ -132,7 +148,7 @@ async function docs() {
   await writeConfig();
   try {
     await fs.remove(outputdir);
-    // await copyTutorials();
+    await copyDocs();
     await execPromise(`npx jsdoc -c ${configPath}`);
     await Promise.all([
       fs.copy(`${__dirname}/styles/adapt.css`, `${outputdir}/styles/adapt.css`),
