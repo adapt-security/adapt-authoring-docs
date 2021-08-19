@@ -25,8 +25,18 @@ async function writeConfig() {
     "docdash": {
       "collapse": true,
       "typedefs": true,
-      "search": true,
+      "search": false,
+      "static": true,
       "menu": {
+        "Adapt authoring tool API documentation": {
+          "class":"menu-title"
+        },
+        "Home": {
+          "href":"index.html",
+          "target":"_self",
+          "class":"menu-item",
+          "id":"home_link"
+        },
         "Project Website": {
           "href":"https://www.adaptlearning.org/",
           "target":"_blank",
