@@ -28,6 +28,7 @@ async function docsify(configs, outputdir) {
   await execPromise(`npx docsify init ${dir}`);
   await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
   await fs.copy(`${__dirname}/index.html`, `${dir}/index.html`);
+  await fs.copy(`${__dirname}/styles`, `${dir}/styles`);
   await Promise.all(files.map(f => fs.copy(f, `${dir}/${path.basename(f)}`)));
 }
 
