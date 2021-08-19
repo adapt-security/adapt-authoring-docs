@@ -79,9 +79,9 @@ async function jsdoc3(configs, outputdir, packageJson, sourceIndexFile) {
   cachedConfigs = configs;
   pkg = packageJson;
   sourceIndex = sourceIndexFile;
-  await writeConfig(outputdir);
-  await execPromise(`npx jsdoc -c ${configPath}`);
   const dir = `${outputdir}/jsdoc3`;
+  await writeConfig(dir);
+  await execPromise(`npx jsdoc -c ${configPath}`);
   await Promise.all([
     fs.copy(`${__dirname}/styles/adapt.css`, `${dir}/styles/adapt.css`),
     fs.copy(`${__dirname}/scripts/adapt.js`, `${dir}/scripts/adapt.js`),
