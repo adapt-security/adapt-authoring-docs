@@ -7,6 +7,7 @@ body {
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
   padding-left: 0;
+  padding-right: 0;
 }
 
 h1, h2, h3 {
@@ -15,7 +16,25 @@ h1, h2, h3 {
 }
 h1.page-title {
   font-size: 36px;
+  margin-bottom: 0;
 }
+.main-page-title {
+  background: #00dd95;
+  padding: 35px;
+}
+.main-page-title h1,
+.main-page-title h2 {
+  color: white;
+}
+.main-page-title h1 {
+  margin: 0;
+  font-size: 46px;
+}
+.main-page-title h2 {
+  margin: 0;
+  font-size: 34px;
+}
+
 h4.name {
   background: #34bee0;
 }
@@ -38,9 +57,23 @@ nav h2 {
 nav h2:first-child {
   display: none;
 }
-nav h2:nth-child(2) > a {
+nav .menu-title {
+  display: block;
   font-size: 18px !important;
   font-weight: bold;
+  text-align: center;
+  padding-right: 25px;
+  padding-bottom: 25px;
+}
+nav .menu-title img {
+  display: block;
+  width: 100px;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+nav .menu-title .version {
+  font-size: 14px !important;
 }
 nav h3 {
   color: #34bee0;
@@ -57,8 +90,15 @@ nav ul ul a {
   font-size: 13px !important;
 }
 
-#main {
-  padding: 10px 35px;
+section {
+  padding: 30px;
+}
+section.package {
+  display: none;
+}
+
+footer {
+  display: none;
 }
 
 /**
