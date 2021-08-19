@@ -28,7 +28,7 @@ async function writeConfig() {
       "search": false,
       "static": true,
       "menu": {
-        "Adapt authoring tool API documentation": {
+        [`<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool API documentation<br><span class="version">v${pkg.version}</span>`]: {
           "class":"menu-title"
         },
         "Home": {
@@ -51,9 +51,13 @@ async function writeConfig() {
         }
       },
       "meta": {
-        "title": "Adapt authoring tool API documentation"
+        "title": "Adapt authoring tool API documentation",
+        "keyword": `v${pkg.version}`
       },
-      "scripts": ['styles/adapt.css'],
+      "scripts": [
+        'styles/adapt.css',
+        'scripts/adapt.js'
+      ],
     },
     "opts": {
       "destination": outputdir,
@@ -132,6 +136,7 @@ async function docs() {
     await execPromise(`npx jsdoc -c ${configPath}`);
     await Promise.all([
       fs.copy(`${__dirname}/styles/adapt.css`, `${outputdir}/styles/adapt.css`),
+      fs.copy(`${__dirname}/scripts/adapt.js`, `${outputdir}/scripts/adapt.js`),
       fs.copy(`${__dirname}/assets`, `${outputdir}/assets`)
     ]);
   } catch(e) {
