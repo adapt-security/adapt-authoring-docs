@@ -8,9 +8,29 @@ const execPromise = promisify(require('child_process').exec);
 /**
  * Copies all doc files ready for the generator
  */
-async function docsify(configs, outputdir, manualIndex, sourceIndex) {
+async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
+  const dir = `${outputdir}/docsify`;
+  /**
+   * init docsify folder
+   */
+  await execPromise(`npx docsify init ${dir}`);
+  /**
+   * Collate data & run custom plugins
+   */
   const titleMap = configs.reduce((m,c) => {
-    glob.sync('docs/*.md', { cwd: c.rootDir, absolute: true }).forEach(f => {
+    const customFiles = [];
+    if(c.manualPlugins) {
+      c.manualPlugins.forEach(p => {
+        try {
+          const Plugin = require(path.resolve(c.rootDir, p));
+          const plugin = new Plugin(app, c, dir);
+          if(plugin.customFiles) customFiles.push(...plugin.customFiles);
+        } catch(e) {
+          console.log(`Failed to load doc manual plugin, ${e}`);
+        }
+      });
+    }
+    [...customFiles, ...glob.sync('docs/*.md', { cwd: c.rootDir, absolute: true })].forEach(f => {
       if(f === sourceIndex) {
         return;
       }
@@ -20,11 +40,6 @@ async function docsify(configs, outputdir, manualIndex, sourceIndex) {
     });
     return m;
   }, {});
-  const dir = `${outputdir}/docsify`;
-  /**
-   * init docsify folder
-   */
-  await execPromise(`npx docsify init ${dir}`);
   /**
    * Copy files
    */
@@ -33,7 +48,7 @@ async function docsify(configs, outputdir, manualIndex, sourceIndex) {
   if(manualIndex) {
     await fs.copy(manualIndex, `${dir}/_coverpage.md`);
   }
-  await Promise.all(Object.values(titleMap).map(f => fs.copy(f, `${dir}/${path.basename(f)}`)));
+  await Promise.allSettled(Object.values(titleMap).map(f => fs.copy(f, `${dir}/${path.basename(f)}`)));
   /**
    * Generate custom sidebar
    */
