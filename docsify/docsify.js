@@ -13,13 +13,14 @@ async function docsify(configs, outputdir, manualIndex) {
   const files = configs.reduce((allFiles, c) => {
     const docFiles = glob.sync('docs/*.md', { cwd: c.rootDir, absolute: true });
     if(docFiles.length) {
-      sidebarMd += `* ${c.name}\n`;
+      // sidebarMd += `* ${c.name}\n`;
       docFiles.forEach(f => {
         let title = path.basename(f);
         try {
           title = fs.readFileSync(f).toString().match(/^#(?!#)\s?(.*)/)[1];
         } catch(e) {}
-        sidebarMd += `  * [${title}](${path.basename(f)})\n`;
+        // sidebarMd += `  * [${title}](${path.basename(f)})\n`;
+        sidebarMd += `* [${title}](${path.basename(f)})\n`;
       });
     }
     return allFiles.concat(docFiles);
