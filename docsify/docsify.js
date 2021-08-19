@@ -10,13 +10,19 @@ const execPromise = promisify(require('child_process').exec);
  */
 async function docsify(configs, outputdir) {
   let sidebarMd = '';
-  const files = configs.reduce((i, c) => {
+  const files = configs.reduce((allFiles, c) => {
     const docFiles = glob.sync('docs/*.md', { cwd: c.rootDir, absolute: true });
     if(docFiles.length) {
       sidebarMd += `* ${c.name}\n`;
-      docFiles.forEach(i2 => sidebarMd += `  * [${path.basename(i2)}](${path.basename(i2)})\n`);
+      docFiles.forEach(f => {
+        let title = path.basename(f);
+        try {
+          title = fs.readFileSync(f).toString().match(/^#(?!#)\s?(.*)/)[1];
+        } catch(e) {}
+        sidebarMd += `  * [${title}](${path.basename(f)})\n`;
+      });
     }
-    return i.concat(docFiles);
+    return allFiles.concat(docFiles);
   }, []);
   const dir = path.resolve(`${outputdir}/docsify`);
   await execPromise(`npx docsify init ${dir}`);
