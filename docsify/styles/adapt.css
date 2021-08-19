@@ -17,7 +17,32 @@ h1, h2, h3 {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
 }
+
+section.cover {
+  background: linear-gradient(to left bottom, #00dd95 0%,#34bee0 100%) !important;
+  color: white;
+}
+section.cover h2 {
+  font-size: 70px;
+}
+section.cover .anchor span {
+  color: white;
+}
+section.cover .cover-main > p:last-child a,
+section.cover .cover-main > p:last-child a:last-child {
+  color: white;
+  border-color: white;
+  background: transparent;
+}
+section.cover .cover-main > p:last-child a:hover,
+  section.cover .cover-main > p:last-child a:last-child:hover {
+  background: white;
+  color: #34bee0;
+}
+/* section.cover .cover-main > p:last-child a { */
+
 .sidebar {
+  margin-left: 25px;
   /* 
   background: #263944;
   color: white; 
