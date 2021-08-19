@@ -9,8 +9,9 @@ const configPath = `${__dirname}/.jsdocConfig.json`;
 
 let pkg;
 let cachedConfigs;
+let sourceIndex;
 
-async function writeConfig() {
+async function writeConfig(outputdir) {
   return fs.writeJson(configPath, {
     "source": { 
       "include": getSourceIncludes() 
@@ -63,19 +64,22 @@ async function writeConfig() {
  * @note Source files must be located in /lib
  */
 function getSourceIncludes() {
-  return cachedConfigs.reduce((i, c) => {
+  const includes = cachedConfigs.reduce((i, c) => {
     return i.concat(getModFiles(c.rootDir, path.join('lib/**/*.js'), false));
-  }, [sourceIndex]);
+  }, []);
+  if(sourceIndex) includes.push(sourceIndex);
+  return includes;
 }
 
 function getModFiles(modDir, includes) {
   return glob.sync(includes, { cwd: modDir, absolute: true });
 }
 
-async function jsdoc3(configs, outputdir, packageJson) {
+async function jsdoc3(configs, outputdir, packageJson, sourceIndexFile) {
   cachedConfigs = configs;
   pkg = packageJson;
-  await writeConfig();
+  sourceIndex = sourceIndexFile;
+  await writeConfig(outputdir);
   await execPromise(`npx jsdoc -c ${configPath}`);
   const dir = `${outputdir}/jsdoc3`;
   await Promise.all([
