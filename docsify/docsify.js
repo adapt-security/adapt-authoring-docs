@@ -19,10 +19,9 @@ async function docsify(configs, outputdir) {
     return i.concat(docFiles);
   }, []);
   const dir = path.resolve(`${outputdir}/docsify`);
-  await fs.ensureDir(dir);
   await execPromise(`npx docsify init ${dir}`);
   await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
-  await fs.copy(`${__dirname}/index.html`, dir);
+  await fs.copy(`${__dirname}/index.html`, `${dir}/index.html`);
   await Promise.all(files.map(f => fs.copy(f, `${dir}/${path.basename(f)}`)));
 }
 
