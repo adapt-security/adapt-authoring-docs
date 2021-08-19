@@ -8,7 +8,7 @@ const execPromise = promisify(require('child_process').exec);
 /**
  * Copies all doc files ready for the generator
  */
-async function docsify(configs, outputdir) {
+async function docsify(configs, outputdir, manualIndex) {
   let sidebarMd = '';
   const files = configs.reduce((allFiles, c) => {
     const docFiles = glob.sync('docs/*.md', { cwd: c.rootDir, absolute: true });
@@ -29,6 +29,9 @@ async function docsify(configs, outputdir) {
   await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
   await fs.copy(`${__dirname}/index.html`, `${dir}/index.html`);
   await fs.copy(`${__dirname}/styles`, `${dir}/styles`);
+  if(manualIndex) {
+    await fs.copy(manualIndex, `${dir}/_coverpage.md`);
+  }
   await Promise.all(files.map(f => fs.copy(f, `${dir}/${path.basename(f)}`)));
 }
 
