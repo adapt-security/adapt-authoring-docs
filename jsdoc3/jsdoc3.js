@@ -72,8 +72,9 @@ function getModFiles(modDir, includes) {
   return glob.sync(includes, { cwd: modDir, absolute: true });
 }
 
-async function jsdoc3(configs, outputdir) {
+async function jsdoc3(configs, outputdir, packageJson) {
   cachedConfigs = configs;
+  pkg = packageJson;
   await writeConfig();
   await execPromise(`npx jsdoc -c ${configPath}`);
   const dir = `${outputdir}/jsdoc3`;

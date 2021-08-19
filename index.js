@@ -1,70 +1,16 @@
 #!/usr/bin/env node
 const fs = require('fs-extra');
-const glob = require('glob');
 const open = require('open');
 const path = require('path');
-const { promisify } = require('util');
 const { App, Utils } = require('adapt-authoring-core');
-
-const execPromise = promisify(require('child_process').exec);
+const jsdoc3 = require('./jsdoc3/jsdoc3');
+const docsify = require('./docsify/docsify');
 
 const app = App.instance;
-const configPath = `${__dirname}/.jsdocConfig.json`;
 let outputdir;
 
-let pkg;
 let manualIndex; // populated in cacheConfigs
 let sourceIndex; // populated in cacheConfigs
-let cachedConfigs;
-
-async function writeConfig() {
-  return fs.writeJson(configPath, {
-    "source": { 
-      "include": getSourceIncludes() 
-    },
-    "docdash": {
-      "collapse": true,
-      "typedefs": true,
-      "search": false,
-      "static": true,
-      "menu": {
-        [`<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool API documentation<br><span class="version">v${pkg.version}</span>`]: {
-          "class":"menu-title"
-        },
-        "Home": {
-          "href":"index.html",
-          "target":"_self",
-          "class":"menu-item",
-          "id":"home_link"
-        },
-        "Project Website": {
-          "href":"https://www.adaptlearning.org/",
-          "target":"_blank",
-          "class":"menu-item",
-          "id":"website_link"
-        },
-        "Technical Discussion Forum": {
-          "href":"https://community.adaptlearning.org/mod/forum/view.php?id=4",
-          "target":"_blank",
-          "class":"menu-item",
-          "id":"forum_link"
-        }
-      },
-      "meta": {
-        "title": "Adapt authoring tool API documentation",
-        "keyword": `v${pkg.version}`
-      },
-      "scripts": [
-        'styles/adapt.css',
-        'scripts/adapt.js'
-      ],
-    },
-    "opts": {
-      "destination": outputdir,
-      "template": "node_modules/docdash"
-    }
-  }, { spaces: 2 });
-}
 /**
  * Caches loaded JSON so we don't load multiple times.
  * Documentation for a module can be enabled in:
@@ -89,42 +35,6 @@ function cacheConfigs() {
   });
   return cache;
 }
-/**
- * Returns a list of modules to include.
- * @note Source files must be located in /lib
- */
-function getSourceIncludes() {
-  return cachedConfigs.reduce((i, c) => {
-    return i.concat(getModFiles(c.rootDir, path.join('lib/**/*.js'), false));
-  }, [sourceIndex]);
-}
-/**
- * Copies all doc files ready for the generator
- */
-async function copyDocs() {
-  let sidebarMd = '';
-  const files = cachedConfigs.reduce((i, c) => {
-    const docFiles = getModFiles(c.rootDir, 'docs/*.md', false);
-
-    if(docFiles.length) {
-      sidebarMd += `* ${c.name}\n`;
-      docFiles.forEach(i2 => sidebarMd += `  * [${path.basename(i2)}](${path.basename(i2)})\n`);
-    }
-    return i.concat(docFiles);
-  }, []);
-  const dir = path.resolve(`${outputdir}/../docsify`);
-  await fs.ensureDir(dir);
-  console.log('fdhjglkfdhsgjfhdks');
-  console.log(`npx docsify init ${dir}`);
-  await execPromise(`npx docsify init ${dir}`);
-  await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
-  await fs.copy('./docsify.html', );
-  await Promise.all(files.map(f => fs.copy(f, `${dir}/${path.basename(f)}`)));
-}
-
-function getModFiles(modDir, includes) {
-  return glob.sync(includes, { cwd: modDir, absolute: true });
-}
 
 const __log = console.log;
 console.log = (...args) => {
@@ -132,7 +42,7 @@ console.log = (...args) => {
 };
 
 async function docs() {
-  pkg = await Utils.requirePackage();
+  const pkg = await Utils.requirePackage();
 
   console.log(`Generating documentation for ${pkg.name}@${pkg.version}`);
 
@@ -141,20 +51,15 @@ async function docs() {
   const config = await app.waitForModule('config');
   outputdir = path.resolve(process.cwd(), config.get(`${require('./package.json').name}.outputDir`));
 
-  cachedConfigs = cacheConfigs();
+  const cachedConfigs = cacheConfigs();
 
   console.log(`\nThis might take a minute or two...\n`);
 
   await writeConfig();
   try {
     await fs.remove(outputdir);
-    await copyDocs();
-    await execPromise(`npx jsdoc -c ${configPath}`);
-    await Promise.all([
-      fs.copy(`${__dirname}/styles/adapt.css`, `${outputdir}/styles/adapt.css`),
-      fs.copy(`${__dirname}/scripts/adapt.js`, `${outputdir}/scripts/adapt.js`),
-      fs.copy(`${__dirname}/assets`, `${outputdir}/assets`)
-    ]);
+    await jsdoc3(cachedConfigs, outputdir, pkg);
+    await docsify(cachedConfigs, outputdir);
   } catch(e) {
     console.log(e);
     process.exit(1);
