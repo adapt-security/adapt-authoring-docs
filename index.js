@@ -55,7 +55,6 @@ async function docs() {
 
   console.log(`\nThis might take a minute or two...\n`);
 
-  await writeConfig();
   try {
     await fs.remove(outputdir);
     await jsdoc3(cachedConfigs, outputdir, pkg);
