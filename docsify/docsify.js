@@ -61,7 +61,7 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
       pages: Object.keys(titleMap)
         .sort((a,b) => a.localeCompare(b))
         .filter(t => titleMap[t] !== manualIndex)
-        .map(t => [t, titleMap[t]])
+        .map(t => [t, path.basename(titleMap[t])])
     },
     {
       header: 'Useful links',
