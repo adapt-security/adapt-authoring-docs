@@ -3,8 +3,8 @@
   "documentation": {
     "enable": true,
     "manualSections": {
-      "custom-documentation-plugins.md": "Advanced topics",
-      "writing-documentation.md": "Contributing"
+      "custom-documentation-plugins.md": "advanced",
+      "writing-documentation.md": "contributing"
     }
   }
 }
