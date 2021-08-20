@@ -10,7 +10,8 @@ const execPromise = promisify(require('child_process').exec);
  */
 async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
   const dir = `${outputdir}/docsify`;
-  const sectionsConf = { 'Guides': [] };
+  const sectionsConf = app.config.get('adapt-authoring-docs.manualSections');
+  const defaultSection = Object.entries(sectionsConf).reduce((m,[id,data]) => data.default ? id : m);
   /**
    * init docsify folder
    */
@@ -36,14 +37,13 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
         return;
       }
       let title = path.basename(f);
-      if(c.manualSections && c.manualSections[title]) {
-        if(!sectionsConf[c.manualSections[title]]) {
-          sectionsConf[c.manualSections[title]] = [];
-        }
-        sectionsConf[c.manualSections[title]].push(title);
-      } else {
-        sectionsConf['Guides'].push(title);
-      }
+      let sectionName = c.manualSections && c.manualSections[title] ? c.manualSections[title] : defaultSection;
+
+      if(!sectionsConf[sectionName]) sectionsConf[sectionName] = {}
+      if(!sectionsConf[sectionName].pages) sectionsConf[sectionName].pages = [];
+      
+      sectionsConf[sectionName].pages.push(title);
+
       m[title] = { path: f, title };
       try { 
         m[title].title = fs.readFileSync(f).toString().match(/^#(?!#)\s?(.*)/)[1]; 
@@ -66,12 +66,10 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
    */
   let sidebarMd = '';
   Object.entries(sectionsConf)
-    .sort(([a],[b]) => {
-      if(a === 'Guides') return 1;
-      if(b === 'Guides') return -1;
-      return a.localeCompare(b);
-    })
-    .forEach(([ title, pages ]) => {
+    .forEach(([id, { title, pages }]) => {
+      if(!pages || !pages.length) {
+        return;
+      }
       sidebarMd += `\n\n<ul class="header"><li>${title}</li></ul>\n\n`;
       pages
         .sort((a,b) => a.localeCompare(b))
@@ -81,6 +79,9 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
         })
         .forEach(f => sidebarMd += `  - [${titleMap[f].title}](${f})\n`);
     });
+
+  console.log(sidebarMd);
+
   await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
 }
 
