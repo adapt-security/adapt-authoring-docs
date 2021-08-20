@@ -10,6 +10,7 @@ const execPromise = promisify(require('child_process').exec);
  */
 async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
   const dir = `${outputdir}/docsify`;
+  const sectionsConf = { 'Guides': [] };
   /**
    * init docsify folder
    */
@@ -35,8 +36,18 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
         return;
       }
       let title = path.basename(f);
-      try { title = fs.readFileSync(f).toString().match(/^#(?!#)\s?(.*)/)[1]; } catch(e) {}
-      m[title] = f;
+      if(c.manualSections && c.manualSections[title]) {
+        if(!sectionsConf[c.manualSections[title]]) {
+          sectionsConf[c.manualSections[title]] = [];
+        }
+        sectionsConf[c.manualSections[title]].push(title);
+      } else {
+        sectionsConf['Guides'].push(title);
+      }
+      m[title] = { path: f, title };
+      try { 
+        m[title].title = fs.readFileSync(f).toString().match(/^#(?!#)\s?(.*)/)[1]; 
+      } catch(e) {}
     });
     return m;
   }, {});
@@ -49,32 +60,20 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
   if(manualIndex) {
     await fs.copy(manualIndex, `${dir}/_coverpage.md`);
   }
-  await Promise.allSettled(Object.values(titleMap).map(f => fs.copy(f, `${dir}/${path.basename(f)}`)));
+  await Promise.allSettled(Object.entries(titleMap).map(([filename, v]) => fs.copy(v.path, `${dir}/${filename}`)));
   /**
    * Generate custom sidebar
    */
   let sidebarMd = '';
-
-  const sidebarData = [
-    {
-      header: 'Guides',
-      pages: Object.keys(titleMap)
-        .sort((a,b) => a.localeCompare(b))
-        .filter(t => titleMap[t] !== manualIndex)
-        .map(t => [t, path.basename(titleMap[t])])
-    },
-    {
-      header: 'Useful links',
-      pages: [
-        ['Project website', 'https://www.adaptlearning.org'],
-        ['Official forum', 'https://community.adaptlearning.org'],
-        ['Gitter chatrooms', 'https://gitter.im/adaptlearning/home']
-      ]
-    }
-  ];
-  sidebarData.forEach(({ header, pages }) => {
-    sidebarMd += `\n\n<ul class="header"><li>${header}</li></ul>\n\n`;
-    pages.forEach(([text,link]) => sidebarMd += `  - [${text}](${link})\n`);
+  Object.entries(sectionsConf).forEach(([ title, pages ]) => {
+    sidebarMd += `\n\n<ul class="header"><li>${title}</li></ul>\n\n`;
+    pages
+      .sort((a,b) => a.localeCompare(b))
+      .filter(f => {
+        const p = titleMap[f].path;
+        return p !== manualIndex && p !== sourceIndex;
+      })
+      .forEach(f => sidebarMd += `  - [${titleMap[f].title}](${f})\n`);
   });
   await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
 }
