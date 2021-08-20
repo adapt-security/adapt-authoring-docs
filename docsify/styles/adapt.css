@@ -17,6 +17,18 @@ i.material-icons {
   position: relative;
 }
 
+nav.app-nav {
+  margin-top: 15px;
+  color: white;
+}
+nav.app-nav a {
+  font-size: 14px;
+}
+nav.app-nav a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
 section.cover {
   background: linear-gradient(to left bottom, #00dd95 0%,#34bee0 100%) !important;
   color: white;
