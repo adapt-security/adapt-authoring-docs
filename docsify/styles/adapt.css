@@ -46,6 +46,11 @@ section.cover .cover-main > p:last-child a:hover,
 .sidebar ul li a {
   font-weight: normal;
 }
+.sidebar ul.header {
+  padding-top: 25px;
+  padding-top: 10px;
+  font-size: 17px;
+}
 .sidebar .app-name-link {
   font-weight: bold;
   font-size: 18px;

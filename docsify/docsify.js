@@ -54,14 +54,28 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
    * Generate custom sidebar
    */
   let sidebarMd = '';
-  Object.keys(titleMap)
-    .sort((a,b) => a.localeCompare(b))
-    .forEach(n => {
-      if(titleMap[n] !== manualIndex) {
-        sidebarMd += `* [${n}](${path.basename(titleMap[n])})\n`;
-      }
-    });
 
+  const sidebarData = [
+    {
+      header: 'Guides',
+      pages: Object.keys(titleMap)
+        .sort((a,b) => a.localeCompare(b))
+        .filter(t => titleMap[t] !== manualIndex)
+        .map(t => [t, titleMap[t]])
+    },
+    {
+      header: 'Useful links',
+      pages: [
+        ['Project website', 'https://www.adaptlearning.org'],
+        ['Official forum', 'https://community.adaptlearning.org'],
+        ['Gitter chatrooms', 'https://gitter.im/adaptlearning/home']
+      ]
+    }
+  ];
+  sidebarData.forEach(({ header, pages }) => {
+    sidebarMd += `\n\n<ul class="header"><li>${header}</li></ul>\n\n`;
+    pages.forEach(([text,link]) => sidebarMd += `  - [${text}](${link})\n`);
+  });
   await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
 }
 
