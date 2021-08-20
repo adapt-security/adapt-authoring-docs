@@ -80,8 +80,6 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
         .forEach(f => sidebarMd += `  - [${titleMap[f].title}](${f})\n`);
     });
 
-  console.log(sidebarMd);
-
   await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
 }
 
