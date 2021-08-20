@@ -67,16 +67,16 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
   let sidebarMd = '';
   Object.entries(sectionsConf)
     .forEach(([id, { title, pages }]) => {
-      if(!pages || !pages.length) {
+      const filtered = pages.filter(f => {
+        const p = titleMap[f].path;
+        return p !== manualIndex && p !== sourceIndex;
+      });
+      if(!filtered || !filtered.length) {
         return;
       }
       sidebarMd += `\n\n<ul class="header"><li>${title}</li></ul>\n\n`;
-      pages
+      filtered
         .sort((a,b) => a.localeCompare(b))
-        .filter(f => {
-          const p = titleMap[f].path;
-          return p !== manualIndex && p !== sourceIndex;
-        })
         .forEach(f => sidebarMd += `  - [${titleMap[f].title}](${f})\n`);
     });
 
