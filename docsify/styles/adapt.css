@@ -52,7 +52,6 @@ section.cover .cover-main > p:last-child a:hover,
 }
 
 .sidebar {
-  margin-left: 25px;
   font-weight: bold;
 }
 .sidebar ul li a {
@@ -92,4 +91,13 @@ section.cover .cover-main > p:last-child a:hover,
   border-bottom: 1px solid #92f2d3;
   border-radius: 0 5px 5px 0;
   border-left-color: #00dd95;
+}
+
+/**
+ * Navbar width
+ */
+ @media only screen and (min-width: 767px) {
+  .sidebar {
+    margin-left: 25px;
+  }
 }
