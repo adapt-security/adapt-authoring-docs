@@ -77,7 +77,7 @@ async function jsdoc3(app, configs, outputdir, sourceIndexFile) {
   await Promise.all([
     fs.copy(`${__dirname}/styles/adapt.css`, `${dir}/styles/adapt.css`),
     fs.copy(`${__dirname}/scripts/adapt.js`, `${dir}/scripts/adapt.js`),
-    fs.copy(`${__dirname}/assets`, `${dir}/assets`)
+    fs.copy(`${__dirname}/../assets`, `${dir}/assets`)
   ]);
 }
 
