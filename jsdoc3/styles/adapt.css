@@ -35,6 +35,22 @@ h1.page-title {
   font-size: 28px;
 }
 
+
+#main .usertext h1,
+#main .usertext h2 {
+  font-family: inherit;
+  font-weight: 300;
+}
+#main .usertext h1 {
+  margin: 0 0 15px 0;
+  font-size: 40px;
+}
+#main .usertext h2 {
+  margin-top: 20px;
+  font-size: 30px;
+}
+
+
 h4.name {
   background: #34bee0;
 }
