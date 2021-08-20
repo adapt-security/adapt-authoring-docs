@@ -2,7 +2,7 @@
 const fs = require('fs-extra');
 const open = require('open');
 const path = require('path');
-const { App, Utils } = require('adapt-authoring-core');
+const { App } = require('adapt-authoring-core');
 const jsdoc3 = require('./jsdoc3/jsdoc3');
 const docsify = require('./docsify/docsify');
 
