@@ -45,6 +45,7 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
    */
   await fs.copy(`${__dirname}/index.html`, `${dir}/index.html`);
   await fs.copy(`${__dirname}/styles`, `${dir}/styles`);
+  await fs.copy(`${__dirname}/../assets`, `${dir}/assets`);
   if(manualIndex) {
     await fs.copy(manualIndex, `${dir}/_coverpage.md`);
   }
