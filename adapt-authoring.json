@@ -1,6 +1,10 @@
 {
   "module": false,
   "documentation": {
-    "enable": true
+    "enable": true,
+    "manualSections": {
+      "custom-documentation-plugins.md": "Advanced topics",
+      "writing-documentation.md": "Contributing"
+    }
   }
 }
