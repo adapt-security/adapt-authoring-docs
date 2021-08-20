@@ -37,11 +37,6 @@ function cacheConfigs() {
   return cache;
 }
 
-const __log = console.log;
-console.log = (...args) => {
-  if(!args.toString().match(/^parse|resolve|output:/)) __log(...args);
-};
-
 async function docs() {
   console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version}`);
 
