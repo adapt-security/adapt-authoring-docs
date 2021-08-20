@@ -53,6 +53,9 @@ section.cover .cover-main > p:last-child a:hover,
 .sidebar .app-name {
   margin-bottom: 25px;
 }
+.sidebar .app-name img {
+  width: 100px;
+}
 
 .markdown-section code,
 .token.boolean, .token.number {
