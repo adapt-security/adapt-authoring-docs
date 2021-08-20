@@ -6,6 +6,28 @@
       "description": "Path to store documentation build files",
       "type": "string",
       "default": "temp/docs"
+    },
+    "manualSections": {
+      "description": "Sections for categorising documentation manual pages",
+      "type": "object",
+      "default": {
+        "getting-started": {
+          "title": "Getting started"
+        },
+        "basics": {
+          "title": "The basics"
+        },
+        "advanced": {
+          "title": "Advanced topics"
+        },
+        "other-guides": {
+          "title": "Other guides",
+          "default": true
+        },
+        "contributing": {
+          "title": "Contributing"
+        }
+      }
     }
   }
 }
