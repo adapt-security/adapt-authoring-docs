@@ -28,6 +28,8 @@ What to include in developer guides:
 - Common usage examples
 - Any known issues/workarounds
 
+> If you have need to generate a dynamic documentation file, check out our guide on [writing custom doc plugins](custom-documentation-plugins).
+
 ## Configuration
 In addition to writing the manual files, you'll also need to add some configuration to the `package.json` of your module to ensure that your files are included when the documentation is built.
 
