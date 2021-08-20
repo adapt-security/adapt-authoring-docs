@@ -65,16 +65,22 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
    * Generate custom sidebar
    */
   let sidebarMd = '';
-  Object.entries(sectionsConf).forEach(([ title, pages ]) => {
-    sidebarMd += `\n\n<ul class="header"><li>${title}</li></ul>\n\n`;
-    pages
-      .sort((a,b) => a.localeCompare(b))
-      .filter(f => {
-        const p = titleMap[f].path;
-        return p !== manualIndex && p !== sourceIndex;
-      })
-      .forEach(f => sidebarMd += `  - [${titleMap[f].title}](${f})\n`);
-  });
+  Object.entries(sectionsConf)
+    .sort(([a],[b]) => {
+      if(a === 'Guides') return 1;
+      if(b === 'Guides') return -1;
+      return a.localeCompare(b);
+    })
+    .forEach(([ title, pages ]) => {
+      sidebarMd += `\n\n<ul class="header"><li>${title}</li></ul>\n\n`;
+      pages
+        .sort((a,b) => a.localeCompare(b))
+        .filter(f => {
+          const p = titleMap[f].path;
+          return p !== manualIndex && p !== sourceIndex;
+        })
+        .forEach(f => sidebarMd += `  - [${titleMap[f].title}](${f})\n`);
+    });
   await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
 }
 
