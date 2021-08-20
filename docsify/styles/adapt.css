@@ -63,7 +63,10 @@ section.cover .cover-main > p:last-child a:hover,
 }
 
 .markdown-section code,
-.token.boolean, .token.number {
+.token.boolean, 
+.token.function, 
+.token.keyword,
+.token.number {
   color: #00dd95;
 }
 
