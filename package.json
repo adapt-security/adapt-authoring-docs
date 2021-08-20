@@ -13,8 +13,7 @@
     "docsify-cli": "^4.4.3",
     "fs-extra": "7.0.1",
     "glob": "7.1.3",
-    "jsdoc": "^3.6.7",
-    "open": "6.3.0"
+    "jsdoc": "^3.6.7"
   },
   "peerDependencies": {
     "adapt-authoring-core": "adapt-security/adapt-authoring-core"

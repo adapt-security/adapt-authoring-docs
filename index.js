@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 const fs = require('fs-extra');
-const open = require('open');
 const path = require('path');
 const { App } = require('adapt-authoring-core');
 const jsdoc3 = require('./jsdoc3/jsdoc3');
@@ -57,15 +56,7 @@ async function docs() {
     console.log(e);
     process.exit(1);
   }
-
   console.log(`Documentation build complete.`);
-
-  const docspath = path.join(`${outputdir}/index.html`);
-  if(process.env.aat_open) {
-    open(docspath);
-  } else {
-    console.log(`\nDocs can be launched from file://${docspath}\n(tip: pass the --open flag when calling this command to open automatically in a browser window)`);
-  }
   process.exit();
 }
 
