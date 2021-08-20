@@ -1,11 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Roboto+Mono);
 
-.colours {
-  color: #34bee0;
-  color: #00dd95;
-  color: #263944;
-}
-
 body {
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
@@ -39,29 +33,35 @@ section.cover .cover-main > p:last-child a:hover,
   background: white;
   color: #34bee0;
 }
-/* section.cover .cover-main > p:last-child a { */
 
 .sidebar {
   margin-left: 25px;
-  /* 
-  background: #263944;
-  color: white; 
-  */
   font-weight: bold;
 }
 .sidebar ul li a {
-  /* color: #b7b7b7; */
   font-weight: normal;
 }
 .sidebar .app-name-link {
   font-weight: bold;
   font-size: 18px;
-  /* color: white; */
 }
 .sidebar .app-name {
   margin-bottom: 25px;
 }
 
-.markdown-section code {
+.markdown-section code,
+.token.boolean, .token.number {
   color: #00dd95;
+}
+
+.markdown-section blockquote {
+  background: #e7fdf6;
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-bottom: 5px;
+  border-top: 1px solid #92f2d3;
+  border-right: 1px solid #92f2d3;
+  border-bottom: 1px solid #92f2d3;
+  border-radius: 0 5px 5px 0;
+  border-left-color: #00dd95;
 }
