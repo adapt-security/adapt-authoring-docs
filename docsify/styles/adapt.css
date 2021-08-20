@@ -12,6 +12,11 @@ h1, h2, h3 {
   font-weight: 300;
 }
 
+i.material-icons {
+  top: 5px;
+  position: relative;
+}
+
 section.cover {
   background: linear-gradient(to left bottom, #00dd95 0%,#34bee0 100%) !important;
   color: white;
