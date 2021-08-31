@@ -38,10 +38,8 @@ All documentation-related options are contained in a `documentation` object unde
 "adapt_authoring": {
   "documentation": {
     "enable": true,
-    "includes": {
-      "docs": "docs/*",
-      "source": "lib/*"
-    }
+    "manualPlugins": [],
+    "manualSections": {}
   }
 }
 ```
@@ -50,9 +48,8 @@ The below table gives a brief explanation of each option:
 
 | Attribute | Type | Default | Description |
 | --------- | ---- | :-----: | ----------- |
-| `enable` | Boolean | `false` | Whether documentation should be generated for this module. |
-| `includes.docs` | String | N/A | [Glob](https://en.wikipedia.org/wiki/Glob_(programming) to match the docs files in your module. <br>_If you don't want to include any manual pages, leave this setting out._ |
-| `includes.source` | String | `*.js` | Glob to match the code source files in your module. |
+| `enable` | Boolean | `true` | Whether documentation should be generated for this module. |
+| `manualPlugins` | Array | `[]` | A list of paths to any custom manual plugins. See [this page](custom-documentation-plugins) for more info. |
+| `manualSections` | Object | `{}` | A key/value store mapping file names to a section. The key must be the filename only, and not a path. The section ID must match one of those defined in the config (see the [configuration reference](configuration?id=adapt-authoring-docs) for the defaults, or set your own in your config file). |
 
-
-_**Did you know**: You can also store manual files in the root repository of the application. Just make sure to add the config to your root `package.json`._
+> You can also store manual files in the root repository of the application; just make sure to add your doc files to a `/docs` directory.
