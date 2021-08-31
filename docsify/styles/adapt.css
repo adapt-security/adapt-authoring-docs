@@ -70,12 +70,11 @@ section.cover .cover-main > p:last-child a:hover,
   margin: 0 auto;
   width: 100px;
 }
-.sidebar .app-name h1 {
+.sidebar h1.app-name {
   font-size: 18px;
 }
 .sidebar .app-name h2 {
-  font-size: 30px;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .markdown-section code,
