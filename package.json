@@ -6,7 +6,7 @@
   "license": "GPL-3.0",
   "repository": "adaptlearning/adapt-authoring-docs",
   "bin": {
-    "generate-aat-docs": "./index.js"
+    "aat-docgen": "./index.js"
   },
   "dependencies": {
     "docdash": "^1.2.0",
