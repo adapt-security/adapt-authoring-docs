@@ -5,6 +5,8 @@ const { App } = require('adapt-authoring-core');
 const jsdoc3 = require('./jsdoc3/jsdoc3');
 const docsify = require('./docsify/docsify');
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'testing';
+
 const app = App.instance;
 let outputdir;
 
