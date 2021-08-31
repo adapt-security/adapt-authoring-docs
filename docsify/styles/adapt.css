@@ -106,3 +106,48 @@ section.cover .cover-main > p:last-child a:hover,
     padding-left: 25px;
   }
 }
+
+/**
+* Reusable schema styles
+*/
+.options {
+  padding-left: 15px;
+  border-left: 3px solid #00dd95;
+}
+.attribute {
+  margin-bottom: 15px;
+}
+.attribute .inner {
+  padding-left: 15px;
+}
+.attribute .title {
+  margin-bottom: 10px;
+}
+.attribute .title .main {
+  font-weight: bold;
+  font-size: 16px;
+}
+.attribute .description {
+  margin: 5px 0;
+}
+.attribute .default .label {
+  font-weight: bold;
+}
+.attribute .default pre {
+  display: inline;
+  padding: 0 5px;
+}
+.markdown-section table.schema {
+  margin-top: 25px;
+}
+.markdown-section .required {
+  font-weight: bold;
+}
+.markdown-section .desc {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+.markdown-section .extension {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
