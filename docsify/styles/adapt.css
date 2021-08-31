@@ -62,15 +62,20 @@ section.cover .cover-main > p:last-child a:hover,
   padding-top: 10px;
   font-size: 17px;
 }
-.sidebar .app-name-link {
-  font-weight: bold;
-  font-size: 18px;
-}
 .sidebar .app-name {
   margin-bottom: 25px;
 }
-.sidebar .app-name img {
+.sidebar .app-name .logo {
+  display: block;
+  margin: 0 auto;
   width: 100px;
+}
+.sidebar .app-name h1 {
+  font-size: 18px;
+}
+.sidebar .app-name h2 {
+  font-size: 30px;
+  margin-top: 10px;
 }
 
 .markdown-section code,
@@ -98,6 +103,6 @@ section.cover .cover-main > p:last-child a:hover,
  */
  @media only screen and (min-width: 767px) {
   .sidebar {
-    margin-left: 25px;
+    padding-left: 25px;
   }
 }
