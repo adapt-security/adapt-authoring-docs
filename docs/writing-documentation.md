@@ -31,11 +31,11 @@ What to include in developer guides:
 > If you have need to generate a dynamic documentation file, check out our guide on [writing custom doc plugins](custom-documentation-plugins).
 
 ## Configuration
-In addition to writing the manual files, you'll also need to add some configuration to the `package.json` of your module to ensure that your files are included when the documentation is built.
+In addition to writing the manual files, you'll also need to add some configuration to the `adapt-authoring.json` file for your module to ensure that your files are included when the documentation is built.
 
-All documentation-related options are contained in a `documentation` object under the main `adapt_authoring`:
+All documentation-related options are contained in a `documentation` object at the root level:
 ```json
-"adapt_authoring": {
+{
   "documentation": {
     "enable": true,
     "manualPlugins": [],
