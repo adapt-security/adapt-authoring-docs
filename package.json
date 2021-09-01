@@ -9,6 +9,7 @@
     "aat-docgen": "./index.js"
   },
   "dependencies": {
+    "comment-parser": "^1.2.4",
     "docdash": "^1.2.0",
     "docsify-cli": "^4.4.3",
     "fs-extra": "7.0.1",
