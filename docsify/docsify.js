@@ -19,18 +19,20 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
   /**
    * Collate data & run custom plugins
    */
-  const titleMap = configs.reduce((m,c) => {
+  const titleMap = {};
+  await Promise.all(configs.map(async c => {
     const customFiles = [];
     if(c.manualPlugins) {
-      c.manualPlugins.forEach(p => {
+      await Promise.all(c.manualPlugins.map(async p => {
         try {
           const Plugin = require(path.resolve(c.rootDir, p));
           const plugin = new Plugin(app, c, dir);
+          if(typeof plugin.run === 'function') await plugin.run();
           if(plugin.customFiles) customFiles.push(...plugin.customFiles);
         } catch(e) {
           console.log(`Failed to load doc manual plugin, ${e}`);
         }
-      });
+      }));
     }
     [...customFiles, ...glob.sync('docs/*.md', { cwd: c.rootDir, absolute: true })].forEach(f => {
       if(f === sourceIndex) {
@@ -44,13 +46,12 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
       
       sectionsConf[sectionName].pages.push(title);
 
-      m[title] = { path: f, title };
+      titleMap[title] = { path: f, title };
       try { 
-        m[title].title = fs.readFileSync(f).toString().match(/^#(?!#)\s?(.*)/)[1]; 
+        titleMap[title].title = fs.readFileSync(f).toString().match(/^#(?!#)\s?(.*)/)[1]; 
       } catch(e) {}
     });
-    return m;
-  }, {});
+  }));
   /**
    * Copy files
    */
