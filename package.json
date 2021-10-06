@@ -5,7 +5,7 @@
   "homepage": "https://github.com/adaptlearning/adapt-authoring-docs",
   "license": "GPL-3.0",
   "bin": {
-    "aat-docgen": "./index.js"
+    "at-docgen": "./index.js"
   },
   "repository": "adaptlearning/adapt-authoring-docs",
   "dependencies": {
