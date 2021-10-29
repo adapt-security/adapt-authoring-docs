@@ -1,6 +1,5 @@
 const fs = require('fs-extra');
 const glob = require('glob');
-const path = require('path');
 const { promisify } = require('util');
 
 const execPromise = promisify(require('child_process').exec);
