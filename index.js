@@ -2,7 +2,7 @@
 /**
  * Generates documentation for the installed modules.
  */
- const fs = require('fs-extra');
+ const fs = require('fs/promises');
  const path = require('path');
  const { App } = require('adapt-authoring-core');
  const jsdoc3 = require('./jsdoc3/jsdoc3');
@@ -54,7 +54,7 @@
    console.log(`\nThis might take a minute or two...\n`);
  
    try {
-     await fs.remove(outputdir);
+     await fs.rmdir(outputdir);
      await jsdoc3(app, cachedConfigs, outputdir, sourceIndex);
      await docsify(app, cachedConfigs, outputdir, manualIndex, sourceIndex);
    } catch(e) {
