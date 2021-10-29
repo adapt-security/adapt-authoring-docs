@@ -10,7 +10,7 @@ const configPath = `${__dirname}/.jsdocConfig.json`;
 let cachedConfigs;
 
 async function writeConfig(app, outputdir, indexFile) {
-  return fs.writeJson(configPath, {
+  return fs.writeFile(configPath, JSON.stringify({
     "source": { 
       "include": getSourceIncludes(indexFile) 
     },
@@ -55,7 +55,7 @@ async function writeConfig(app, outputdir, indexFile) {
       "destination": outputdir,
       "template": "node_modules/docdash"
     }
-  }, { spaces: 2 });
+  }, null, 2));
 }
 /**
  * Returns a list of modules to include.
