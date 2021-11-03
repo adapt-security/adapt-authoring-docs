@@ -54,7 +54,7 @@
    console.log(`\nThis might take a minute or two...\n`);
  
    try {
-     await fs.rmdir(outputdir);
+     await fs.rm(outputdir, { recursive: true, force: true });
      await jsdoc3(app, cachedConfigs, outputdir, sourceIndex);
      await docsify(app, cachedConfigs, outputdir, manualIndex, sourceIndex);
    } catch(e) {
