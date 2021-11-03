@@ -34,12 +34,17 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
         }
       }));
     }
+    if(c.manualSections) {
+      Object.entries(c.manualSections).forEach(([key, data]) => {
+        if(!sectionsConf[key]) sectionsConf[key] = data
+      });
+    } 
     [...customFiles, ...glob.sync('docs/*.md', { cwd: c.rootDir, absolute: true })].forEach(f => {
       if(f === sourceIndex) {
         return;
       }
       let title = path.basename(f);
-      let sectionName = c.manualSections && c.manualSections[title] ? c.manualSections[title] : defaultSection;
+      let sectionName = c.manualPages && c.manualPages[title] ? c.manualPages[title] : defaultSection;
 
       if(!sectionsConf[sectionName]) sectionsConf[sectionName] = {}
       if(!sectionsConf[sectionName].pages) sectionsConf[sectionName].pages = [];
