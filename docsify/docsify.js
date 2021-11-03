@@ -72,7 +72,7 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
    */
   let sidebarMd = '';
   Object.entries(sectionsConf)
-    .forEach(([id, { title, pages }]) => {
+    .forEach(([id, { title, pages = [] }]) => {
       const filtered = pages.filter(f => {
         const p = titleMap[f].path;
         return p !== manualIndex && p !== sourceIndex;
