@@ -20,6 +20,9 @@
         "advanced": {
           "title": "Advanced topics"
         },
+        "ui": {
+          "title": "Front-end app"
+        },
         "other-guides": {
           "title": "Other guides",
           "default": true
