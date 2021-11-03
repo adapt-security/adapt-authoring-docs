@@ -2,7 +2,7 @@
   "module": false,
   "documentation": {
     "enable": true,
-    "manualSections": {
+    "manualPages": {
       "custom-documentation-plugins.md": "advanced",
       "writing-documentation.md": "contributing"
     }
