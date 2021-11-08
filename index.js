@@ -22,11 +22,16 @@
   */
  function cacheConfigs() {
    const cache = [];
-   Object.values(App.instance.dependencies).forEach(dep => {
+   const excludes = app.pkg.documentation.excludes ?? [];
+   Object.values(app.dependencies).forEach(dep => {
      const c = dep.documentation;
-     if(!c || !c.enable) {
-       return console.log(`Omitting ${dep.name}, no documentation config defined, or documentation.enable is set to false`);
-     }
+     
+     let omitMsg;
+     if(!c) omitMsg = `no documentation config defined`;
+     if(!c.enable) omitMsg = `documentation.enable is set to false`;
+     if(excludes.includes(dep.name)) omitMsg = `module has been excluded in documentation config`;
+     if(omitMsg) return console.log(`Omitting ${dep.name}, ${omitMsg}`);
+     
      if(c.manualIndex) {
        if(manualIndex) return console.log(`${dep.name}: manualIndex has been specified by another module as ${manualIndex}`);
        manualIndex = path.join(dep.rootDir, c.manualIndex);
