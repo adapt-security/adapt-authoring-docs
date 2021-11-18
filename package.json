@@ -4,6 +4,7 @@
   "description": "Tools for auto-generating documentation for the Adapt authoring tool",
   "homepage": "https://github.com/adaptlearning/adapt-authoring-docs",
   "license": "GPL-3.0",
+  "type": "module",
   "bin": {
     "at-docgen": "./index.js"
   },
