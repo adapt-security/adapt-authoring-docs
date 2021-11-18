@@ -2,11 +2,11 @@
 /**
  * Generates documentation for the installed modules.
  */
-const fs = require('fs/promises');
-const path = require('path');
-const { App } = require('adapt-authoring-core');
-const jsdoc3 = require('./jsdoc3/jsdoc3');
-const docsify = require('./docsify/docsify');
+import { App } from 'adapt-authoring-core';
+import docsify from './docsify/docsify.js';
+import fs from 'fs/promises';
+import jsdoc3 from './jsdoc3/jsdoc3.js';
+import path from 'path';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'testing';
 
@@ -52,7 +52,8 @@ async function docs() {
   await app.onReady();
 
   const config = await app.waitForModule('config');
-  outputdir = path.resolve(process.cwd(), config.get(`${require('./package.json').name}.outputDir`));
+  const { name } = JSON.parse(await fs.readFile('./package.json'));
+  outputdir = path.resolve(process.cwd(), config.get(`${name}.outputDir`));
 
   const cachedConfigs = cacheConfigs();
 
@@ -70,4 +71,4 @@ async function docs() {
   process.exit();
 }
 
-module.exports = docs();
+export default docs();

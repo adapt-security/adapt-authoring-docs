@@ -1,14 +1,15 @@
-const fs = require('fs-extra');
-const glob = require('glob');
-const path = require('path');
-const { promisify } = require('util');
+import { exec } from 'child_process';
+import fs from 'fs-extra';
+import glob from 'glob';
+import path from 'path';
+import { promisify } from 'util';
 
-const execPromise = promisify(require('child_process').exec);
+const execPromise = promisify(exec);
 
 /**
  * Copies all doc files ready for the generator
  */
-async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
+export default async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
   const dir = `${outputdir}/docsify`;
   const sectionsConf = app.config.get('adapt-authoring-docs.manualSections');
   const defaultSection = Object.entries(sectionsConf).reduce((m,[id,data]) => data.default ? id : m);
@@ -25,7 +26,7 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
     if(c.manualPlugins) {
       await Promise.all(c.manualPlugins.map(async p => {
         try {
-          const Plugin = require(path.resolve(c.rootDir, p));
+          const Plugin = await import(path.resolve(c.rootDir, p));
           const plugin = new Plugin(app, c, dir);
           if(typeof plugin.run === 'function') await plugin.run();
           if(plugin.customFiles) customFiles.push(...plugin.customFiles);
@@ -60,9 +61,9 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
   /**
    * Copy files
    */
-  await fs.copy(`${__dirname}/index.html`, `${dir}/index.html`);
-  await fs.copy(`${__dirname}/styles`, `${dir}/styles`);
-  await fs.copy(`${__dirname}/../assets`, `${dir}/assets`);
+  await fs.copy(`./index.html`, `${dir}/index.html`);
+  await fs.copy(`./styles`, `${dir}/styles`);
+  await fs.copy(`../assets`, `${dir}/assets`);
   if(manualIndex) {
     await fs.copy(manualIndex, `${dir}/_coverpage.md`);
   }
@@ -88,5 +89,3 @@ async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
 
   await fs.writeFile(`${dir}/_sidebar.md`, sidebarMd);
 }
-
-module.exports = docsify;

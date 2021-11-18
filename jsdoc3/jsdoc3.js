@@ -1,10 +1,12 @@
-const fs = require('fs-extra');
-const glob = require('glob');
-const { promisify } = require('util');
+import { exec } from 'child_process';
+import fs from 'fs-extra';
+import glob from 'glob';
+import path from 'path';
+import { promisify } from 'util';
 
-const execPromise = promisify(require('child_process').exec);
+const execPromise = promisify(exec);
 
-const configPath = `${__dirname}/.jsdocConfig.json`;
+const configPath = path.resolve('.jsdocConfig.json');
 
 let cachedConfigs;
 
@@ -68,16 +70,14 @@ function getSourceIncludes(indexFile) {
   return includes;
 }
 
-async function jsdoc3(app, configs, outputdir, sourceIndexFile) {
+export default async function jsdoc3(app, configs, outputdir, sourceIndexFile) {
   cachedConfigs = configs;
   const dir = `${outputdir}/jsdoc3`;
   await writeConfig(app, dir, sourceIndexFile);
   await execPromise(`npx jsdoc -c ${configPath}`);
   await Promise.all([
-    fs.copy(`${__dirname}/styles/adapt.css`, `${dir}/styles/adapt.css`),
-    fs.copy(`${__dirname}/scripts/adapt.js`, `${dir}/scripts/adapt.js`),
-    fs.copy(`${__dirname}/../assets`, `${dir}/assets`)
+    fs.copy(`./styles/adapt.css`, `${dir}/styles/adapt.css`),
+    fs.copy(`./scripts/adapt.js`, `${dir}/scripts/adapt.js`),
+    fs.copy(`../assets`, `${dir}/assets`)
   ]);
 }
-
-module.exports = jsdoc3;
