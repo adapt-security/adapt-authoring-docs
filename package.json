@@ -8,7 +8,7 @@
   "bin": {
     "at-docgen": "./index.js"
   },
-  "repository": "adaptlearning/adapt-authoring-docs",
+  "repository": "github:adapt-security/adapt-authoring-docs",
   "dependencies": {
     "comment-parser": "^1.2.4",
     "docdash": "^1.2.0",
