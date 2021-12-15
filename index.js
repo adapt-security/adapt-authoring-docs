@@ -52,7 +52,7 @@ async function docs() {
   await app.onReady();
 
   const config = await app.waitForModule('config');
-  const { name } = JSON.parse(await fs.readFile('./package.json'));
+  const { name } = JSON.parse(await fs.readFile(new URL('package.json', import.meta.url)));
   outputdir = path.resolve(process.cwd(), config.get(`${name}.outputDir`));
 
   const cachedConfigs = cacheConfigs();
