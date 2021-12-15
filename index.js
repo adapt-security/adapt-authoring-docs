@@ -28,8 +28,8 @@ function cacheConfigs() {
     
     let omitMsg;
     if(!c) omitMsg = `no documentation config defined`;
-    if(!c.enable) omitMsg = `documentation.enable is set to false`;
-    if(excludes.includes(dep.name)) omitMsg = `module has been excluded in documentation config`;
+    else if(!c.enable) omitMsg = `documentation.enable is set to false`;
+    else if(excludes.includes(dep.name)) omitMsg = `module has been excluded in documentation config`;
     if(omitMsg) return console.log(`Omitting ${dep.name}, ${omitMsg}`);
     
     if(c.manualIndex) {
