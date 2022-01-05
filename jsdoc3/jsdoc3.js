@@ -1,12 +1,12 @@
 import { exec } from 'child_process';
+import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
 import glob from 'glob';
-import path from 'path';
 import { promisify } from 'util';
 
 const execPromise = promisify(exec);
 
-const configPath = path.resolve('.jsdocConfig.json');
+const configPath = fileURLToPath(new URL('.jsdocConfig.json', import.meta.url));
 
 let cachedConfigs;
 
