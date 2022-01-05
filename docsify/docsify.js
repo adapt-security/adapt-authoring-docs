@@ -36,7 +36,7 @@ export default async function docsify(app, configs, outputdir, manualIndex, sour
           if(typeof plugin.run === 'function') await plugin.run();
           if(plugin.customFiles) customFiles.push(...plugin.customFiles);
         } catch(e) {
-          console.log(`Failed to load doc manual plugin, ${e}`);
+          console.log(`Failed to load ${c.name} doc manual plugin ${path.basename(p)}, ${e}`);
         }
       }));
     }
