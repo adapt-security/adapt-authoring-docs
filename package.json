@@ -9,7 +9,7 @@
     "at-docgen": "./index.js"
   },
   "repository": "github:adapt-security/adapt-authoring-docs",
-  "devDependencies": {
+  "dependencies": {
     "comment-parser": "^1.2.4",
     "docdash": "^1.2.0",
     "docsify-cli": "^4.4.3",
