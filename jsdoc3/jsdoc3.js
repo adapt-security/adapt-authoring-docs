@@ -6,7 +6,7 @@ import { promisify } from 'util';
 
 const execPromise = promisify(exec);
 
-const configPath = fileURLToPath(new URL('.jsdocConfig.json', import.meta.url));
+const configPath = new URL('.jsdocConfig.json', import.meta.url);
 
 let cachedConfigs;
 
@@ -76,8 +76,8 @@ export default async function jsdoc3(app, configs, outputdir, sourceIndexFile) {
   await writeConfig(app, dir, sourceIndexFile);
   await execPromise(`npx jsdoc -c ${configPath}`);
   await Promise.all([
-    fs.copy(`./styles/adapt.css`, `${dir}/styles/adapt.css`),
-    fs.copy(`./scripts/adapt.js`, `${dir}/scripts/adapt.js`),
-    fs.copy(`../assets`, `${dir}/assets`)
+    fs.copy(new URL(`./styles/adapt.css`, import.meta.url), `${dir}/styles/adapt.css`),
+    fs.copy(new URL(`./scripts/adapt.js`, import.meta.url), `${dir}/scripts/adapt.js`),
+    fs.copy(new URL(`../assets`, import.meta.url), `${dir}/assets`)
   ]);
 }

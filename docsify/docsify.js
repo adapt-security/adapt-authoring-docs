@@ -1,10 +1,15 @@
 import { exec } from 'child_process';
+import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
 import glob from 'glob';
 import path from 'path';
 import { promisify } from 'util';
 
 const execPromise = promisify(exec);
+
+function resolvePath(relativePath) {
+  return fileURLToPath(new URL(relativePath, import.meta.url));
+}
 
 /**
  * Copies all doc files ready for the generator
@@ -61,9 +66,9 @@ export default async function docsify(app, configs, outputdir, manualIndex, sour
   /**
    * Copy files
    */
-  await fs.copy(`./index.html`, `${dir}/index.html`);
-  await fs.copy(`./styles`, `${dir}/styles`);
-  await fs.copy(`../assets`, `${dir}/assets`);
+  await fs.copy(resolvePath(`./index.html`), `${dir}/index.html`);
+  await fs.copy(resolvePath(`./styles`), `${dir}/styles`);
+  await fs.copy(resolvePath(`../assets`), `${dir}/assets`);
   if(manualIndex) {
     await fs.copy(manualIndex, `${dir}/_coverpage.md`);
   }
