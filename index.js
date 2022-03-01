@@ -34,11 +34,11 @@ function cacheConfigs() {
     
     if(c.manualIndex) {
       if(manualIndex) return console.log(`${dep.name}: manualIndex has been specified by another module as ${manualIndex}`);
-      manualIndex = path.join(dep.rootDir, c.manualIndex);
+      manualIndex = path.join(dep.rootDir, c.manualIndex).split(path.sep).join(path.posix.sep);
     }
     if(c.sourceIndex) {
       if(sourceIndex) return console.log(`${dep.name}: sourceIndex has been specified by another module as ${sourceIndex}`);
-      sourceIndex = path.join(dep.rootDir, c.sourceIndex);
+      sourceIndex = path.join(dep.rootDir, c.sourceIndex).split(path.sep).join(path.posix.sep);
     }
     cache.push({ ...c, name: dep.name, rootDir: dep.rootDir, includes: c.includes || {} });
   });
