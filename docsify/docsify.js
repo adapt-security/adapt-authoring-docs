@@ -31,6 +31,7 @@ export default async function docsify(app, configs, outputdir, manualIndex, sour
     if(c.manualPlugins) {
       await Promise.all(c.manualPlugins.map(async p => {
         try {
+          Object.assign(c, { outputDir: outputdir, manualDir: dir });
           const Plugin = (await import(pathToFileURL(path.resolve(c.rootDir, p)))).default;
           const plugin = new Plugin(app, c, dir);
           if(typeof plugin.run === 'function') await plugin.run();
