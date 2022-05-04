@@ -40,7 +40,7 @@ function cacheConfigs() {
       if(sourceIndex) return console.log(`${dep.name}: sourceIndex has been specified by another module as ${sourceIndex}`);
       sourceIndex = path.join(dep.rootDir, c.sourceIndex).split(path.sep).join(path.posix.sep);
     }
-    cache.push({ ...c, name: dep.name, rootDir: dep.rootDir, includes: c.includes || {} });
+    cache.push({ ...c, name: dep.name, version: dep.version, rootDir: dep.rootDir, includes: c.includes || {} });
   });
   cache.push({ ...app.pkg.documentation, enable: true, name: 'adapt-authoring', rootDir: app.rootDir, includes: {} });
   return cache;
