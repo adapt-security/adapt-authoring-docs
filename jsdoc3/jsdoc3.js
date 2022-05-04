@@ -48,7 +48,7 @@ async function writeConfig(app, outputdir, indexFile) {
         }
       },
       "meta": {
-        "title": "Adapt authoring tool API documentation",
+        "title": "Adapt authoring tool UI documentation",
         "keyword": `v${app.pkg.version}`
       },
       "scripts": [
