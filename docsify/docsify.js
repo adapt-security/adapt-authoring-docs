@@ -15,7 +15,7 @@ function resolvePath(relativePath) {
  * Copies all doc files ready for the generator
  */
 export default async function docsify(app, configs, outputdir, manualIndex, sourceIndex) {
-  const dir = `${outputdir}/docsify`;
+  const dir = `${outputdir}/manuals`;
   const sectionsConf = app.config.get('adapt-authoring-docs.manualSections');
   const defaultSection = Object.entries(sectionsConf).reduce((m,[id,data]) => data.default ? id : m);
   /**

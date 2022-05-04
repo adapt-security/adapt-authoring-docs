@@ -76,7 +76,7 @@ function getSourceIncludes(indexFile) {
 
 export default async function jsdoc3(app, configs, outputdir, sourceIndexFile) {
   cachedConfigs = configs;
-  const dir = `${outputdir}/jsdoc3`;
+  const dir = `${outputdir}/backend`;
   await writeConfig(app, dir, sourceIndexFile);
   await execPromise(`npx jsdoc -c ${configPath}`);
   await Promise.all([
