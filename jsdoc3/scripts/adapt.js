@@ -1,9 +1,8 @@
 const container = document.createElement('div');
 container.className = 'main-page-title';
 
-const mainTitleText = `Adapt authoring tool API documentation`;
 const mainTitle = document.createElement('h1');
-mainTitle.appendChild(document.createTextNode(mainTitleText));
+mainTitle.appendChild(document.createTextNode(document.querySelector('meta[name="description"]').content));
 container.append(mainTitle);
 
 const subTitle = document.createElement('h2');
