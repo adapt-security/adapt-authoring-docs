@@ -1,5 +1,5 @@
 # Writing documentation
-The Adapt authoring tool makes use of automatically generated documentation (powered by [ESDoc](https://esdoc.org/)).
+The Adapt authoring tool makes use of automatically generated documentation (powered by [JSDoc](https://jsdoc.app/)).
 
 **Source code reference** *mandatory* <br>
 Requires annotated code (see below), but otherwise completely automated.
@@ -10,7 +10,7 @@ Requires handwritten markdown. Provides extra advice on using your code in pract
 ## Documenting code
 The source code reference is completely automated, and shouldn't need much input from you as a developer (provided your code has been correctly annotated).
 
-If you're not familiar with the JSDoc notation, you can find a list of accepted tags as well as examples of usage in the [ESDoc docs](https://esdoc.org/manual/tags.html) (you can also of course check the source code for any of the [core-supported Adapt authoring modules](coreplugins.html) which are fully documented).
+If you're not familiar with the JSDoc notation, you can find a list of accepted tags as well as examples of usage in the [JSDoc docs](https://jsdoc.app/) (you can also of course check the source code for any of the [core-supported Adapt authoring modules](coreplugins.html) which are fully documented).
 
 ### Useful tips
 Below are some useful tips/gotchas for any budding documentation writers.
