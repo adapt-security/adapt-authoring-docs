@@ -39,7 +39,7 @@ All documentation-related options are contained in a `documentation` object at t
   "documentation": {
     "enable": true,
     "manualPlugins": [],
-    "manualSections": {}
+    "manualPages": {}
   }
 }
 ```
@@ -50,6 +50,6 @@ The below table gives a brief explanation of each option:
 | --------- | ---- | :-----: | ----------- |
 | `enable` | Boolean | `true` | Whether documentation should be generated for this module. |
 | `manualPlugins` | Array | `[]` | A list of paths to any custom manual plugins. See [this page](custom-documentation-plugins) for more info. |
-| `manualSections` | Object | `{}` | A key/value store mapping file names to a section. The key must be the filename only, and not a path. The section ID must match one of those defined in the config (see the [configuration reference](configuration?id=adapt-authoring-docs) for the defaults, or set your own in your config file). |
+| `manualPages` | Object | `{}` | A key/value store mapping file names to a section (e.g. `"manual-page.md": "advanced"`). The key must be the filename only, and not a path. The section ID must match one of those defined in the config (see the [configuration reference](configuration?id=adapt-authoring-docs) for the defaults, or set your own in your config file). |
 
 > You can also store manual files in the root repository of the application; just make sure to add your doc files to a `/docs` directory.
