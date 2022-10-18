@@ -5,7 +5,7 @@
     "outputDir": {
       "description": "Path to store documentation build files",
       "type": "string",
-      "default": "temp/docs"
+      "default": "$TEMP/docs"
     },
     "manualSections": {
       "description": "Sections for categorising documentation manual pages",
