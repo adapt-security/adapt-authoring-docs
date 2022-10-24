@@ -6,7 +6,7 @@
       "description": "Path to store documentation build files",
       "type": "string",
       "isDirectory": true,
-      "default": "$TEMP/docs"
+      "default": "$TEMP/docs-build"
     },
     "manualSections": {
       "description": "Sections for categorising documentation manual pages",
