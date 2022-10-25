@@ -8,7 +8,8 @@ import fs from 'fs/promises';
 import jsdoc3 from './jsdoc3/jsdoc3.js';
 import path from 'path';
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'testing';
+process.env.NODE_ENV ??= 'production';
+process.env.ADAPT_AUTHORING_LOGGER__mute = true
 
 const app = App.instance;
 let outputdir;
