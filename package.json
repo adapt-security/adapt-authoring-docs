@@ -6,8 +6,8 @@
   "license": "GPL-3.0",
   "type": "module",
   "bin": {
-    "at-docgen": "./generate.js",
-    "at-docserve": "./serve.js"
+    "at-docgen": "./bin/generate.js",
+    "at-docserve": "./bin/serve.js"
   },
   "repository": "github:adapt-security/adapt-authoring-docs",
   "dependencies": {
