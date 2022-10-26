@@ -178,3 +178,15 @@ section.content {
   margin-bottom: 10px;
   font-weight: bold;
 }
+
+/**
+ * Dark mode overrides
+ */
+body.dark .markdown-section tr:nth-child(2n) {
+  background-color: #606060;
+}
+
+body.dark .markdown-section blockquote {
+  background: #004a32;
+  color: inherit;
+}
