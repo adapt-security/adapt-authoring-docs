@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import { App } from 'adapt-authoring-core';
-import http from 'http';
-import url from 'url';
+import { spawn } from 'child_process';
 import fs from 'fs/promises';
+import http from 'http';
 import path from 'path';
+import url from 'url';
 
 function getMime(filePath) {
   const ext = path.parse(filePath).ext;
@@ -20,6 +21,11 @@ function getMime(filePath) {
     '.doc': 'application/msword'
   }[ext] || 'text/plain';
 }
+let open;
+const args = process.argv.slice(2).filter(a => {
+  if(a === '--open') open = true;
+  return a !== '--open';
+});
 
 process.env.NODE_ENV ??= 'production';
 process.env.ADAPT_AUTHORING_LOGGER__mute = true;
@@ -27,16 +33,25 @@ process.env.ADAPT_AUTHORING_LOGGER__mute = true;
 console.log('Starting app, please wait\n');
 
 App.instance.onReady().then(async app => {
+  console.log('App started\n');
   const root = path.resolve(app.config.get('adapt-authoring-docs.outputDir'));
-  (await fs.readdir(root)).forEach((dir, i) => new Server(path.resolve(root, dir), i));
+  (await fs.readdir(root)).forEach((dir, i) => {
+    if(!args.length || args.includes(dir)) {
+      const s = new Server(path.resolve(root, dir), i);
+      if(open) s.openBrowser();
+    }
+  });
+  if(dirArg) {
+  }
 });
 
 class Server {
   constructor(dir, i) {
     this.root = dir;
     this.port = 9001 + i;
+    this.url = `http://localhost:${this.port}`;
     http.createServer(this.requestHandler.bind(this)).listen(this.port);
-    console.log(`${path.basename(dir)} docs hosted at http://localhost:${this.port}`);
+    console.log(`${path.basename(dir)} docs hosted at ${this.url}`);
   }
   async requestHandler(req, res) {
     const file = url.parse(req.url).pathname.slice(1);
@@ -55,5 +70,10 @@ class Server {
       res.statusCode = 500;
       res.end(`Error getting the file: ${e}`);
     }
+  }
+  openBrowser() {
+    const command = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
+    spawn(`${command} http://localhost:${this.port}`, { shell: true })
+      .on('error', e => console.log('spawn error', e));
   }
 }
