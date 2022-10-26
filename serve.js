@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { App } from 'adapt-authoring-core';
 import http from 'http';
 import url from 'url';
