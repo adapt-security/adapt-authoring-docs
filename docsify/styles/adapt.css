@@ -1,5 +1,19 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Roboto+Mono);
 
+#dark-mode {
+  position: fixed;
+  display: block;
+  z-index: 5000;
+  width: 40px;
+  text-align: center;
+  height: 36px;
+  background-color: var(--theme-color);
+  color: white;
+}
+#dark-mode i {
+  font-size: 24px;
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;

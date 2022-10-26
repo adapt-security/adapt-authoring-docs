@@ -68,8 +68,9 @@ export default async function docsify(app, configs, outputdir, manualIndex, sour
    * Copy files
    */
   await fs.copy(resolvePath(`./index.html`), `${dir}/index.html`);
-  await fs.copy(resolvePath(`./styles`), `${dir}/styles`);
   await fs.copy(resolvePath(`../assets`), `${dir}/assets`);
+  await fs.copy(resolvePath(`./js`), `${dir}/js`);
+  await fs.copy(resolvePath(`./styles`), `${dir}/styles`);
   if(manualIndex) {
     await fs.copy(manualIndex, `${dir}/_coverpage.md`);
   }
