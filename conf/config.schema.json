@@ -28,11 +28,11 @@
           "title": "Other guides",
           "default": true
         },
-        "reference": {
-          "title": "Reference"
-        },
         "contributing": {
           "title": "Contributing"
+        },
+        "reference": {
+          "title": "Reference"
         }
       }
     }
