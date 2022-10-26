@@ -3,9 +3,9 @@
  * Generates documentation for the installed modules.
  */
 import { App } from 'adapt-authoring-core';
-import docsify from './docsify/docsify.js';
+import docsify from '../docsify/docsify.js';
 import fs from 'fs/promises';
-import jsdoc3 from './jsdoc3/jsdoc3.js';
+import jsdoc3 from '../jsdoc3/jsdoc3.js';
 import path from 'path';
 
 process.env.NODE_ENV ??= 'production';
