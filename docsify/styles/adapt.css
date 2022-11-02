@@ -125,6 +125,16 @@ section.content {
   border-left-color: #00dd95;
 }
 
+body.size-xl ul.toc {
+  columns: 4;
+}
+body.size-l ul.toc {
+  columns: 3;
+}
+body.size-m ul.toc {
+  columns: 2;
+}
+
 /**
  * Navbar width
  */
@@ -166,6 +176,14 @@ section.content {
 }
 .markdown-section table.schema {
   margin-top: 25px;
+}
+.markdown-section table.schema pre {
+  padding: 0.25rem 1rem;
+  text-align: center;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 }
 .markdown-section .required {
   font-weight: bold;
