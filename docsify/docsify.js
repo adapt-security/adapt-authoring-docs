@@ -1,5 +1,6 @@
+import DocsifyPluginWrapper from './DocsifyPluginWrapper.js'
 import { exec } from 'child_process';
-import { pathToFileURL, fileURLToPath } from 'url';
+import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
 import glob from 'glob';
 import path from 'path';
@@ -31,11 +32,14 @@ export default async function docsify(app, configs, outputdir, manualIndex, sour
     if(c.manualPlugins) {
       await Promise.all(c.manualPlugins.map(async p => {
         try {
-          Object.assign(c, { docsRootDir: outputdir, outputDir: dir });
-          const Plugin = (await import(pathToFileURL(path.resolve(c.rootDir, p)))).default;
-          const plugin = new Plugin(app, c, dir);
-          if(typeof plugin.run === 'function') await plugin.run();
-          if(plugin.customFiles) customFiles.push(...plugin.customFiles);
+          const wrapper = await new DocsifyPluginWrapper({
+            ...c,
+            app,
+            docsRootDir: outputdir, 
+            pluginEntry: path.resolve(c.rootDir, p),
+            outputDir: dir 
+          });
+          await wrapper.init();
         } catch(e) {
           console.log(`Failed to load ${c.name} doc manual plugin ${path.basename(p)}, ${e}`);
         }
