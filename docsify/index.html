@@ -18,22 +18,13 @@
     <a href="https://www.adaptlearning.org" target="_blank"><i class="material-icons">forum</i> Official forum</a>
     <a href="https://www.adaptlearning.org" target="_blank"><i class="material-icons">textsms</i> Gitter chatrooms</a>
   </nav>
-  <div id="app"></div>
-  <script>
-    window.$docsify = {
-      name: '<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool<h2>Developer guides</h2>',
-      repo: 'https://github.com/adapt-security/adapt-authoring',
-      themeColor: '#36cde8',
-      loadSidebar: true,
-      loadNavbar: false,
-      autoHeader: true,
-      coverpage: true
-    }
-  </script>
+  <div id="docsify">
+    <div id="app"><!-- Docsify will load in here --></div>
+  </div>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
   <!-- Plugins -->
-  <script src="js/dark-mode.js"></script>
+  <script src="js/adapt.js"></script>
   <script src="//unpkg.com/docsify-material-icons/dist/docsify-material-icons.min.js"></script>
   <script src="https://unpkg.com/docsify-copy-code@2"></script>
 </body>
