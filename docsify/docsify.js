@@ -40,6 +40,7 @@ export default async function docsify(app, configs, outputdir, manualIndex, sour
             outputDir: dir 
           });
           await wrapper.init();
+          customFiles.push(...wrapper.customFiles);
         } catch(e) {
           console.log(`Failed to load ${c.name} doc manual plugin ${path.basename(p)}, ${e}`);
         }
