@@ -47,8 +47,6 @@ App.instance.onReady().then(async app => {
       if(open) s.openBrowser();
     }
   });
-  if(dirArg) {
-  }
 });
 
 class Server {
