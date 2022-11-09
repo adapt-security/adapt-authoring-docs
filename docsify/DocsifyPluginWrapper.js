@@ -25,6 +25,7 @@ import { pathToFileURL } from 'url';
     if(this.plugin.manualFile) await this.writeFile();
   }
   generateTOC(items) {
+    const pageName = this.plugin?.manualFile?.replace(path.extname(this.plugin.manualFile), '') ?? '';
     let output = '### Quick navigation\n\n<ul class="toc">\n';
     items.forEach(i => {
       let text = i, link = i;
@@ -32,7 +33,7 @@ import { pathToFileURL } from 'url';
         text = i[0];
         link = i[1];
       }
-      output += `<li><a href="#${link}">${text}</a></li>\n`;
+      output += `<li><a href="#/${pageName}?id=${link}">${text}</a></li>\n`;
     });
     output += '</ul>\n';
     return output;
