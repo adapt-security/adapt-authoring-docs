@@ -15,7 +15,7 @@ Once the documentation has been built, it'll be stored in the temp directory. Wh
 To correctly view the docs, you'll need to run a local web server. You can do this using another automated bin script bundled with the documentation module:
 
 ```bash
-npx at-docgen
+npx at-docserve
 ```
 
 See the [bin script docs](binscripts) for full usage details.
