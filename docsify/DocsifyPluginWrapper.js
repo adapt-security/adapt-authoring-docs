@@ -13,6 +13,7 @@ import { pathToFileURL } from 'url';
     const PluginClass = (await import(pathToFileURL(this.config.pluginEntry))).default;
     this.plugin = new PluginClass();
     this.plugin.app = this.config.app;
+    this.plugin.config = this.config;
 
     if(!this.plugin.run || typeof this.plugin.run !== 'function') throw new Error(`Documentation plugin must define a 'run' function`);
 
