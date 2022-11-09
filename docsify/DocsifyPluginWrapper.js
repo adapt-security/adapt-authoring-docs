@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+import { pathToFileURL } from 'url';
 /**
  * Utility functions to be used by Docsify plugins
  */
