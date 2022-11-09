@@ -39,6 +39,7 @@ console.log('Starting app, please wait\n');
 
 App.instance.onReady().then(async app => {
   console.log('App started\n');
+  (await app.waitForModule('server')).close(); // close connections so we can still run the app separately
   const root = path.resolve(app.config.get('adapt-authoring-docs.outputDir'));
   (await fs.readdir(root)).forEach((dir, i) => {
     if(!args.length || args.includes(dir)) {
