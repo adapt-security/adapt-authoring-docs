@@ -5,6 +5,9 @@ import { pathToFileURL } from 'url';
  * Utility functions to be used by Docsify plugins
  */
  export default class DocsifyPluginWrapper {
+  get customFiles() {
+    return this.plugin.customFiles ?? [];
+  }
   constructor(config) {
     this.config = config;
     this.config.srcDir = path.dirname(config.pluginEntry);
