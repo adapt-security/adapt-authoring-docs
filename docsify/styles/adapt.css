@@ -126,7 +126,7 @@ section.content {
 }
 
 ul.toc {
-  margin-bottom: 15px;
+  margin-bottom: 3rem;
 }
 body.size-xl ul.toc {
   columns: 4;
