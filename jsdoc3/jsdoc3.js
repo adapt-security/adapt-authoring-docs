@@ -79,7 +79,12 @@ export default async function jsdoc3(app, configs, outputdir, sourceIndexFile) {
   cachedConfigs = configs;
   const dir = `${outputdir}/backend`;
   await writeConfig(app, dir, sourceIndexFile);
-  await execPromise(`npx jsdoc -c ${configPath}`);
+  try {
+    await execPromise(`npx jsdoc -c ${configPath}`);
+  } catch(e) {
+    console.log(e.stderr);
+    throw new Error('JSDoc exited with errors. See above for details.');
+  }
   await Promise.all([
     fs.copy(resolvePath(`./styles/adapt.css`), `${dir}/styles/adapt.css`),
     fs.copy(resolvePath(`./scripts/adapt.js`), `${dir}/scripts/adapt.js`),
