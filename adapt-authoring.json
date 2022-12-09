@@ -3,7 +3,7 @@
   "documentation": {
     "enable": true,
     "manualPages": {
-      "building-docs.md": "getting-started",
+      "building-docs.md": "basics",
       "custom-documentation-plugins.md": "advanced",
       "writing-documentation.md": "contributing"
     }
