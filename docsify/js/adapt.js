@@ -1,5 +1,5 @@
 window.$docsify = {
-  name: '<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool<h2>Developer guides</h2>',
+  name: '<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool<h2>Developer guides</h2>',
   repo: 'https://github.com/adapt-security/adapt-authoring',
   themeColor: '#36cde8',
   loadSidebar: true,

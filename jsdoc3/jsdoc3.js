@@ -25,7 +25,7 @@ async function writeConfig(app, outputdir, indexFile) {
       "search": false,
       "static": true,
       "menu": {
-        [`<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool back-end API documentation<br><span class="version">v${app.pkg.version}</span>`]: {
+        [`<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool back-end API documentation<br><span class="version">v${app.pkg.version}</span>`]: {
           "class":"menu-title"
         },
         "Home": {
