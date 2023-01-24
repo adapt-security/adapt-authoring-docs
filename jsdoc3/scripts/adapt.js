@@ -1,3 +1,9 @@
+const iconLink = document.createElement('link');
+iconLink.rel = 'icon';
+iconLink.href = "assets/favicon.png";
+iconLink.sizes = "any";
+document.querySelector('head').append(iconLink);
+
 const container = document.createElement('div');
 container.className = 'main-page-title';
 
