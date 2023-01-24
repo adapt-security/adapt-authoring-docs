@@ -9,23 +9,7 @@ window.$docsify = {
 }
 
 function onLoad() {
-  addSizeClass();
   updateTheme();
-}
-
-function addSizeClass() {
-  const sizes = [
-    ['size-xl', 1400],
-    ['size-l', 1024],
-    ['size-m', 768],
-    ['size-s', 0]
-  ];
-  document.body.classList.remove(...sizes.map(s => s[0]));
-  sizes.some(([className, size]) => {
-    if(document.body.clientWidth < size) return;
-    document.body.classList.add(className);
-    return true;
-  });
 }
 
 function darkModeClick(event) {

@@ -134,14 +134,14 @@ section.content {
 ul.toc {
   margin-bottom: 3rem;
 }
-body.size-xl ul.toc {
+
+body.size-xl ul.toc:nth-child(n+10) {
   columns: 4;
 }
-body.size-l ul.toc {
+body.size-l ul.toc:nth-child(n+10) {
   columns: 3;
 }
-body.size-m ul.toc {
-  columns: 2;
+body.size-m ul.toc:nth-child(n+10) {
 }
 ul.toc > li {
   overflow: hidden;
