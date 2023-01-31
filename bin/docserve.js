@@ -6,10 +6,8 @@
  */
 import { App } from 'adapt-authoring-core';
 import { spawn } from 'child_process';
-import fs from 'fs/promises';
-import http from 'http';
+import http from 'http-server';
 import path from 'path';
-import url from 'url';
 
 function getMime(filePath) {
   const ext = path.parse(filePath).ext;
@@ -26,12 +24,6 @@ function getMime(filePath) {
     '.doc': 'application/msword'
   }[ext] || 'text/plain';
 }
-let open;
-const args = process.argv.slice(2).filter(a => {
-  if(a === '--open') open = true;
-  return a !== '--open';
-});
-
 process.env.NODE_ENV ??= 'production';
 process.env.ADAPT_AUTHORING_LOGGER__mute = true;
 
@@ -40,41 +32,21 @@ console.log('Starting app, please wait\n');
 App.instance.onReady().then(async app => {
   console.log('App started\n');
   (await app.waitForModule('server')).close(); // close connections so we can still run the app separately
-  const s = new Server(path.resolve(app.config.get('adapt-authoring-docs.outputDir')));
-  if(open) s.openBrowser();
-});
 
-class Server {
-  constructor(dir, i = 0) {
-    this.root = dir;
-    this.port = 9000 + i;
-    this.url = `http://localhost:${this.port}`;
-    http.createServer(this.requestHandler.bind(this)).listen(this.port);
-    console.log(`${path.basename(dir)} docs hosted at ${this.url}`);
-  }
-  async requestHandler(req, res) {
-    const file = url.parse(req.url).pathname.slice(1);
-    console.log(req.url);
-    console.log(url.parse(req.url));
-    const filePath = path.resolve(this.root, path.extname(req.url) ? req.url : `${req.url}/index.html`);
-    try {
-      await fs.stat(filePath);
-    } catch(e) {
-      res.statusCode = 404;
-      res.end(`Not found: ${filePath}`);
-      return;
+  const ROOT = path.resolve(app.config.get('adapt-authoring-docs.outputDir'));
+  const PORT = 9000;
+  const OPEN = process.argv.some(a => a === '--open');
+
+  const server = http.createServer({ root: ROOT, port: PORT });
+
+  server.listen(PORT, () => {
+    const url = `http://localhost:${PORT}`;
+    console.log(`Docs hosted at ${url}`);
+
+    if(OPEN) {
+      const command = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
+      spawn(`${command} ${url}`, { shell: true })
+        .on('error', e => console.log('spawn error', e));
     }
-    try {
-      res.setHeader('Content-type', getMime(filePath));
-      res.end(await fs.readFile(filePath));
-    } catch(e) {
-      res.statusCode = 500;
-      res.end(`Error getting the file: ${e}`);
-    }
-  }
-  openBrowser() {
-    const command = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
-    spawn(`${command} http://localhost:${this.port}`, { shell: true })
-      .on('error', e => console.log('spawn error', e));
-  }
-}
+  });
+});
