@@ -14,7 +14,7 @@
   <a href="manual">Developer guides</a>
   <a href="backend">Back-end API Reference</a>
   <a href="frontend">Front-end API Reference</a>
-  <div class="update-age">Docs updated <span id="age"></span> ago.</div>
+  <div id="update-age" class="display-none">Docs updated <span id="age"></span> ago.</div>
 </body>
 <style>
   @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Roboto+Mono);
@@ -60,6 +60,9 @@
     bottom: 0;
     font-size: 90%;
   }
+  .display-none {
+    display: none;
+  }
 </style>
 <script>
   async function getUpdateDate() {
@@ -71,6 +74,7 @@
       const data = await res.json();
       const age = getAge(data.commit.committer.date);
       document.getElementById('age').innerHTML = `${age.diff} ${age.unit}`;
+      document.getElementById('update-age').classList.remove("display-none");
     } catch(e) {
       console.error(e);
     }
