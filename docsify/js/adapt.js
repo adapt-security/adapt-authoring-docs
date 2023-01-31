@@ -27,5 +27,4 @@ function updateTheme() {
 }
 
 addEventListener('load', onLoad);
-addEventListener('resize', addSizeClass);
 document.getElementById("dark-mode").addEventListener('click', darkModeClick);
