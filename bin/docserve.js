@@ -36,30 +36,27 @@ process.env.NODE_ENV ??= 'production';
 process.env.ADAPT_AUTHORING_LOGGER__mute = true;
 
 console.log('Starting app, please wait\n');
-
+// TODO remove need to start app
 App.instance.onReady().then(async app => {
   console.log('App started\n');
   (await app.waitForModule('server')).close(); // close connections so we can still run the app separately
-  const root = path.resolve(app.config.get('adapt-authoring-docs.outputDir'));
-  (await fs.readdir(root)).forEach((dir, i) => {
-    if(!args.length || args.includes(dir)) {
-      const s = new Server(path.resolve(root, dir), i);
-      if(open) s.openBrowser();
-    }
-  });
+  const s = new Server(path.resolve(app.config.get('adapt-authoring-docs.outputDir')));
+  if(open) s.openBrowser();
 });
 
 class Server {
-  constructor(dir, i) {
+  constructor(dir, i = 0) {
     this.root = dir;
-    this.port = 9001 + i;
+    this.port = 9000 + i;
     this.url = `http://localhost:${this.port}`;
     http.createServer(this.requestHandler.bind(this)).listen(this.port);
     console.log(`${path.basename(dir)} docs hosted at ${this.url}`);
   }
   async requestHandler(req, res) {
     const file = url.parse(req.url).pathname.slice(1);
-    const filePath = path.resolve(this.root, file ? file : `index.html`);
+    console.log(req.url);
+    console.log(url.parse(req.url));
+    const filePath = path.resolve(this.root, path.extname(req.url) ? req.url : `${req.url}/index.html`);
     try {
       await fs.stat(filePath);
     } catch(e) {
