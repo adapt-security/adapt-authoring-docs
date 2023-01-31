@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="docs/manual/assets/favicon.png" sizes="any">
+  <title>Documentation - Adapt authoring tool</title>
+</head>
+<body>
+  <div class="container"><img src="docs/manual/assets/logo.png" /></div>
+  <h1>Adapt authoring tool</h1>
+  <h2>Documentation</h2>
+  <a href="docs/manual">Developer guides</a>
+  <a href="docs/backend">Back-end API Reference</a>
+  <a href="docs/frontend">Front-end API Reference</a>
+  <div class="update-age">Docs updated <span id="age"></span> ago.</div>
+</body>
+<style>
+  @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Roboto+Mono);
+  body {
+    background: linear-gradient(to left bottom, #263944 0%,#0096bb 100%) !important;
+    font-family: 'Open Sans', sans-serif;
+    color: white;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    margin-top: 25vh;
+    overflow: hidden;
+  }
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+  }
+  h2 {
+    font-size: 5em;
+    font-weight: 300;
+  }
+  a {
+    border-radius: 2rem;
+    border: 1px solid white;
+    box-sizing: border-box;
+    color: white;
+    display: inline-block;
+    font-size: 1.1rem;
+    margin: .5rem 1rem;
+    padding: .75em 2rem;
+    text-decoration: none;
+    transition: all .15s ease;
+  }
+  a:hover {
+    background: white;
+    color: #14647b;
+  }
+  .update-age {
+    position: fixed;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    bottom: 0;
+    font-size: 90%;
+  }
+</style>
+<script>
+  async function getUpdateDate() {
+    try {
+      const res = await fetch('https://api.github.com/repos/adapt-security/adapt-authoring-documentation/commits/master');
+      if(res.status > 299) {
+        throw new Error(res.statusText);
+      }
+      const data = await res.json();
+      const age = getAge(data.commit.committer.date);
+      document.getElementById('age').innerHTML = `${age.diff} ${age.unit}`;
+    } catch(e) {
+      console.error(e);
+    }
+  }
+  function getAge(timestamp) {
+    const diffMs = new Date() - new Date(timestamp);
+    let divider = 1000;
+    const units = [
+      { duration: 1, unit: 'second' },
+      { duration: 60, unit: 'minute' },
+      { duration: 60, unit: 'hour' },
+      { duration: 24, unit: 'day' },
+      { duration: 30, unit: 'week' },
+      { duration: 12, unit: 'month' }
+    ];
+    return units.reduce((memo, data) => {
+      divider *= data.duration;
+      data.rawDiff = diffMs/divider;
+      data.diff = Math.round(data.rawDiff);
+      if(data.diff > 1) data.unit += 's';
+      return data.rawDiff > 1 ? data : memo;
+    }, {});
+  }
+  getUpdateDate();
+</script>
+</html>

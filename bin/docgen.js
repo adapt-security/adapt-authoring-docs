@@ -47,6 +47,12 @@ function cacheConfigs() {
   return cache;
 }
 
+async function copyRootFiles() {
+  const resolve = p => new URL(`../${p}`, import.meta.url);
+  await fs.cp(resolve('/root'), outputdir, { recursive: true });
+  await fs.cp(resolve('assets'), path.resolve(outputdir, 'assets'), { recursive: true });
+}
+
 async function docs() {
   console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version}`);
 
@@ -62,6 +68,8 @@ async function docs() {
 
   try {
     await fs.rm(outputdir, { recursive: true, force: true });
+    await fs.mkdir(outputdir);
+    await copyRootFiles();
     await jsdoc3(app, cachedConfigs, outputdir, sourceIndex);
     await docsify(app, cachedConfigs, outputdir, manualIndex, sourceIndex);
   } catch(e) {
