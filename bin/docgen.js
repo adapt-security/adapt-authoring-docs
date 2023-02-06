@@ -7,6 +7,7 @@ import docsify from '../docsify/docsify.js';
 import fs from 'fs/promises';
 import jsdoc3 from '../jsdoc3/jsdoc3.js';
 import path from 'path';
+import swagger from '../swagger/swagger.js';
 
 process.env.NODE_ENV ??= 'production';
 process.env.ADAPT_AUTHORING_LOGGER__mute = true
@@ -70,8 +71,9 @@ async function docs() {
     await fs.rm(outputdir, { recursive: true, force: true });
     await fs.mkdir(outputdir);
     await copyRootFiles();
-    await jsdoc3(app, cachedConfigs, outputdir, sourceIndex);
-    await docsify(app, cachedConfigs, outputdir, manualIndex, sourceIndex);
+    // await jsdoc3(app, cachedConfigs, outputdir, sourceIndex);
+    // await docsify(app, cachedConfigs, outputdir, manualIndex, sourceIndex);
+    await swagger(app, cachedConfigs, outputdir);
   } catch(e) {
     console.log(e);
     process.exit(1);
