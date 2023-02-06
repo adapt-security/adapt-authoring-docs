@@ -13,12 +13,10 @@ function resolvePath(relativePath) {
  */
 export default async function swagger(app, configs, outputdir) {
   const spec = {
-    openapi: "3.1.0",
+    openapi: "3.0.3",
     info: {
-      title: "adapt-authoring",
-      version: "1.0.0"
-      // title: app.name,
-      // version: app.version
+      title: app.name,
+      version: app.version
     },
     paths: {}
   };
@@ -32,17 +30,21 @@ export default async function swagger(app, configs, outputdir) {
   b.add(resolvePath('./index.js'));
 
   const dir = path.resolve(outputdir, 'swagger');
-  await fs.mkdir(dir);
-  await fs.cp(resolvePath('./index.html'), path.resolve(dir, 'index.html'));
+  const cssDir = path.resolve(dir, 'css');
+  const jsDir = path.resolve(dir, 'js');
 
-  await new Promise((resolve, reject) => {
-    b.bundle().pipe(fsSync.createWriteStream(path.resolve(dir, 'swagger.js')))
-      // .on('error', e => reject(e))
-      .on('error', e => {
-        console.log('------------------->');
-        console.log(e);
-        reject(e);
-      })
-      .on('finish', () => resolve());
-  });
+  await fs.mkdir(dir);
+  await fs.mkdir(cssDir);
+  await fs.mkdir(jsDir);
+
+  await Promise.all([
+    fs.cp(resolvePath('./index.html'), path.resolve(dir, 'index.html')),
+    fs.cp('node_modules/swagger-ui/dist/swagger-ui.css', path.resolve(cssDir, 'swagger.css')),
+    fs.writeFile(path.resolve(dir, 'api.json'), JSON.stringify(spec, null, 2)),
+    new Promise((resolve, reject) => {
+      b.bundle().pipe(fsSync.createWriteStream(path.resolve(jsDir, 'swagger.js')))
+        .on('error', e => reject(e))
+        .on('finish', () => resolve());
+    })
+  ]);
 }
