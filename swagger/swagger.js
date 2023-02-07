@@ -29,7 +29,7 @@ export default async function swagger(app, configs, outputdir) {
   const b = browserify({ plugin: [[esmify]]});
   b.add(resolvePath('./index.js'));
 
-  const dir = path.resolve(outputdir, 'swagger');
+  const dir = path.resolve(outputdir, 'rest');
   const cssDir = path.resolve(dir, 'css');
   const jsDir = path.resolve(dir, 'js');
 
@@ -40,6 +40,7 @@ export default async function swagger(app, configs, outputdir) {
   await Promise.all([
     fs.cp(resolvePath('./index.html'), path.resolve(dir, 'index.html')),
     fs.cp('node_modules/swagger-ui/dist/swagger-ui.css', path.resolve(cssDir, 'swagger.css')),
+    fs.cp(resolvePath('./css/adapt.css'), path.resolve(cssDir, 'adapt.css')),
     fs.writeFile(path.resolve(dir, 'api.json'), JSON.stringify(spec, null, 2)),
     new Promise((resolve, reject) => {
       b.bundle().pipe(fsSync.createWriteStream(path.resolve(jsDir, 'swagger.js')))
