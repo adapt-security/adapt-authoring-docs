@@ -71,8 +71,8 @@ async function docs() {
     await fs.rm(outputdir, { recursive: true, force: true });
     await fs.mkdir(outputdir);
     await copyRootFiles();
-    // await jsdoc3(app, cachedConfigs, outputdir, sourceIndex);
-    // await docsify(app, cachedConfigs, outputdir, manualIndex, sourceIndex);
+    await jsdoc3(app, cachedConfigs, outputdir, sourceIndex);
+    await docsify(app, cachedConfigs, outputdir, manualIndex, sourceIndex);
     await swagger(app, cachedConfigs, outputdir);
   } catch(e) {
     console.log(e);
