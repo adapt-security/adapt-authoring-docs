@@ -12,19 +12,15 @@ function resolvePath(relativePath) {
  * 
  */
 export default async function swagger(app, configs, outputdir) {
+  const server = await app.waitForModule('server');
   const spec = {
     openapi: '3.0.3',
     info: {
       title: 'Adapt authoring tool REST API documentation',
       version: app.pkg.version
     },
-    paths: {}
+    paths: generatePathSpec(server.api)
   };
-  // parse all module APIs
-  await Promise.all(configs.filter(c => c.api).map(async c => {
-    const apiJson = JSON.parse((await fs.readFile(path.join(c.rootDir, 'docs', 'api.json'))).toString());
-    Object.assign(spec.paths, apiJson.paths);
-  }));
   // generate UI
   const b = browserify({ plugin: [[esmify]]});
   b.add(resolvePath('./js/index.js'));
@@ -48,4 +44,29 @@ export default async function swagger(app, configs, outputdir) {
         .on('finish', () => resolve());
     })
   ]);
+}
+
+function generatePathSpec(router, paths = {}) {
+  router.routes.forEach(r => {
+    const parameters = r.route.split('/').filter(r => r.startsWith(':')).map(r => {
+      return {
+        name: r.replaceAll(/:|\?/g, ''),
+        in: 'path',
+        required: !r.endsWith('?')
+      };
+    });
+    paths[router.path + r.route] = Object.keys(r.handlers).reduce((memo, method) => {
+      return Object.assign(memo, {
+        [method]: { 
+          tags: [router.route], 
+          summary: r.summary,
+          parameters 
+        }
+      });
+    }, {});
+  });
+  if(router.childRouters.length) {
+    router.childRouters.forEach(childRouter => generatePathSpec(childRouter, paths));
+  }
+  return paths;
 }
