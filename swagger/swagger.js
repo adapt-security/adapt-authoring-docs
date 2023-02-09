@@ -13,9 +13,9 @@ function resolvePath(relativePath) {
  */
 export default async function swagger(app, configs, outputdir) {
   const spec = {
-    openapi: "3.0.3",
+    openapi: '3.0.3',
     info: {
-      title: app.pkg.name,
+      title: 'Adapt authoring tool REST API documentation',
       version: app.pkg.version
     },
     paths: {}
