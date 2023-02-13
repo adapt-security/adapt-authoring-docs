@@ -81,13 +81,12 @@ function generatePathSpec(app, router, paths = {}) {
       return Object.assign(memo, {
         [method]: { 
           tags: [router.path.split('/').slice(2).join(' ')], 
-          summary: meta.description,
-          description: scopes ? 
+          description: scopes.length ? 
             `Required scopes: ${scopes.map(s => `<span>${s}</apan>`).join(' ')}` : 
             'Route requires no authentication',
           parameters: meta.parameters ? parameters.concat(meta.parameters) : parameters,
-          requestBody: meta.requestBody,
-          security: { roles: scopes }
+          security: { roles: scopes },
+          ...meta
         }
       });
     }, {});
