@@ -64,7 +64,7 @@ function generatePathSpec(app, router, paths = {}) {
         required: !r.endsWith('?')
       };
     });
-    const route = `${router.path}${r.route}`;
+    const route = `${router.path}${r.route !== '/' ? r.route : ''}`;
     paths[route] = Object.keys(r.handlers).reduce((memo, method) => {
       const meta = r.meta?.[method] || {};
       const scopes = perms[method].find(p => route.match(p[0]))?.[1] || [];
