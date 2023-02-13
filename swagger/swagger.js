@@ -16,9 +16,7 @@ export default async function swagger(app, configs, outputdir) {
   const spec = {
     openapi: '3.0.3',
     info: { version: app.pkg.version },
-    components: {
-      schemas: generateSchemaSpec(app)
-    },
+    components: { schemas: await generateSchemaSpec(app) },
     paths: generatePathSpec(app, server.api)
   };
   // generate UI
@@ -50,8 +48,20 @@ export default async function swagger(app, configs, outputdir) {
 async function generateSchemaSpec(app) {
   const jsonschema = await app.waitForModule('jsonschema');
   const schemas = {};
-  await Promise.all(Object.keys(jsonschema.schemaPaths).map(async s => schemas[s] = await jsonschema.loadSchema(s)));
+  await Promise.all(Object.keys(jsonschema.schemaPaths).map(async s => {
+    schemas[s] = sanitiseSchema(await jsonschema.getSchema(s));
+  }));
   return schemas;
+}
+
+function sanitiseSchema(schema) {
+  const props = schema.properties ?? schema;
+  for (const prop in props) {
+    const s = props[prop];
+    if(s.type === 'object') props[prop] = sanitiseSchema(s);
+    if(s.isInternal || s.isReadOnly) delete props[prop];
+  }
+  return schema;
 }
 
 function generatePathSpec(app, router, paths = {}) {

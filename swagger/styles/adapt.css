@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Roboto+Mono);
 
 body {
-  font-family: 'Open Sans', sans-serif !important;
+  font-family: 'Open Sans' !important;
   font-size: 14px;
   margin: 0;
 }
@@ -33,6 +33,7 @@ header h1 {
 #swagger {
   margin-bottom: 50px;
 }
+
 .info {
   margin: 0 !important;
   text-align: center;
@@ -41,10 +42,16 @@ header h1 {
   display: inline-block;
   font-size: initial !important;
 }
+
 .main small {
   position: initial !important;
   border-radius: 3px !important;
   vertical-align: initial !important;
+}
+
+.swagger-ui .opblock .opblock-summary-path {
+  font-size: 13px;
+  font-weight: normal;
 }
 .opblock-description span {
   background-color: #8121d9;
