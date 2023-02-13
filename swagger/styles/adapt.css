@@ -1,0 +1,108 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Roboto+Mono);
+
+body {
+  --default-font-family: 'Open Sans' !important;
+  --default-font-size: 13px;
+  font-family: var(--default-font-family);
+  font-size: var(--default-font-size);
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6, 
+h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
+  font-family: var(--default-font-family);
+  font-weight: 300 !important;
+}
+
+.main a,
+.auth-wrapper,
+.try-out {
+  display: none !important;
+}
+
+header {
+  padding: 20px;
+  margin-bottom: 15px;
+  color: white;
+  text-align: center;
+  background: linear-gradient(to left bottom, #263944 0%,#0096bb 100%) !important;
+}
+header img {
+  height: 50px;
+}
+header h1 {
+  font-size: 200%;
+  margin: 10px;
+}
+header h2 {
+  font-size: initial;
+  margin: 0;
+}
+
+#swagger {
+  margin-bottom: 50px;
+}
+
+.swagger-ui .wrapper {
+  max-width: 1000px;
+}
+/* hide schemas UI */
+.swagger-ui .wrapper:last-child {
+  display: none;
+}
+
+.swagger-ui .info {
+  margin: 0 !important;
+  text-align: center;
+}
+.swagger-ui .info hgroup.main {
+  margin-bottom: 0;
+}
+.swagger-ui .info .title {
+  display: inline-block;
+  font-size: initial !important;
+}
+
+.swagger-ui .main small {
+  position: initial !important;
+  border-radius: 3px !important;
+  vertical-align: initial !important;
+}
+
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-external-docs-wrapper p,
+.swagger-ui .opblock-title_normal p,
+.swagger-ui .opblock opblock-summary-method,
+.swagger-ui .opblock .opblock-summary-description,
+.swagger-ui .parameter__name.required {
+  font-family: var(--default-font-family);
+  font-size: var(--default-font-size);
+}
+.swagger-ui .opblock-body pre.microlight {
+  padding: 15px !important;
+  font-size: 85%;
+  font-weight: normal;
+}
+.swagger-ui .opblock-body select {
+  font-size: 90%;
+}
+
+.swagger-ui .opblock .opblock-summary-path {
+  font-size: var(--default-font-size);
+  font-weight: bold;
+}
+
+.swagger-ui .opblock .opblock-summary-description {
+  text-align: right;
+  margin-right: 15px;
+}
+
+.swagger-ui .opblock .opblock-description span {
+  background-color: #8121d9;
+  color: white;
+  padding: 3px 5px;
+  margin-left: 5px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 85%;
+}
