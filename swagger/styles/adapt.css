@@ -69,8 +69,8 @@ header h2 {
   vertical-align: initial !important;
 }
 
-.swagger-ui .opblock-description-wrapper p, 
-.swagger-ui .opblock-external-docs-wrapper p, 
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-external-docs-wrapper p,
 .swagger-ui .opblock-title_normal p,
 .swagger-ui .opblock opblock-summary-method,
 .swagger-ui .opblock .opblock-summary-description,
