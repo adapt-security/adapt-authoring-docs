@@ -16,6 +16,9 @@ export default async function swagger(app, configs, outputdir) {
   const spec = {
     openapi: '3.0.3',
     info: { version: app.pkg.version },
+    components: {
+      schemas: generateSchemaSpec(app)
+    },
     paths: generatePathSpec(app, server.api)
   };
   // generate UI
@@ -44,10 +47,17 @@ export default async function swagger(app, configs, outputdir) {
   ]);
 }
 
+async function generateSchemaSpec(app) {
+  const jsonschema = await app.waitForModule('jsonschema');
+  const schemas = {};
+  await Promise.all(Object.keys(jsonschema.schemaPaths).map(async s => schemas[s] = await jsonschema.loadSchema(s)));
+  return schemas;
+}
+
 function generatePathSpec(app, router, paths = {}) {
   const perms = app.dependencyloader.instances['adapt-authoring-auth'].permissions.routes;
   router.routes.forEach(r => {
-    const params = r.route.split('/').filter(r => r.startsWith(':')).map(r => {
+    const parameters = r.route.split('/').filter(r => r.startsWith(':')).map(r => {
       return {
         name: r.replaceAll(/:|\?/g, ''),
         in: 'path',
@@ -65,7 +75,8 @@ function generatePathSpec(app, router, paths = {}) {
           description: scopes ? 
             `Required scopes: ${scopes.map(s => `<span>${s}</apan>`).join(' ')}` : 
             'Route requires no authentication',
-          parameters: meta.params ? params.concat(meta.params) : params,
+          parameters: meta.parameters ? parameters.concat(meta.parameters) : parameters,
+          requestBody: meta.requestBody,
           security: { roles: scopes }
         }
       });
