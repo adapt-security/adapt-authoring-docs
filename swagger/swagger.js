@@ -80,13 +80,13 @@ function generatePathSpec(app, router, paths = {}) {
       const scopes = perms[method].find(p => route.match(p[0]))?.[1] || [];
       return Object.assign(memo, {
         [method]: { 
+          ...meta,
           tags: [router.path.split('/').slice(2).join(' ')], 
           description: scopes.length ? 
             `Required scopes: ${scopes.map(s => `<span>${s}</apan>`).join(' ')}` : 
             'Route requires no authentication',
           parameters: meta.parameters ? parameters.concat(meta.parameters) : parameters,
-          security: { roles: scopes },
-          ...meta
+          security: { roles: scopes }
         }
       });
     }, {});
