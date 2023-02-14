@@ -78,13 +78,15 @@ function generatePathSpec(app, router, paths = {}) {
     paths[route] = Object.keys(r.handlers).reduce((memo, method) => {
       const meta = r.meta?.[method] || {};
       const scopes = perms[method].find(p => route.match(p[0]))?.[1] || [];
+      let description = r.internal ? `ROUTE IS ONLY ACCESSIBLE FROM LOCALHOST.<br/><br/>` : '';
+      description +=  scopes.length ?
+        `Required scopes: ${scopes.map(s => `<span>${s}</apan>`).join(' ')}` : 
+        'Route requires no authentication';
       return Object.assign(memo, {
         [method]: { 
           ...meta,
           tags: [router.path.split('/').slice(2).join(' ')], 
-          description: scopes.length ? 
-            `Required scopes: ${scopes.map(s => `<span>${s}</apan>`).join(' ')}` : 
-            'Route requires no authentication',
+          description,
           parameters: meta.parameters ? parameters.concat(meta.parameters) : parameters,
           security: { roles: scopes }
         }
