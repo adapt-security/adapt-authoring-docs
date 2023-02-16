@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 /**
  * Generates an HTTP server for viewing the local copy of the documentation (note these must be build first with `at-docgen`)
- * @param {String} [dir] The dir to serve (all dirs will be served by default)
- * @param {String} --open Will automate open the served folders in separate broser windows/tabs
  */
 import { App } from 'adapt-authoring-core';
 import { spawn } from 'child_process';
