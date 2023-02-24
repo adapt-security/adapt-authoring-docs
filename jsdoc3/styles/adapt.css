@@ -65,7 +65,7 @@ h4.name a,
 
 nav {
   padding-left: 25px;
-  bottom: 2rem;
+  padding-bottom: 2rem;
   background-color: #263944;
 }
 nav #nav-search {
