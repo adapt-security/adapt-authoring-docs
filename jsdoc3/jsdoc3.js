@@ -79,7 +79,9 @@ async function writeConfig(app, outputdir, indexFile) {
  */
 function getSourceIncludes(indexFile) {
   const includes = cachedConfigs.reduce((i, c) => {
-    return i.concat(glob.sync('lib/**/*.js', { cwd: c.rootDir, absolute: true }));
+    i.concat(glob.sync('lib/**/*.js', { cwd: c.rootDir, absolute: true }));
+    if(c.module !== false) i.concat(glob.sync('index.js', { cwd: c.rootDir, absolute: true }));
+    return i;
   }, []);
   if(indexFile) includes.push(indexFile);
   return includes;
