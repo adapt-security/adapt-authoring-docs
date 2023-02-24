@@ -22,7 +22,7 @@ async function writeConfig(app, outputdir, indexFile) {
     "docdash": {
       "collapse": true,
       "typedefs": true,
-      "search": false,
+      "search": true,
       "static": true,
       "menu": {
         [`<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool back-end API documentation<br><span class="version">v${app.pkg.version}</span>`]: {
