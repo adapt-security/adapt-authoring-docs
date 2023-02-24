@@ -47,6 +47,16 @@ async function writeConfig(app, outputdir, indexFile) {
           "id":"forum_link"
         }
       },
+      "sectionOrder": [               // Order the main section in the navbar (default order shown here)
+        "Namespaces",
+        "Classes",
+        "Modules",
+        "Externals",
+        "Events",
+        "Mixins",
+        "Tutorials",
+        "Interfaces"
+      ],
       "meta": {
         "title": "Adapt authoring tool UI documentation",
         "description": "Adapt authoring tool UI documentation",
