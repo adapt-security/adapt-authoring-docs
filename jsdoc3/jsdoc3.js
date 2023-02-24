@@ -81,7 +81,7 @@ function getSourceIncludes(indexFile) {
   const includes = cachedConfigs.reduce((i, c) => {
     return i.concat(
       ...glob.sync('lib/**/*.js', { cwd: c.rootDir, absolute: true }),
-      ...glob.sync('index.js', { cwd: c.rootDir, absolute: true })
+      ...(c.module ? glob.sync('index.js', { cwd: c.rootDir, absolute: true }) : [])
     );
   }, []);
   if(indexFile) includes.push(indexFile);
