@@ -25,7 +25,7 @@ let sourceIndex; // populated in cacheConfigs
 function cacheConfigs() {
   const cache = [];
   const excludes = app.pkg.documentation.excludes ?? [];
-  Object.values(app.dependencies).forEach(dep => {
+  Object.values(app.dependencyloader.instances).forEach(({ pkg: dep }) => {
     const c = dep.documentation;
     
     let omitMsg;
