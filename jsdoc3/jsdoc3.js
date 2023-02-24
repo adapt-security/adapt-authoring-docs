@@ -28,8 +28,8 @@ async function writeConfig(app, outputdir, indexFile) {
         [`<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool back-end API documentation<br><span class="version">v${app.pkg.version}</span>`]: {
           "class":"menu-title"
         },
-        "Home": {
-          "href":"index.html",
+        "Documentation home": {
+          "href":"https://adapt-security.github.io/adapt-authoring-documentation/",
           "target":"_self",
           "class":"menu-item",
           "id":"home_link"
