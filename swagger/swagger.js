@@ -13,6 +13,7 @@ function resolvePath(relativePath) {
  */
 export default async function swagger(app, configs, outputdir) {
   const server = await app.waitForModule('server');
+  await app.onReady();
   const spec = {
     openapi: '3.0.3',
     info: { version: app.pkg.version },
@@ -48,8 +49,8 @@ export default async function swagger(app, configs, outputdir) {
 async function generateSchemaSpec(app) {
   const jsonschema = await app.waitForModule('jsonschema');
   const schemas = {};
-  await Promise.all(Object.keys(jsonschema.schemaPaths).map(async s => {
-    schemas[s] = sanitiseSchema(await jsonschema.getSchema(s));
+  await Promise.all(Object.keys(jsonschema.schemas).map(async s => {
+    schemas[s] = sanitiseSchema((await jsonschema.getSchema(s)).built);
   }));
   return schemas;
 }
