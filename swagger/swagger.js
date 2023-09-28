@@ -1,8 +1,5 @@
-import browserify from 'browserify';
-import esmify from 'esmify';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
-import fsSync from 'fs';
 import path from 'path';
 
 function resolvePath(relativePath) {
@@ -21,12 +18,10 @@ export default async function swagger(app, configs, outputdir) {
     paths: generatePathSpec(app, server.api)
   };
   // generate UI
-  const b = browserify({ plugin: [[esmify]]});
-  b.add(resolvePath('./js/index.js'));
-
   const dir = path.resolve(outputdir, 'rest');
   const cssDir = path.resolve(dir, 'styles');
   const jsDir = path.resolve(dir, 'js');
+  const distDir = 'node_modules/swagger-ui/dist';
 
   await fs.mkdir(dir);
   await fs.mkdir(cssDir);
@@ -34,15 +29,12 @@ export default async function swagger(app, configs, outputdir) {
 
   await Promise.all([
     fs.cp(resolvePath('./index.html'), path.resolve(dir, 'index.html')),
-    fs.cp('node_modules/swagger-ui/dist/swagger-ui.css', path.resolve(cssDir, 'swagger.css')),
+    fs.cp(path.join(distDir, 'swagger-ui.css'), path.resolve(cssDir, 'swagger-ui.css')),
     fs.cp(resolvePath('./styles/adapt.css'), path.resolve(cssDir, 'adapt.css')),
     fs.cp(resolvePath(`../assets`), path.resolve(dir, 'assets'), { recursive: true }),
+    fs.cp(path.join(distDir, 'swagger-ui-bundle.js'), path.resolve(jsDir, 'swagger-ui-bundle.js')),
+    fs.cp(path.join(distDir, 'swagger-ui-standalone-preset.js'), path.resolve(jsDir, 'swagger-ui-standalone-preset.js')),
     fs.writeFile(path.resolve(dir, 'api.json'), JSON.stringify(spec, null, 2)),
-    new Promise((resolve, reject) => {
-      b.bundle().pipe(fsSync.createWriteStream(path.resolve(jsDir, 'swagger.js')))
-        .on('error', e => reject(e))
-        .on('finish', () => resolve());
-    })
   ]);
 }
 
