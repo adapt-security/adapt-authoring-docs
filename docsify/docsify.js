@@ -2,7 +2,7 @@ import DocsifyPluginWrapper from './DocsifyPluginWrapper.js'
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
-import glob from 'glob';
+import { globSync } from 'glob';
 import path from 'path';
 import { promisify } from 'util';
 
@@ -51,7 +51,7 @@ export default async function docsify(app, configs, outputdir, manualIndex, sour
         if(!sectionsConf[key]) sectionsConf[key] = data
       });
     } 
-    [...customFiles, ...glob.sync('docs/*.md', { cwd: c.rootDir, absolute: true })].forEach(f => {
+    [...customFiles, ...globSync('docs/*.md', { cwd: c.rootDir, absolute: true })].forEach(f => {
       if(f === sourceIndex) {
         return;
       }

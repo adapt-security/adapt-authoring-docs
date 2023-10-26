@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
-import glob from 'glob';
+import { globSync } from 'glob';
 import { promisify } from 'util';
 
 const execPromise = promisify(exec);
@@ -80,8 +80,8 @@ async function writeConfig(app, outputdir, indexFile) {
 function getSourceIncludes(indexFile) {
   const includes = cachedConfigs.reduce((i, c) => {
     return i.concat(
-      ...glob.sync('lib/**/*.js', { cwd: c.rootDir, absolute: true }),
-      ...(c.module ? glob.sync('index.js', { cwd: c.rootDir, absolute: true }) : [])
+      ...globSync('lib/**/*.js', { cwd: c.rootDir, absolute: true }),
+      ...(c.module ? globSync('index.js', { cwd: c.rootDir, absolute: true }) : [])
     );
   }, []);
   if(indexFile) includes.push(indexFile);
