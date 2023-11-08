@@ -70,8 +70,12 @@ async function copyRootFiles() {
 async function docs() {
   console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version}`);
 
-  await app.onReady();
-
+  try {
+    await app.onReady();
+  } catch(e) {
+    console.log(`App failed to start, cannot continue.\n${e}`);
+    process.exit(1);
+  }
   const config = await app.waitForModule('config');
   const { name } = JSON.parse(await fs.readFile(new URL('../package.json', import.meta.url)));
   outputdir = path.resolve(process.cwd(), config.get(`${name}.outputDir`));
