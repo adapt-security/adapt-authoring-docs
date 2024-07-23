@@ -12,13 +12,13 @@
   "repository": "github:adapt-security/adapt-authoring-docs",
   "dependencies": {
     "comment-parser": "^1.4.1",
-    "docdash": "^1.2.0",
+    "docdash": "^2.0.2",
     "docsify-cli": "^4.4.4",
-    "fs-extra": "7.0.1",
-    "glob": "^10.3.10",
+    "fs-extra": "^7.0.1",
+    "glob": "^11.0.0",
     "http-server": "^14.1.1",
-    "jsdoc": "^4.0.2",
-    "swagger-ui": "^5.11.4"
+    "jsdoc": "^4.0.3",
+    "swagger-ui": "^5.17.14"
   },
   "peerDependencies": {
     "adapt-authoring-core": "github:adapt-security/adapt-authoring-core"
