@@ -22,5 +22,8 @@
   },
   "peerDependencies": {
     "adapt-authoring-core": "github:adapt-security/adapt-authoring-core"
+  },
+  "devDependencies": {
+    "standard": "^17.1.0"
   }
 }
