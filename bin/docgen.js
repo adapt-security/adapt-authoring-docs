@@ -9,8 +9,10 @@ import jsdoc3 from '../jsdoc3/jsdoc3.js'
 import path from 'path'
 import swagger from '../swagger/swagger.js'
 
+const DEBUG = process.argv.includes('--verbose')
+
 process.env.NODE_ENV ??= 'production'
-process.env.ADAPT_AUTHORING_LOGGER__mute = true
+process.env.ADAPT_AUTHORING_LOGGER__mute = !DEBUG
 
 const app = App.instance
 let outputdir
@@ -68,7 +70,7 @@ async function copyRootFiles () {
 }
 
 async function docs () {
-  console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version}`)
+  console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version} ${DEBUG ? ' :: DEBUG' : ''}`)
 
   try {
     await app.onReady()
