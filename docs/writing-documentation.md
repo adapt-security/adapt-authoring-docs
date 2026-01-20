@@ -1,55 +1,59 @@
 # Writing documentation
-The Adapt authoring tool makes use of automatically generated documentation (powered by [JSDoc](https://jsdoc.app/)).
 
-**Source code reference** *mandatory* <br>
-Requires annotated code (see below), but otherwise completely automated.
+The Adapt authoring tool uses a three-tier documentation system:
 
-**Developer manual** *optional*<br>
-Requires handwritten markdown. Provides extra advice on using your code in practical scenarios.
+1. **Source code reference** — Auto-generated API documentation from JSDoc comments
+2. **Developer manual** — Handwritten markdown guides for practical usage
+3. **REST API reference** — Auto-generated OpenAPI/Swagger documentation from route definitions
 
-## Documenting code
-The source code reference is completely automated, and shouldn't need much input from you as a developer (provided your code has been correctly annotated).
+All documentation is built using the `at-docgen` CLI provided by this module.
 
-If you're not familiar with the JSDoc notation, you can find a list of accepted tags as well as examples of usage in the [JSDoc docs](https://jsdoc.app/) (you can also of course check the source code for any of the [core-supported Adapt authoring modules](coreplugins.html) which are fully documented).
+## Source code reference
 
-### Useful tips
-Below are some useful tips/gotchas for any budding documentation writers.
+JSDoc comments in your code are automatically parsed and rendered as API documentation. This requires no extra configuration beyond enabling documentation for your module, which can done by adding the following to your module's `adapt-authoring.json`:
 
-#### Instance variables must be initialised
-Any declared instance variables must be initialised in order to be picked up by the documentation generator, even if they don't need a value (in which case `this.var = undefined` is fine).
-
-## Writing developer guides
-Developer guides go a step further than the source code reference, and provide more user-friendly "how-to" guides on how to actually *use* your code in a practical scenario.
-
-Whether or not you include these in your modules is completely up to you, but it will greatly help the community if you do!
-
-What to include in developer guides:
-- Any required configuration options
-- Common usage examples
-- Any known issues/workarounds
-
-> If you have need to generate a dynamic documentation file, check out our guide on [writing custom doc plugins](custom-documentation-plugins).
-
-## Configuration
-In addition to writing the manual files, you'll also need to add some configuration to the `adapt-authoring.json` file for your module to ensure that your files are included when the documentation is built.
-
-All documentation-related options are contained in a `documentation` object at the root level:
 ```json
 {
   "documentation": {
-    "enable": true,
-    "manualPlugins": [],
-    "manualPages": {}
+    "enable": true
   }
 }
 ```
 
-The below table gives a brief explanation of each option:
+For guidance on writing effective JSDoc comments, see the [JSDoc style guide](jsdoc-guide.md).
 
-| Attribute | Type | Default | Description |
-| --------- | ---- | :-----: | ----------- |
-| `enable` | Boolean | `true` | Whether documentation should be generated for this module. |
-| `manualPlugins` | Array | `[]` | A list of paths to any custom manual plugins. See [this page](custom-documentation-plugins) for more info. |
-| `manualPages` | Object | `{}` | A key/value store mapping file names to a section (e.g. `"manual-page.md": "advanced"`). The key must be the filename only, and not a path. The section ID must match one of those defined in the config (see the [configuration reference](configuration?id=adapt-authoring-docs) for the defaults, or set your own in your config file). |
+## Developer manual
 
-> You can also store manual files in the root repository of the application; just make sure to add your doc files to a `/docs` directory.
+Markdown files in your module's `docs/` folder are included in the developer manual. These provide practical guides on using your module.
+
+To assign pages to specific sections in the manual, use the `manualPages` option:
+
+```json
+{
+  "documentation": {
+    "enable": true,
+    "manualPages": {
+      "getting-started.md": "basics",
+      "advanced-usage.md": "advanced"
+    }
+  }
+}
+```
+
+Available sections include `basics`, `advanced`, `reference`, and `contributing`. You can also define custom sections if needed. Files not listed in `manualPages` are assigned to the default section.
+
+## REST API reference
+
+You can also add documentation for the REST API endpoints defined in your module.
+
+If your module extends `AbstractApiModule`, REST API documentation is generated automatically from your route definitions. For custom routes or additional metadata, see the [API documentation guide](api-documentation.md).
+
+## Custom dynamic documentation
+
+For documentation that needs to be generated programmatically (e.g. listing all registered schemas), you can write custom documentation plugins. See [writing custom documentation plugins](custom-documentation-plugins.md) for details.
+
+## Further reading
+
+- [JSDoc style guide](jsdoc-guide.md) — Conventions for documenting your code
+- [API documentation guide](api-documentation.md) — Documenting REST API endpoints
+- [Custom documentation plugins](custom-documentation-plugins.md) — Generating dynamic documentation
