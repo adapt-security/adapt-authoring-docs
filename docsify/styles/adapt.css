@@ -188,6 +188,7 @@ ul.toc > li {
 .attribute .default pre {
   display: inline;
   padding: 0 5px;
+  background: transparent;
 }
 .markdown-section table.schema {
   margin-top: 25px;
