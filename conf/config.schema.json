@@ -12,28 +12,13 @@
       "description": "Sections for categorising documentation manual pages",
       "type": "object",
       "default": {
-        "getting-started": {
-          "title": "Getting started"
-        },
-        "basics": {
-          "title": "The basics"
-        },
-        "advanced": {
-          "title": "Advanced topics"
-        },
-        "ui": {
-          "title": "Front-end app"
-        },
-        "other-guides": {
-          "title": "Other guides",
-          "default": true
-        },
-        "contributing": {
-          "title": "Contributing"
-        },
-        "reference": {
-          "title": "Reference"
-        }
+        "getting-started": {},
+        "concepts": {},
+        "development": {},
+        "documentation": {},
+        "contributing": {},
+        "reference": {},
+        "other-guides": { "default": true }
       }
     }
   }
