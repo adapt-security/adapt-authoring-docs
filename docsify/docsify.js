@@ -12,10 +12,15 @@ function resolvePath (relativePath) {
   return fileURLToPath(new URL(relativePath, import.meta.url))
 }
 
+// Capitalise and convert dashes to spaces
+function generateSectionTitle (sectionName) {
+  return sectionName[0].toUpperCase() + sectionName.slice(1).replaceAll('-', ' ')
+}
+
 /**
  * Copies all doc files ready for the generator
  */
-export default async function docsify (app, configs, outputdir, manualIndex, sourceIndex) {
+export default async function docsify (app, configs, outputdir, defaultPages) {
   const dir = path.resolve(outputdir, 'manual')
   const sectionsConf = app.config.get('adapt-authoring-docs.manualSections')
   const defaultSection = Object.entries(sectionsConf).reduce((m, [id, data]) => data.default ? id : m)
@@ -52,13 +57,14 @@ export default async function docsify (app, configs, outputdir, manualIndex, sou
       })
     }
     [...customFiles, ...globSync('docs/*.md', { cwd: c.rootDir, absolute: true })].forEach(f => {
-      if (f === sourceIndex) {
+      if (f === defaultPages.sourceIndex) {
         return
       }
       const title = path.basename(f)
-      const sectionName = c.manualPages && c.manualPages[title] ? c.manualPages[title] : defaultSection
+      const sectionName = c.manualPages?.[title] ?? defaultSection
 
       if (!sectionsConf[sectionName]) sectionsConf[sectionName] = {}
+      if (!sectionsConf[sectionName].title) sectionsConf[sectionName].title = generateSectionTitle(sectionName)
       if (!sectionsConf[sectionName].pages) sectionsConf[sectionName].pages = []
 
       sectionsConf[sectionName].pages.push(title)
@@ -70,26 +76,49 @@ export default async function docsify (app, configs, outputdir, manualIndex, sou
     })
   }))
   /**
+   * Set options
+   */
+  const options = {
+    name: '<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool<h2>Developer guides</h2>',
+    repo: 'https://github.com/adapt-security/adapt-authoring',
+    themeColor: '#36cde8',
+    loadSidebar: true,
+    loadNavbar: false,
+    autoHeader: true,
+    coverpage: false,
+    homepage: false
+  }
+  /**
    * Copy files
    */
   await fs.copy(resolvePath('./index.html'), `${dir}/index.html`)
   await fs.copy(resolvePath('../assets'), `${dir}/assets`)
   await fs.copy(resolvePath('./js'), `${dir}/js`)
   await fs.copy(resolvePath('./styles'), `${dir}/styles`)
-  if (manualIndex) {
-    await fs.copy(manualIndex, `${dir}/_coverpage.md`)
+
+  if (defaultPages.manualCover) {
+    await fs.copy(defaultPages.manualCover, `${dir}/cover.md`)
+    options.coverpage = 'cover.md'
+    delete titleMap[path.basename(defaultPages.manualCover)]
   }
+  if (defaultPages.manualIndex) {
+    await fs.copy(defaultPages.manualIndex, `${dir}/home.md`)
+    options.homepage = 'home.md'
+    delete titleMap[path.basename(defaultPages.manualIndex)]
+  }
+  // add Docsify options
+  const f = `${dir}/js/adapt.js`
+  const s = (await fs.readFile(f)).toString()
+  await fs.writeFile(f, s.replace('OPTIONS', JSON.stringify(options)))
+
   await Promise.allSettled(Object.entries(titleMap).map(([filename, v]) => fs.copy(v.path, `${dir}/${filename}`)))
   /**
    * Generate custom sidebar
    */
-  let sidebarMd = ''
+  let sidebarMd = '<ul class="intro"><li><a href="#/" title="Introduction">Introduction</a></li></ul>'
   Object.entries(sectionsConf)
     .forEach(([id, { title, pages = [] }]) => {
-      const filtered = pages.filter(f => {
-        const p = titleMap[f].path
-        return p !== manualIndex && p !== sourceIndex
-      })
+      const filtered = pages.filter(f => titleMap[f]?.path)
       if (!filtered || !filtered.length) {
         return
       }

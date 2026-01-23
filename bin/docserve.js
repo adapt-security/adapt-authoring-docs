@@ -36,7 +36,7 @@ App.instance.onReady().then(async app => {
   const PORT = 9000
   const OPEN = process.argv.some(a => a === '--open')
 
-  const server = http.createServer({ root: ROOT, port: PORT })
+  const server = http.createServer({ root: ROOT, cache: -1 })
 
   server.listen(PORT, () => {
     const url = `http://localhost:${PORT}`

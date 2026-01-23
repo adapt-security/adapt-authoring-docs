@@ -17,8 +17,11 @@ process.env.ADAPT_AUTHORING_LOGGER__mute = !DEBUG
 const app = App.instance
 let outputdir
 
-let manualIndex // populated in cacheConfigs
-let sourceIndex // populated in cacheConfigs
+const defaultPages = { // populated in cacheConfigs
+  manualCover: undefined,
+  manualIndex: undefined,
+  sourceIndex: undefined
+}
 /**
 * Caches loaded JSON so we don't load multiple times.
 * Documentation for a module can be enabled in:
@@ -36,14 +39,12 @@ function cacheConfigs () {
     else if (excludes.includes(dep.name)) omitMsg = 'module has been excluded in documentation config'
     if (omitMsg) return console.log(`Omitting ${dep.name}, ${omitMsg}`)
 
-    if (c.manualIndex) {
-      if (manualIndex) return console.log(`${dep.name}: manualIndex has been specified by another module as ${manualIndex}`)
-      manualIndex = path.join(dep.rootDir, c.manualIndex).split(path.sep).join(path.posix.sep)
-    }
-    if (c.sourceIndex) {
-      if (sourceIndex) return console.log(`${dep.name}: sourceIndex has been specified by another module as ${sourceIndex}`)
-      sourceIndex = path.join(dep.rootDir, c.sourceIndex).split(path.sep).join(path.posix.sep)
-    }
+    Object.keys(defaultPages).forEach(p => {
+      if (!c[p]) return
+      if (defaultPages[p]) return console.log(`${dep.name}: ${p} has been specified by another module as ${defaultPages[p]}`)
+      defaultPages[p] = path.join(dep.rootDir, c[p]).split(path.sep).join(path.posix.sep)
+    })
+
     cache.push({
       ...c,
       name: dep.name,
@@ -90,8 +91,8 @@ async function docs () {
     await fs.rm(outputdir, { recursive: true, force: true })
     await fs.mkdir(outputdir)
     await copyRootFiles()
-    await jsdoc3(app, cachedConfigs, outputdir, sourceIndex)
-    await docsify(app, cachedConfigs, outputdir, manualIndex, sourceIndex)
+    await jsdoc3(app, cachedConfigs, outputdir, defaultPages)
+    await docsify(app, cachedConfigs, outputdir, defaultPages)
     await swagger(app, cachedConfigs, outputdir)
   } catch (e) {
     console.log(e)
