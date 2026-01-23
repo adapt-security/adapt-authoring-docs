@@ -76,19 +76,6 @@ export default async function docsify (app, configs, outputdir, defaultPages) {
     })
   }))
   /**
-   * Set options
-   */
-  const options = {
-    name: '<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool<h2>Developer guides</h2>',
-    repo: 'https://github.com/adapt-security/adapt-authoring',
-    themeColor: '#36cde8',
-    loadSidebar: true,
-    loadNavbar: false,
-    autoHeader: true,
-    coverpage: false,
-    homepage: false
-  }
-  /**
    * Copy files
    */
   await fs.copy(resolvePath('./index.html'), `${dir}/index.html`)
@@ -96,20 +83,19 @@ export default async function docsify (app, configs, outputdir, defaultPages) {
   await fs.copy(resolvePath('./js'), `${dir}/js`)
   await fs.copy(resolvePath('./styles'), `${dir}/styles`)
 
-  if (defaultPages.manualCover) {
-    await fs.copy(defaultPages.manualCover, `${dir}/cover.md`)
-    options.coverpage = 'cover.md'
-    delete titleMap[path.basename(defaultPages.manualCover)]
-  }
-  if (defaultPages.manualIndex) {
-    await fs.copy(defaultPages.manualIndex, `${dir}/home.md`)
-    options.homepage = 'home.md'
-    delete titleMap[path.basename(defaultPages.manualIndex)]
-  }
   // add Docsify options
   const f = `${dir}/js/adapt.js`
-  const s = (await fs.readFile(f)).toString()
-  await fs.writeFile(f, s.replace('OPTIONS', JSON.stringify(options)))
+  const contents = (await fs.readFile(f)).toString()
+  await fs.writeFile(f, contents.replace('OPTIONS', JSON.stringify({
+    name: '<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool<h2>Developer guides</h2>',
+    repo: 'https://github.com/adapt-security/adapt-authoring',
+    themeColor: '#36cde8',
+    loadSidebar: true,
+    loadNavbar: false,
+    autoHeader: true,
+    coverpage: defaultPages.manualCover ? path.basename(defaultPages.manualCover) : false,
+    homepage: defaultPages.manualIndex ? path.basename(defaultPages.manualIndex) : false
+  })))
 
   await Promise.allSettled(Object.entries(titleMap).map(([filename, v]) => fs.copy(v.path, `${dir}/${filename}`)))
   /**
