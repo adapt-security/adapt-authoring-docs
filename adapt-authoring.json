@@ -3,9 +3,11 @@
   "documentation": {
     "enable": true,
     "manualPages": {
-      "building-docs.md": "getting-started",
-      "custom-documentation-plugins.md": "advanced",
-      "writing-documentation.md": "contributing"
+      "building-docs.md": "documentation",
+      "custom-documentation-plugins.md": "documentation",
+      "jsdoc-guide.md": "documentation",
+      "rest-api-guide.md": "documentation",
+      "writing-documentation.md": "documentation"
     }
   }
 }
