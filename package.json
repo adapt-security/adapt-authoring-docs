@@ -1,6 +1,6 @@
 {
   "name": "adapt-authoring-docs",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Tools for auto-generating documentation for the Adapt authoring tool",
   "homepage": "https://github.com/adapt-security/adapt-authoring-docs",
   "license": "GPL-3.0",
