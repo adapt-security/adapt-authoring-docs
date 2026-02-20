@@ -10,6 +10,9 @@
     "at-docserve": "./bin/docserve.js"
   },
   "repository": "github:adapt-security/adapt-authoring-docs",
+  "scripts": {
+    "test": "node --test 'tests/**/*.spec.js'"
+  },
   "dependencies": {
     "comment-parser": "^1.4.1",
     "docdash": "^2.0.2",
