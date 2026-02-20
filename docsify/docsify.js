@@ -23,7 +23,7 @@ function generateSectionTitle (sectionName) {
 export default async function docsify (app, configs, outputdir, defaultPages) {
   const dir = path.resolve(outputdir, 'manual')
   const sectionsConf = app.config.get('adapt-authoring-docs.manualSections')
-  const defaultSection = Object.entries(sectionsConf).reduce((m, [id, data]) => data.default ? id : m)
+  const defaultSection = Object.entries(sectionsConf).find(([, data]) => data.default)?.[0]
   /**
    * init docsify folder
    */

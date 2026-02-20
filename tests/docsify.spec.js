@@ -205,18 +205,7 @@ describe('docsify', () => {
   })
 
   describe('bugs', () => {
-    it('TODO: defaultSection reduce with single entry returns array tuple instead of string', async () => {
-      // BUG: In docsify.js line 26, Object.entries(sectionsConf).reduce((m, [id, data]) => ...)
-      // has no initial value. When there is only one section entry, reduce() returns
-      // the entry itself (an [id, data] array) without calling the callback.
-      // This causes generateSectionTitle to fail with:
-      //   TypeError: sectionName.slice(...).replaceAll is not a function
-      // because sectionName is an array, not a string.
-      //
-      // To fix: add an initial value to reduce, e.g.:
-      //   Object.entries(sectionsConf).reduce((m, [id, data]) => data.default ? id : m, undefined)
-      // or use Array.find instead:
-      //   Object.entries(sectionsConf).find(([, data]) => data.default)?.[0]
+    it('defaultSection reduce with single entry returns string section name', async () => {
       tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'docsify-test-'))
       const outputDir = tmpDir
       const docsSrcDir = await fs.mkdtemp(path.join(os.tmpdir(), 'docsify-src-'))
@@ -238,10 +227,8 @@ describe('docsify', () => {
       }]
 
       const { default: docsify } = await import('../docsify/docsify.js')
-      // This should work but fails due to the bug described above
-      await assert.rejects(
-        () => docsify(mockApp, configs, outputDir, {}),
-        TypeError
+      await assert.doesNotReject(
+        () => docsify(mockApp, configs, outputDir, {})
       )
 
       await fs.rm(docsSrcDir, { recursive: true, force: true })
