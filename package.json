@@ -26,11 +26,6 @@
   "peerDependencies": {
     "adapt-authoring-core": "^1.7.0"
   },
-  "peerDependenciesMeta": {
-    "adapt-authoring-core": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
     "conventional-changelog-eslint": "^6.0.0",
