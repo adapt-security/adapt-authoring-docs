@@ -1,0 +1,57 @@
+{
+  "source": {
+    "include": []
+  },
+  "docdash": {
+    "collapse": true,
+    "typedefs": true,
+    "search": true,
+    "static": true,
+    "menu": {
+      "<img class=\"logo\" src=\"assets/logo-outline-colour.png\" />Adapt authoring tool back-end API documentation<br><span class=\"version\">v2.5.0</span>": {
+        "class": "menu-title"
+      },
+      "Documentation home": {
+        "href": "https://adapt-security.github.io/adapt-authoring-documentation/",
+        "target": "_self",
+        "class": "menu-item",
+        "id": "home_link"
+      },
+      "Project Website": {
+        "href": "https://www.adaptlearning.org/",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "website_link"
+      },
+      "Technical Discussion Forum": {
+        "href": "https://community.adaptlearning.org/mod/forum/view.php?id=4",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "forum_link"
+      }
+    },
+    "sectionOrder": [
+      "Namespaces",
+      "Classes",
+      "Modules",
+      "Externals",
+      "Events",
+      "Mixins",
+      "Tutorials",
+      "Interfaces"
+    ],
+    "meta": {
+      "title": "Adapt authoring tool UI documentation",
+      "description": "Adapt authoring tool UI documentation",
+      "keyword": "v2.5.0"
+    },
+    "scripts": [
+      "styles/adapt.css",
+      "scripts/adapt.js"
+    ]
+  },
+  "opts": {
+    "destination": "/var/folders/28/8f7zyfj927z96jtjw_v0j9x80000gn/T/jsdoc-test-lPjKMQ/backend",
+    "template": "node_modules/docdash"
+  }
+}
