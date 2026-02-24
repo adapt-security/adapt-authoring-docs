@@ -24,7 +24,7 @@
     "swagger-ui": "^5.17.14"
   },
   "peerDependencies": {
-    "adapt-authoring-core": "^1.7.0"
+    "adapt-authoring-core": "^2.0.0"
   },
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
