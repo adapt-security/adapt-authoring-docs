@@ -1,3 +1,4 @@
 build/
 docs/temp-*.md
-.jsdocConfig.jsonpackage-lock.json
+.jsdocConfig.json
+package-lock.json
