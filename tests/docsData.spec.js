@@ -413,6 +413,8 @@ describe('docsData', () => {
       const errors = await loadErrors(dependencies)
       assert.ok(errors.CONTENT_NOT_FOUND)
       assert.equal(errors.CONTENT_NOT_FOUND.statusCode, 404)
+      assert.equal(errors.CONTENT_NOT_FOUND.code, 'CONTENT_NOT_FOUND')
+      assert.equal(errors.CONTENT_NOT_FOUND.meta.description, 'Content not found')
     })
   })
 
