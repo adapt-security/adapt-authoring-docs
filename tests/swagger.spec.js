@@ -331,39 +331,21 @@ function createMockApp (options = {}) {
 
   return {
     pkg: { version: '1.0.0' },
-    dependencyloader: {
-      instances: {
-        'adapt-authoring-auth': {
-          permissions: {
-            routes: {
-              get: [],
-              post: [],
-              put: [],
-              patch: [],
-              delete: []
-            }
-          }
-        }
-      }
+    schemas: {
+      schemas: mockSchemas,
+      getSchema: mock.fn(async (s) => schemas[s])
     },
-    waitForModule: mock.fn(async (name) => {
-      if (name === 'jsonschema') {
-        return {
-          schemas: mockSchemas,
-          getSchema: mock.fn(async (s) => schemas[s])
-        }
-      }
-      if (name === 'server') {
-        return {
-          api: {
-            path: routerPath,
-            routes,
-            childRouters
-          }
-        }
-      }
-      return {}
-    }),
-    onReady: mock.fn(async () => {})
+    routerTree: {
+      path: routerPath,
+      routes,
+      childRouters
+    },
+    permissions: {
+      get: [],
+      post: [],
+      put: [],
+      patch: [],
+      delete: []
+    }
   }
 }

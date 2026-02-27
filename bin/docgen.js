@@ -2,7 +2,8 @@
 /**
  * Generates documentation for the installed modules.
  */
-import { App } from 'adapt-authoring-core'
+import { readJson } from 'adapt-authoring-core'
+import { loadDependencies, loadConfigDefaults, loadSchemas, loadErrors, buildRouterTree, buildPermissions } from '../lib/docsData.js'
 import docsify from '../docsify/docsify.js'
 import fs from 'fs/promises'
 import jsdoc3 from '../jsdoc3/jsdoc3.js'
@@ -11,10 +12,13 @@ import swagger from '../swagger/swagger.js'
 
 const DEBUG = process.argv.includes('--verbose')
 
-process.env.NODE_ENV ??= 'production'
-process.env.ADAPT_AUTHORING_LOGGER__mute = !DEBUG
+function getArg (name) {
+  const idx = process.argv.indexOf(name)
+  return idx !== -1 && idx + 1 < process.argv.length ? process.argv[idx + 1] : undefined
+}
 
-const app = App.instance
+const rootDir = path.resolve(getArg('--rootDir') || process.cwd())
+
 let outputdir
 
 const defaultPages = { // populated in cacheConfigs
@@ -27,10 +31,10 @@ const defaultPages = { // populated in cacheConfigs
 * Documentation for a module can be enabled in:
 * package.json > adapt_authoring.documentation.enable
 */
-function cacheConfigs () {
+function cacheConfigs (appData) {
   const cache = []
-  const excludes = app.pkg.documentation.excludes ?? []
-  Object.values(app.dependencies).forEach(dep => {
+  const excludes = appData.pkg.documentation.excludes ?? []
+  Object.values(appData.dependencies).forEach(dep => {
     const c = dep.documentation
 
     let omitMsg
@@ -49,16 +53,16 @@ function cacheConfigs () {
       ...c,
       name: dep.name,
       version: dep.version,
-      module: !!app.dependencyloader.instances[dep.name],
+      module: dep.module !== false,
       rootDir: dep.rootDir,
       includes: c.includes || {}
     })
   })
   cache.push({
-    ...app.pkg.documentation,
+    ...appData.pkg.documentation,
     enable: true,
     name: 'adapt-authoring',
-    rootDir: app.rootDir,
+    rootDir: appData.rootDir,
     includes: {}
   })
   return cache
@@ -71,19 +75,31 @@ async function copyRootFiles () {
 }
 
 async function docs () {
-  console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version} ${DEBUG ? ' :: DEBUG' : ''}`)
+  const dependencies = await loadDependencies(rootDir)
+  const pkg = { ...await readJson(path.join(rootDir, 'package.json')), ...await readJson(path.join(rootDir, 'adapt-authoring.json')) }
+  const config = await loadConfigDefaults(dependencies)
+  const schemas = await loadSchemas(dependencies)
+  const errors = await loadErrors(dependencies)
+  const routerTree = await buildRouterTree(dependencies)
+  const permissions = buildPermissions(routerTree)
 
-  try {
-    await app.onReady()
-  } catch (e) {
-    console.log(`App failed to start, cannot continue.\n${e}`)
-    process.exit(1)
+  const appData = {
+    rootDir,
+    pkg,
+    dependencies,
+    config,
+    errors,
+    schemas,
+    routerTree,
+    permissions
   }
-  const config = await app.waitForModule('config')
-  const { name } = JSON.parse(await fs.readFile(new URL('../package.json', import.meta.url)))
-  outputdir = path.resolve(process.cwd(), config.get(`${name}.outputDir`))
 
-  const cachedConfigs = cacheConfigs()
+  console.log(`Generating documentation for ${appData.pkg.name}@${appData.pkg.version} ${DEBUG ? ' :: DEBUG' : ''}`)
+
+  const { name } = JSON.parse(await fs.readFile(new URL('../package.json', import.meta.url)))
+  outputdir = path.resolve(process.cwd(), getArg('--outputDir') || appData.config.get(`${name}.outputDir`))
+
+  const cachedConfigs = cacheConfigs(appData)
 
   console.log('\nThis might take a minute or two...\n')
 
@@ -91,9 +107,9 @@ async function docs () {
     await fs.rm(outputdir, { recursive: true, force: true })
     await fs.mkdir(outputdir)
     await copyRootFiles()
-    await jsdoc3(app, cachedConfigs, outputdir, defaultPages)
-    await docsify(app, cachedConfigs, outputdir, defaultPages)
-    await swagger(app, cachedConfigs, outputdir)
+    await jsdoc3(appData, cachedConfigs, outputdir, defaultPages)
+    await docsify(appData, cachedConfigs, outputdir, defaultPages)
+    await swagger(appData, cachedConfigs, outputdir)
   } catch (e) {
     console.log(e)
     process.exit(1)

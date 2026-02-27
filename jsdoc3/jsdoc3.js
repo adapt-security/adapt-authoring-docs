@@ -14,7 +14,7 @@ function resolvePath (relativePath) {
   return fileURLToPath(new URL(relativePath, import.meta.url))
 }
 
-async function writeConfig (app, outputdir, indexFile) {
+async function writeConfig (appData, outputdir, indexFile) {
   return fs.writeFile(configPath, JSON.stringify({
     source: {
       include: getSourceIncludes(indexFile)
@@ -25,7 +25,7 @@ async function writeConfig (app, outputdir, indexFile) {
       search: true,
       static: true,
       menu: {
-        [`<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool back-end API documentation<br><span class="version">v${app.pkg.version}</span>`]: {
+        [`<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool back-end API documentation<br><span class="version">v${appData.pkg.version}</span>`]: {
           class: 'menu-title'
         },
         'Documentation home': {
@@ -60,7 +60,7 @@ async function writeConfig (app, outputdir, indexFile) {
       meta: {
         title: 'Adapt authoring tool UI documentation',
         description: 'Adapt authoring tool UI documentation',
-        keyword: `v${app.pkg.version}`
+        keyword: `v${appData.pkg.version}`
       },
       scripts: [
         'styles/adapt.css',
@@ -88,10 +88,10 @@ function getSourceIncludes (indexFile) {
   return includes
 }
 
-export default async function jsdoc3 (app, configs, outputdir, defaultPages) {
+export default async function jsdoc3 (appData, configs, outputdir, defaultPages) {
   cachedConfigs = configs
   const dir = `${outputdir}/backend`
-  await writeConfig(app, dir, defaultPages.sourceIndex)
+  await writeConfig(appData, dir, defaultPages.sourceIndex)
   try {
     await execPromise(`npx jsdoc -c ${configPath}`)
   } catch (e) {
