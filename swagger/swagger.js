@@ -9,13 +9,11 @@ function resolvePath (relativePath) {
  *
  */
 export default async function swagger (app, configs, outputdir) {
-  const server = await app.waitForModule('server')
-  await app.onReady()
   const spec = {
     openapi: '3.0.3',
     info: { version: app.pkg.version },
-    components: { schemas: await generateSchemaSpec(app) },
-    paths: generatePathSpec(app, server.api)
+    components: { schemas: await generateSchemaSpec(app.schemas) },
+    paths: generatePathSpec(app.permissions, app.routerTree)
   }
   // generate UI
   const dir = path.resolve(outputdir, 'rest')
@@ -38,8 +36,7 @@ export default async function swagger (app, configs, outputdir) {
   ])
 }
 
-async function generateSchemaSpec (app) {
-  const jsonschema = await app.waitForModule('jsonschema')
+async function generateSchemaSpec (jsonschema) {
   const schemas = {}
   await Promise.all(Object.keys(jsonschema.schemas).map(async s => {
     schemas[s] = sanitiseSchema((await jsonschema.getSchema(s)).built)
@@ -57,8 +54,7 @@ function sanitiseSchema (schema) {
   return schema
 }
 
-function generatePathSpec (app, router, paths = {}) {
-  const perms = app.dependencyloader.instances['adapt-authoring-auth'].permissions.routes
+function generatePathSpec (permissions, router, paths = {}) {
   router.routes.forEach(r => {
     const parameters = r.route.split('/').filter(r => r.startsWith(':')).map(r => {
       return {
@@ -70,7 +66,7 @@ function generatePathSpec (app, router, paths = {}) {
     const route = `${router.path}${r.route !== '/' ? r.route : ''}`
     paths[route] = Object.keys(r.handlers).reduce((memo, method) => {
       const meta = r.meta?.[method] || {}
-      const scopes = perms[method].find(p => route.match(p[0]))?.[1] || []
+      const scopes = permissions[method].find(p => route.match(p[0]))?.[1] || []
       let description = r.internal ? 'ROUTE IS ONLY ACCESSIBLE FROM LOCALHOST.<br/><br/>' : ''
       description += scopes.length
         ? `Required scopes: ${scopes.map(s => `<span>${s}</span>`).join(' ')}`
@@ -90,7 +86,7 @@ function generatePathSpec (app, router, paths = {}) {
     }, {})
   })
   if (router.childRouters.length) {
-    router.childRouters.forEach(childRouter => generatePathSpec(app, childRouter, paths))
+    router.childRouters.forEach(childRouter => generatePathSpec(permissions, childRouter, paths))
   }
   return Object.keys(paths).sort().reduce((m, k) => Object.assign(m, { [k]: paths[k] }), {})
 }

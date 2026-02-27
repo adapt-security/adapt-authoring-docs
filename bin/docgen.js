@@ -89,14 +89,11 @@ async function docs () {
     dependencies,
     config,
     errors,
-    dependencyloader: {
-      instances: {
-        'adapt-authoring-auth': { permissions: { routes: permissions } }
-      }
-    },
-    onReady: async () => {},
+    schemas,
+    routerTree,
+    permissions,
+    // TODO remove once jsonschema plugin reads app.schemas directly
     waitForModule: async (name) => {
-      if (name === 'server') return { api: routerTree }
       if (name === 'jsonschema') return schemas
       return {}
     }
