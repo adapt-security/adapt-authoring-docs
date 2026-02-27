@@ -2,7 +2,7 @@
 /**
  * Generates documentation for the installed modules.
  */
-import { App } from 'adapt-authoring-core'
+import StaticAppContext from '../lib/StaticAppContext.js'
 import docsify from '../docsify/docsify.js'
 import fs from 'fs/promises'
 import jsdoc3 from '../jsdoc3/jsdoc3.js'
@@ -11,10 +11,13 @@ import swagger from '../swagger/swagger.js'
 
 const DEBUG = process.argv.includes('--verbose')
 
-process.env.NODE_ENV ??= 'production'
-process.env.ADAPT_AUTHORING_LOGGER__mute = !DEBUG
+function getArg (name) {
+  const idx = process.argv.indexOf(name)
+  return idx !== -1 && idx + 1 < process.argv.length ? process.argv[idx + 1] : undefined
+}
 
-const app = App.instance
+const rootDir = path.resolve(getArg('--rootDir') || process.cwd())
+
 let outputdir
 
 const defaultPages = { // populated in cacheConfigs
@@ -27,7 +30,7 @@ const defaultPages = { // populated in cacheConfigs
 * Documentation for a module can be enabled in:
 * package.json > adapt_authoring.documentation.enable
 */
-function cacheConfigs () {
+function cacheConfigs (app) {
   const cache = []
   const excludes = app.pkg.documentation.excludes ?? []
   Object.values(app.dependencies).forEach(dep => {
@@ -49,7 +52,7 @@ function cacheConfigs () {
       ...c,
       name: dep.name,
       version: dep.version,
-      module: !!app.dependencyloader.instances[dep.name],
+      module: dep.module !== false,
       rootDir: dep.rootDir,
       includes: c.includes || {}
     })
@@ -71,19 +74,14 @@ async function copyRootFiles () {
 }
 
 async function docs () {
+  const app = await StaticAppContext.init(rootDir)
+
   console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version} ${DEBUG ? ' :: DEBUG' : ''}`)
 
-  try {
-    await app.onReady()
-  } catch (e) {
-    console.log(`App failed to start, cannot continue.\n${e}`)
-    process.exit(1)
-  }
-  const config = await app.waitForModule('config')
   const { name } = JSON.parse(await fs.readFile(new URL('../package.json', import.meta.url)))
-  outputdir = path.resolve(process.cwd(), config.get(`${name}.outputDir`))
+  outputdir = path.resolve(process.cwd(), getArg('--outputDir') || app.config.get(`${name}.outputDir`))
 
-  const cachedConfigs = cacheConfigs()
+  const cachedConfigs = cacheConfigs(app)
 
   console.log('\nThis might take a minute or two...\n')
 

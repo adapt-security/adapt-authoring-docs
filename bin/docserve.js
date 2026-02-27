@@ -1,51 +1,38 @@
 #!/usr/bin/env node
 /**
- * Generates an HTTP server for viewing the local copy of the documentation (note these must be build first with `at-docgen`)
+ * Generates an HTTP server for viewing the local copy of the documentation (note these must be built first with `at-docgen`)
  */
-import { App } from 'adapt-authoring-core'
 import { spawn } from 'child_process'
 import http from 'http-server'
 import path from 'path'
-/*
-function getMime (filePath) {
-  const ext = path.parse(filePath).ext
-  return {
-    '.ico': 'image/x-icon',
-    '.html': 'text/html',
-    '.js': 'text/javascript',
-    '.json': 'application/json',
-    '.css': 'text/css',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.svg': 'image/svg+xml',
-    '.pdf': 'application/pdf',
-    '.doc': 'application/msword'
-  }[ext] || 'text/plain'
+
+function getArg (name) {
+  const idx = process.argv.indexOf(name)
+  return idx !== -1 && idx + 1 < process.argv.length ? process.argv[idx + 1] : undefined
 }
-*/
-process.env.NODE_ENV ??= 'production'
-process.env.ADAPT_AUTHORING_LOGGER__mute = true
 
-console.log('Starting app, please wait\n')
-// TODO remove need to start app
-App.instance.onReady().then(async app => {
-  console.log('App started\n');
-  (await app.waitForModule('server')).close() // close connections so we can still run the app separately
+async function getOutputDir () {
+  const arg = getArg('--outputDir')
+  if (arg) return path.resolve(arg)
+  const { default: StaticAppContext } = await import('../lib/StaticAppContext.js')
+  const rootDir = path.resolve(getArg('--rootDir') || process.cwd())
+  const app = await StaticAppContext.init(rootDir)
+  return path.resolve(app.config.get('adapt-authoring-docs.outputDir'))
+}
 
-  const ROOT = path.resolve(app.config.get('adapt-authoring-docs.outputDir'))
-  const PORT = 9000
-  const OPEN = process.argv.some(a => a === '--open')
+const ROOT = await getOutputDir()
+const PORT = Number(getArg('--port')) || 9000
+const OPEN = process.argv.some(a => a === '--open')
 
-  const server = http.createServer({ root: ROOT, cache: -1 })
+const server = http.createServer({ root: ROOT, cache: -1 })
 
-  server.listen(PORT, () => {
-    const url = `http://localhost:${PORT}`
-    console.log(`Docs hosted at ${url}`)
+server.listen(PORT, () => {
+  const url = `http://localhost:${PORT}`
+  console.log(`Docs hosted at ${url}`)
 
-    if (OPEN) {
-      const command = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open'
-      spawn(`${command} ${url}`, { shell: true })
-        .on('error', e => console.log('spawn error', e))
-    }
-  })
+  if (OPEN) {
+    const command = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open'
+    spawn(`${command} ${url}`, { shell: true })
+      .on('error', e => console.log('spawn error', e))
+  }
 })
