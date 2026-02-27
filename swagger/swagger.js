@@ -8,12 +8,12 @@ function resolvePath (relativePath) {
 /**
  *
  */
-export default async function swagger (app, configs, outputdir) {
+export default async function swagger (appData, configs, outputdir) {
   const spec = {
     openapi: '3.0.3',
-    info: { version: app.pkg.version },
-    components: { schemas: await generateSchemaSpec(app.schemas) },
-    paths: generatePathSpec(app.permissions, app.routerTree)
+    info: { version: appData.pkg.version },
+    components: { schemas: await generateSchemaSpec(appData.schemas) },
+    paths: generatePathSpec(appData.permissions, appData.routerTree)
   }
   // generate UI
   const dir = path.resolve(outputdir, 'rest')

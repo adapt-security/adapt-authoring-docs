@@ -20,9 +20,9 @@ function generateSectionTitle (sectionName) {
 /**
  * Copies all doc files ready for the generator
  */
-export default async function docsify (app, configs, outputdir, defaultPages) {
+export default async function docsify (appData, configs, outputdir, defaultPages) {
   const dir = path.resolve(outputdir, 'manual')
-  const sectionsConf = app.config.get('adapt-authoring-docs.manualSections')
+  const sectionsConf = appData.config.get('adapt-authoring-docs.manualSections')
   const defaultSection = Object.entries(sectionsConf).find(([, data]) => data.default)?.[0]
   /**
    * init docsify folder
@@ -39,7 +39,7 @@ export default async function docsify (app, configs, outputdir, defaultPages) {
         try {
           const wrapper = await new DocsifyPluginWrapper({
             ...c,
-            app,
+            app: appData,
             docsRootDir: outputdir,
             pluginEntry: path.resolve(c.rootDir, p),
             outputDir: dir

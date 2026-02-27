@@ -31,10 +31,10 @@ const defaultPages = { // populated in cacheConfigs
 * Documentation for a module can be enabled in:
 * package.json > adapt_authoring.documentation.enable
 */
-function cacheConfigs (app) {
+function cacheConfigs (appData) {
   const cache = []
-  const excludes = app.pkg.documentation.excludes ?? []
-  Object.values(app.dependencies).forEach(dep => {
+  const excludes = appData.pkg.documentation.excludes ?? []
+  Object.values(appData.dependencies).forEach(dep => {
     const c = dep.documentation
 
     let omitMsg
@@ -59,10 +59,10 @@ function cacheConfigs (app) {
     })
   })
   cache.push({
-    ...app.pkg.documentation,
+    ...appData.pkg.documentation,
     enable: true,
     name: 'adapt-authoring',
-    rootDir: app.rootDir,
+    rootDir: appData.rootDir,
     includes: {}
   })
   return cache
@@ -83,7 +83,7 @@ async function docs () {
   const routerTree = await buildRouterTree(dependencies)
   const permissions = buildPermissions(routerTree)
 
-  const app = {
+  const appData = {
     rootDir,
     pkg,
     dependencies,
@@ -94,12 +94,12 @@ async function docs () {
     permissions
   }
 
-  console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version} ${DEBUG ? ' :: DEBUG' : ''}`)
+  console.log(`Generating documentation for ${appData.pkg.name}@${appData.pkg.version} ${DEBUG ? ' :: DEBUG' : ''}`)
 
   const { name } = JSON.parse(await fs.readFile(new URL('../package.json', import.meta.url)))
-  outputdir = path.resolve(process.cwd(), getArg('--outputDir') || app.config.get(`${name}.outputDir`))
+  outputdir = path.resolve(process.cwd(), getArg('--outputDir') || appData.config.get(`${name}.outputDir`))
 
-  const cachedConfigs = cacheConfigs(app)
+  const cachedConfigs = cacheConfigs(appData)
 
   console.log('\nThis might take a minute or two...\n')
 
@@ -107,9 +107,9 @@ async function docs () {
     await fs.rm(outputdir, { recursive: true, force: true })
     await fs.mkdir(outputdir)
     await copyRootFiles()
-    await jsdoc3(app, cachedConfigs, outputdir, defaultPages)
-    await docsify(app, cachedConfigs, outputdir, defaultPages)
-    await swagger(app, cachedConfigs, outputdir)
+    await jsdoc3(appData, cachedConfigs, outputdir, defaultPages)
+    await docsify(appData, cachedConfigs, outputdir, defaultPages)
+    await swagger(appData, cachedConfigs, outputdir)
   } catch (e) {
     console.log(e)
     process.exit(1)
