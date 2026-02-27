@@ -2,7 +2,8 @@
 /**
  * Generates documentation for the installed modules.
  */
-import StaticAppContext from '../lib/StaticAppContext.js'
+import { readJson } from 'adapt-authoring-core'
+import { loadDependencies, loadConfigDefaults, loadSchemas, loadErrors, buildRouterTree, buildPermissions } from '../lib/docsData.js'
 import docsify from '../docsify/docsify.js'
 import fs from 'fs/promises'
 import jsdoc3 from '../jsdoc3/jsdoc3.js'
@@ -74,7 +75,32 @@ async function copyRootFiles () {
 }
 
 async function docs () {
-  const app = await StaticAppContext.init(rootDir)
+  const dependencies = await loadDependencies(rootDir)
+  const pkg = { ...await readJson(path.join(rootDir, 'package.json')), ...await readJson(path.join(rootDir, 'adapt-authoring.json')) }
+  const config = await loadConfigDefaults(dependencies)
+  const schemas = await loadSchemas(dependencies)
+  const errors = await loadErrors(dependencies)
+  const routerTree = await buildRouterTree(dependencies)
+  const permissions = buildPermissions(routerTree)
+
+  const app = {
+    rootDir,
+    pkg,
+    dependencies,
+    config,
+    errors,
+    dependencyloader: {
+      instances: {
+        'adapt-authoring-auth': { permissions: { routes: permissions } }
+      }
+    },
+    onReady: async () => {},
+    waitForModule: async (name) => {
+      if (name === 'server') return { api: routerTree }
+      if (name === 'jsonschema') return schemas
+      return {}
+    }
+  }
 
   console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version} ${DEBUG ? ' :: DEBUG' : ''}`)
 

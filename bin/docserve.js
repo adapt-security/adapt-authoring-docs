@@ -14,10 +14,11 @@ function getArg (name) {
 async function getOutputDir () {
   const arg = getArg('--outputDir')
   if (arg) return path.resolve(arg)
-  const { default: StaticAppContext } = await import('../lib/StaticAppContext.js')
+  const { loadDependencies, loadConfigDefaults } = await import('../lib/docsData.js')
   const rootDir = path.resolve(getArg('--rootDir') || process.cwd())
-  const app = await StaticAppContext.init(rootDir)
-  return path.resolve(app.config.get('adapt-authoring-docs.outputDir'))
+  const dependencies = await loadDependencies(rootDir)
+  const config = await loadConfigDefaults(dependencies)
+  return path.resolve(config.get('adapt-authoring-docs.outputDir'))
 }
 
 const ROOT = await getOutputDir()

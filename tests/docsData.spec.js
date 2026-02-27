@@ -7,10 +7,10 @@ import path from 'path'
 /* eslint-disable no-template-curly-in-string */
 /**
  * Creates a temporary fixture directory that simulates a minimal
- * adapt-authoring app so StaticAppContext can be tested in isolation.
+ * adapt-authoring app so docsData functions can be tested in isolation.
  */
 async function createFixture () {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'static-ctx-'))
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'docs-data-'))
 
   // root package.json + adapt-authoring.json
   await fs.writeFile(path.join(root, 'package.json'), JSON.stringify({
@@ -219,31 +219,31 @@ async function createFixture () {
   return root
 }
 
-describe('StaticAppContext', () => {
+describe('docsData', () => {
   let fixtureDir
-  let app
+  let dependencies
 
   before(async () => {
     fixtureDir = await createFixture()
-    const { default: StaticAppContext } = await import('../lib/StaticAppContext.js')
-    app = await StaticAppContext.init(fixtureDir)
+    const { loadDependencies } = await import('../lib/docsData.js')
+    dependencies = await loadDependencies(fixtureDir)
   })
 
   after(async () => {
     if (fixtureDir) await fs.rm(fixtureDir, { recursive: true, force: true }).catch(() => {})
   })
 
-  describe('dependency scanning', () => {
+  describe('loadDependencies', () => {
     it('should discover all modules with adapt-authoring.json', () => {
-      assert.ok(app.dependencies['adapt-authoring-content'])
-      assert.ok(app.dependencies['adapt-authoring-auth'])
-      assert.ok(app.dependencies['adapt-authoring-auth-local'])
-      assert.ok(app.dependencies['adapt-authoring-docs'])
-      assert.ok(app.dependencies['adapt-authoring-api'])
+      assert.ok(dependencies['adapt-authoring-content'])
+      assert.ok(dependencies['adapt-authoring-auth'])
+      assert.ok(dependencies['adapt-authoring-auth-local'])
+      assert.ok(dependencies['adapt-authoring-docs'])
+      assert.ok(dependencies['adapt-authoring-api'])
     })
 
     it('should merge package.json and adapt-authoring.json for each dep', () => {
-      const content = app.dependencies['adapt-authoring-content']
+      const content = dependencies['adapt-authoring-content']
       assert.equal(content.name, 'adapt-authoring-content')
       assert.equal(content.version, '1.0.0')
       assert.ok(content.documentation)
@@ -251,53 +251,64 @@ describe('StaticAppContext', () => {
     })
 
     it('should set rootDir on each dependency', () => {
-      for (const dep of Object.values(app.dependencies)) {
+      for (const dep of Object.values(dependencies)) {
         assert.ok(dep.rootDir, `${dep.name} should have rootDir`)
         assert.ok(dep.rootDir.includes('node_modules'), `${dep.name} rootDir should be in node_modules`)
       }
     })
   })
 
-  describe('config defaults', () => {
-    it('should resolve $TEMP to os.tmpdir()', () => {
-      const outputDir = app.config.get('adapt-authoring-docs.outputDir')
+  describe('loadConfigDefaults', () => {
+    it('should resolve $TEMP to os.tmpdir()', async () => {
+      const { loadConfigDefaults } = await import('../lib/docsData.js')
+      const config = await loadConfigDefaults(dependencies)
+      const outputDir = config.get('adapt-authoring-docs.outputDir')
       assert.ok(outputDir.startsWith(os.tmpdir()), `expected ${outputDir} to start with ${os.tmpdir()}`)
       assert.ok(outputDir.endsWith('/docs-build'))
     })
 
-    it('should return object defaults', () => {
-      const sections = app.config.get('adapt-authoring-docs.manualSections')
+    it('should return object defaults', async () => {
+      const { loadConfigDefaults } = await import('../lib/docsData.js')
+      const config = await loadConfigDefaults(dependencies)
+      const sections = config.get('adapt-authoring-docs.manualSections')
       assert.ok(sections)
       assert.ok(sections['getting-started'] !== undefined)
       assert.ok(sections['other-guides']?.default === true)
     })
 
-    it('should return undefined for unknown config keys', () => {
-      assert.equal(app.config.get('nonexistent.key'), undefined)
+    it('should return undefined for unknown config keys', async () => {
+      const { loadConfigDefaults } = await import('../lib/docsData.js')
+      const config = await loadConfigDefaults(dependencies)
+      assert.equal(config.get('nonexistent.key'), undefined)
     })
 
-    it('should resolve $TEMP in non-docs modules', () => {
-      const cacheDir = app.config.get('adapt-authoring-content.cacheDir')
+    it('should resolve $TEMP in non-docs modules', async () => {
+      const { loadConfigDefaults } = await import('../lib/docsData.js')
+      const config = await loadConfigDefaults(dependencies)
+      const cacheDir = config.get('adapt-authoring-content.cacheDir')
       assert.ok(cacheDir.startsWith(os.tmpdir()))
       assert.ok(cacheDir.endsWith('/content-cache'))
     })
   })
 
-  describe('router tree assembly', () => {
+  describe('buildRouterTree', () => {
     it('should return api root router', async () => {
-      const server = await app.waitForModule('server')
-      assert.equal(server.api.path, '/api')
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      assert.equal(routerTree.path, '/api')
     })
 
     it('should create child routers for API modules', async () => {
-      const server = await app.waitForModule('server')
-      const paths = server.api.childRouters.map(r => r.path)
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const paths = routerTree.childRouters.map(r => r.path)
       assert.ok(paths.includes('/api/content'))
     })
 
     it('should merge default routes for API modules', async () => {
-      const server = await app.waitForModule('server')
-      const contentRouter = server.api.childRouters.find(r => r.path === '/api/content')
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const contentRouter = routerTree.childRouters.find(r => r.path === '/api/content')
       assert.ok(contentRouter)
       const routePaths = contentRouter.routes.map(r => r.route)
       // default routes: / and /:_id, plus custom: /clone
@@ -307,46 +318,52 @@ describe('StaticAppContext', () => {
     })
 
     it('should skip default routes when useDefaultRoutes is false', async () => {
-      const server = await app.waitForModule('server')
-      const router = server.api.childRouters.find(r => r.path === '/api/courseassets')
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const router = routerTree.childRouters.find(r => r.path === '/api/courseassets')
       assert.ok(router)
       assert.equal(router.routes.length, 1)
       assert.equal(router.routes[0].route, '/query')
     })
 
     it('should replace placeholders in route config', async () => {
-      const server = await app.waitForModule('server')
-      const contentRouter = server.api.childRouters.find(r => r.path === '/api/content')
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const contentRouter = routerTree.childRouters.find(r => r.path === '/api/content')
       const rootRoute = contentRouter.routes.find(r => r.route === '/')
       assert.deepEqual(rootRoute.permissions.post, ['write:content'])
       assert.deepEqual(rootRoute.permissions.get, ['read:content'])
     })
 
     it('should use permissionsScope for placeholder when defined', async () => {
-      const server = await app.waitForModule('server')
-      const themeRouter = server.api.childRouters.find(r => r.path === '/api/coursethemepresets')
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const themeRouter = routerTree.childRouters.find(r => r.path === '/api/coursethemepresets')
       assert.ok(themeRouter)
       const applyRoute = themeRouter.routes.find(r => r.route === '/:_id/apply')
       assert.deepEqual(applyRoute.permissions.post, ['write:content'])
     })
 
     it('should create auth router at /api/auth', async () => {
-      const server = await app.waitForModule('server')
-      const authRouter = server.api.childRouters.find(r => r.path === '/api/auth')
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const authRouter = routerTree.childRouters.find(r => r.path === '/api/auth')
       assert.ok(authRouter)
       assert.ok(authRouter.routes.some(r => r.route === '/check'))
     })
 
     it('should create auth type child routers', async () => {
-      const server = await app.waitForModule('server')
-      const authRouter = server.api.childRouters.find(r => r.path === '/api/auth')
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const authRouter = routerTree.childRouters.find(r => r.path === '/api/auth')
       const localRouter = authRouter.childRouters.find(r => r.path === '/api/auth/local')
       assert.ok(localRouter)
     })
 
     it('should merge auth type routes with auth defaults', async () => {
-      const server = await app.waitForModule('server')
-      const authRouter = server.api.childRouters.find(r => r.path === '/api/auth')
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const authRouter = routerTree.childRouters.find(r => r.path === '/api/auth')
       const localRouter = authRouter.childRouters.find(r => r.path === '/api/auth/local')
       const routePaths = localRouter.routes.map(r => r.route)
       // override route: /, default: /register, custom: /changepass
@@ -356,8 +373,9 @@ describe('StaticAppContext', () => {
     })
 
     it('should apply override merging from auth type routes', async () => {
-      const server = await app.waitForModule('server')
-      const authRouter = server.api.childRouters.find(r => r.path === '/api/auth')
+      const { buildRouterTree } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const authRouter = routerTree.childRouters.find(r => r.path === '/api/auth')
       const localRouter = authRouter.childRouters.find(r => r.path === '/api/auth/local')
       const rootRoute = localRouter.routes.find(r => r.route === '/')
       // override merged meta from auth-local onto default
@@ -365,37 +383,44 @@ describe('StaticAppContext', () => {
     })
   })
 
-  describe('schema loading', () => {
+  describe('loadSchemas', () => {
     it('should load schemas from schema/*.schema.json', async () => {
-      const jsonschema = await app.waitForModule('jsonschema')
-      assert.ok(jsonschema.schemas.content)
+      const { loadSchemas } = await import('../lib/docsData.js')
+      const schemas = await loadSchemas(dependencies)
+      assert.ok(schemas.schemas.content)
     })
 
     it('should provide getSchema returning built schema', async () => {
-      const jsonschema = await app.waitForModule('jsonschema')
-      const result = await jsonschema.getSchema('content')
+      const { loadSchemas } = await import('../lib/docsData.js')
+      const schemas = await loadSchemas(dependencies)
+      const result = await schemas.getSchema('content')
       assert.ok(result.built)
       assert.equal(result.built.type, 'object')
       assert.ok(result.built.properties.title)
     })
 
     it('should return empty object for unknown schemas', async () => {
-      const jsonschema = await app.waitForModule('jsonschema')
-      const result = await jsonschema.getSchema('nonexistent')
+      const { loadSchemas } = await import('../lib/docsData.js')
+      const schemas = await loadSchemas(dependencies)
+      const result = await schemas.getSchema('nonexistent')
       assert.deepEqual(result.built, {})
     })
   })
 
-  describe('error loading', () => {
-    it('should load and merge errors from errors/*.json', () => {
-      assert.ok(app.errors.CONTENT_NOT_FOUND)
-      assert.equal(app.errors.CONTENT_NOT_FOUND.statusCode, 404)
+  describe('loadErrors', () => {
+    it('should load and merge errors from errors/*.json', async () => {
+      const { loadErrors } = await import('../lib/docsData.js')
+      const errors = await loadErrors(dependencies)
+      assert.ok(errors.CONTENT_NOT_FOUND)
+      assert.equal(errors.CONTENT_NOT_FOUND.statusCode, 404)
     })
   })
 
-  describe('permissions assembly', () => {
-    it('should build permission store with HTTP methods', () => {
-      const perms = app.dependencyloader.instances['adapt-authoring-auth'].permissions.routes
+  describe('buildPermissions', () => {
+    it('should build permission store with HTTP methods', async () => {
+      const { buildRouterTree, buildPermissions } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const perms = buildPermissions(routerTree)
       assert.ok(Array.isArray(perms.get))
       assert.ok(Array.isArray(perms.post))
       assert.ok(Array.isArray(perms.put))
@@ -403,41 +428,33 @@ describe('StaticAppContext', () => {
       assert.ok(Array.isArray(perms.delete))
     })
 
-    it('should contain permission entries for secured routes', () => {
-      const perms = app.dependencyloader.instances['adapt-authoring-auth'].permissions.routes
+    it('should contain permission entries for secured routes', async () => {
+      const { buildRouterTree, buildPermissions } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const perms = buildPermissions(routerTree)
       assert.ok(perms.post.length > 0, 'should have POST permission entries')
       assert.ok(perms.get.length > 0, 'should have GET permission entries')
     })
 
-    it('should skip routes with null permissions (unsecured)', () => {
-      const perms = app.dependencyloader.instances['adapt-authoring-auth'].permissions.routes
+    it('should skip routes with null permissions (unsecured)', async () => {
+      const { buildRouterTree, buildPermissions } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const perms = buildPermissions(routerTree)
       // /api/auth/check has permissions: { get: null } — should not appear
       const checkMatch = perms.get.find(([re]) => re.test('/api/auth/check'))
       assert.equal(checkMatch, undefined, '/api/auth/check should not be in secured routes')
     })
 
-    it('should store scopes as arrays in permission entries', () => {
-      const perms = app.dependencyloader.instances['adapt-authoring-auth'].permissions.routes
+    it('should store scopes as arrays in permission entries', async () => {
+      const { buildRouterTree, buildPermissions } = await import('../lib/docsData.js')
+      const routerTree = await buildRouterTree(dependencies)
+      const perms = buildPermissions(routerTree)
       for (const entries of Object.values(perms)) {
         for (const [re, scopes] of entries) {
           assert.ok(re instanceof RegExp, 'first element should be RegExp')
           assert.ok(Array.isArray(scopes), 'second element should be array')
         }
       }
-    })
-  })
-
-  describe('onReady', () => {
-    it('should resolve immediately', async () => {
-      await assert.doesNotReject(() => app.onReady())
-    })
-  })
-
-  describe('pkg', () => {
-    it('should contain merged root config', () => {
-      assert.equal(app.pkg.name, 'adapt-authoring')
-      assert.equal(app.pkg.version, '1.0.0')
-      assert.ok(app.pkg.documentation)
     })
   })
 })
