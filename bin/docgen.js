@@ -91,12 +91,7 @@ async function docs () {
     errors,
     schemas,
     routerTree,
-    permissions,
-    // TODO remove once jsonschema plugin reads app.schemas directly
-    waitForModule: async (name) => {
-      if (name === 'jsonschema') return schemas
-      return {}
-    }
+    permissions
   }
 
   console.log(`Generating documentation for ${app.pkg.name}@${app.pkg.version} ${DEBUG ? ' :: DEBUG' : ''}`)
