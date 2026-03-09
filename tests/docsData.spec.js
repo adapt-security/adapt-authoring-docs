@@ -168,6 +168,7 @@ async function createFixture () {
     }
   }))
 
+
   // --- fake docs module with config ---
   const docsDir = path.join(root, 'node_modules', 'adapt-authoring-docs')
   await fs.mkdir(path.join(docsDir, 'conf'), { recursive: true })
