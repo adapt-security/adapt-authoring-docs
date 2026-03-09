@@ -105,7 +105,7 @@ async function docs () {
 
   try {
     await fs.rm(outputdir, { recursive: true, force: true })
-    await fs.mkdir(outputdir)
+    await fs.mkdir(outputdir, { recursive: true })
     await copyRootFiles()
     await jsdoc3(appData, cachedConfigs, outputdir, defaultPages)
     await docsify(appData, cachedConfigs, outputdir, defaultPages)
