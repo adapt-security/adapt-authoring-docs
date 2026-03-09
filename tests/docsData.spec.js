@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it, before, after } from 'node:test'
 import fs from 'fs/promises'
-import os from 'os'
+import os from 'node:os'
 import path from 'path'
 
 /* eslint-disable no-template-curly-in-string */
@@ -150,6 +150,24 @@ async function createFixture () {
     }
   }))
 
+  // --- fake core module with dataDir/tempDir config ---
+  const coreDir = path.join(root, 'node_modules', 'adapt-authoring-core')
+  await fs.mkdir(path.join(coreDir, 'conf'), { recursive: true })
+  await fs.writeFile(path.join(coreDir, 'package.json'), JSON.stringify({
+    name: 'adapt-authoring-core',
+    version: '1.0.0'
+  }))
+  await fs.writeFile(path.join(coreDir, 'adapt-authoring.json'), JSON.stringify({
+    module: false
+  }))
+  await fs.writeFile(path.join(coreDir, 'conf', 'config.schema.json'), JSON.stringify({
+    type: 'object',
+    properties: {
+      dataDir: { type: 'string', isDirectory: true, default: '$ROOT/APP_DATA/data' },
+      tempDir: { type: 'string', isDirectory: true, default: '$ROOT/APP_DATA/temp' }
+    }
+  }))
+
   // --- fake docs module with config ---
   const docsDir = path.join(root, 'node_modules', 'adapt-authoring-docs')
   await fs.mkdir(path.join(docsDir, 'conf'), { recursive: true })
@@ -259,17 +277,18 @@ describe('docsData', () => {
   })
 
   describe('loadConfigDefaults', () => {
-    it('should resolve $TEMP to os.tmpdir()', async () => {
+    it('should resolve $TEMP to the app temp directory', async () => {
       const { loadConfigDefaults } = await import('../lib/docsData.js')
-      const config = await loadConfigDefaults(dependencies)
+      const config = await loadConfigDefaults(fixtureDir, dependencies)
       const outputDir = config.get('adapt-authoring-docs.outputDir')
-      assert.ok(outputDir.startsWith(os.tmpdir()), `expected ${outputDir} to start with ${os.tmpdir()}`)
+      const expectedTemp = path.join(fixtureDir, 'APP_DATA', 'temp')
+      assert.ok(outputDir.startsWith(expectedTemp), `expected ${outputDir} to start with ${expectedTemp}`)
       assert.ok(outputDir.endsWith('/docs-build'))
     })
 
     it('should return object defaults', async () => {
       const { loadConfigDefaults } = await import('../lib/docsData.js')
-      const config = await loadConfigDefaults(dependencies)
+      const config = await loadConfigDefaults(fixtureDir, dependencies)
       const sections = config.get('adapt-authoring-docs.manualSections')
       assert.ok(sections)
       assert.ok(sections['getting-started'] !== undefined)
@@ -278,15 +297,16 @@ describe('docsData', () => {
 
     it('should return undefined for unknown config keys', async () => {
       const { loadConfigDefaults } = await import('../lib/docsData.js')
-      const config = await loadConfigDefaults(dependencies)
+      const config = await loadConfigDefaults(fixtureDir, dependencies)
       assert.equal(config.get('nonexistent.key'), undefined)
     })
 
     it('should resolve $TEMP in non-docs modules', async () => {
       const { loadConfigDefaults } = await import('../lib/docsData.js')
-      const config = await loadConfigDefaults(dependencies)
+      const config = await loadConfigDefaults(fixtureDir, dependencies)
       const cacheDir = config.get('adapt-authoring-content.cacheDir')
-      assert.ok(cacheDir.startsWith(os.tmpdir()))
+      const expectedTemp = path.join(fixtureDir, 'APP_DATA', 'temp')
+      assert.ok(cacheDir.startsWith(expectedTemp))
       assert.ok(cacheDir.endsWith('/content-cache'))
     })
   })

@@ -77,7 +77,7 @@ async function copyRootFiles () {
 async function docs () {
   const dependencies = await loadDependencies(rootDir)
   const pkg = { ...await readJson(path.join(rootDir, 'package.json')), ...await readJson(path.join(rootDir, 'adapt-authoring.json')) }
-  const config = await loadConfigDefaults(dependencies)
+  const config = await loadConfigDefaults(rootDir, dependencies)
   const schemas = await loadSchemas(dependencies)
   const errors = await loadErrors(dependencies)
   const routerTree = await buildRouterTree(dependencies)
