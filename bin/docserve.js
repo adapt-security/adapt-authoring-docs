@@ -17,7 +17,7 @@ async function getOutputDir () {
   const { loadDependencies, loadConfigDefaults } = await import('../lib/docsData.js')
   const rootDir = path.resolve(getArg('--rootDir') || process.cwd())
   const dependencies = await loadDependencies(rootDir)
-  const config = await loadConfigDefaults(dependencies)
+  const config = await loadConfigDefaults(rootDir, dependencies)
   return path.resolve(config.get('adapt-authoring-docs.outputDir'))
 }
 
