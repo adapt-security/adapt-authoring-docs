@@ -56,8 +56,9 @@ export default async function docsify (appData, configs, outputdir, defaultPages
         if (!sectionsConf[key]) sectionsConf[key] = data
       })
     }
-    [...customFiles, ...globSync('docs/*.md', { cwd: c.rootDir, absolute: true })].forEach(f => {
-      if (f === defaultPages.sourceIndex) {
+    const excludedFiles = ['README.md', ...Object.values(defaultPages).filter(Boolean).map(f => path.basename(f))]
+    ;[...customFiles, ...globSync('docs/*.md', { cwd: c.rootDir, absolute: true })].forEach(f => {
+      if (excludedFiles.includes(path.basename(f))) {
         return
       }
       const title = path.basename(f)
