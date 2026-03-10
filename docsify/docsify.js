@@ -98,7 +98,10 @@ export default async function docsify (appData, configs, outputdir, defaultPages
     homepage: defaultPages.manualIndex ? path.basename(defaultPages.manualIndex) : false
   })))
 
-  await Promise.allSettled(Object.entries(titleMap).map(([filename, v]) => fs.copy(v.path, `${dir}/${filename}`)))
+  await Promise.allSettled([
+    ...Object.entries(titleMap).map(([filename, v]) => fs.copy(v.path, `${dir}/${filename}`)),
+    ...Object.values(defaultPages).filter(Boolean).map(f => fs.copy(f, `${dir}/${path.basename(f)}`))
+  ])
   /**
    * Generate custom sidebar
    */
