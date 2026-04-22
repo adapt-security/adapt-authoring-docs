@@ -25,7 +25,7 @@ async function createFixture () {
 
   // --- fake api module (library, not a loaded module) ---
   const apiDir = path.join(root, 'node_modules', 'adapt-authoring-api')
-  await fs.mkdir(path.join(apiDir, 'lib'), { recursive: true })
+  await fs.mkdir(apiDir, { recursive: true })
   await fs.writeFile(path.join(apiDir, 'package.json'), JSON.stringify({
     name: 'adapt-authoring-api',
     version: '1.0.0'
@@ -34,7 +34,7 @@ async function createFixture () {
     module: false,
     documentation: { enable: true }
   }))
-  await fs.writeFile(path.join(apiDir, 'lib', 'default-routes.json'), JSON.stringify({
+  await fs.writeFile(path.join(apiDir, 'default-routes.json'), JSON.stringify({
     routes: [
       {
         route: '/',
@@ -51,7 +51,7 @@ async function createFixture () {
 
   // --- fake auth module ---
   const authDir = path.join(root, 'node_modules', 'adapt-authoring-auth')
-  await fs.mkdir(path.join(authDir, 'lib'), { recursive: true })
+  await fs.mkdir(authDir, { recursive: true })
   await fs.writeFile(path.join(authDir, 'package.json'), JSON.stringify({
     name: 'adapt-authoring-auth',
     version: '1.0.0'
@@ -59,7 +59,7 @@ async function createFixture () {
   await fs.writeFile(path.join(authDir, 'adapt-authoring.json'), JSON.stringify({
     documentation: { enable: true }
   }))
-  await fs.writeFile(path.join(authDir, 'lib', 'routes.json'), JSON.stringify({
+  await fs.writeFile(path.join(authDir, 'routes.json'), JSON.stringify({
     routes: [
       {
         route: '/check',
@@ -68,7 +68,7 @@ async function createFixture () {
       }
     ]
   }))
-  await fs.writeFile(path.join(authDir, 'lib', 'default-routes.json'), JSON.stringify({
+  await fs.writeFile(path.join(authDir, 'default-routes.json'), JSON.stringify({
     routes: [
       {
         route: '/',
