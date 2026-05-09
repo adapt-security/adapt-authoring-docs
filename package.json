@@ -14,7 +14,7 @@
     "test": "node --test 'tests/**/*.spec.js'"
   },
   "dependencies": {
-    "adapt-authoring-core": "^2.0.0",
+    "adapt-authoring-core": "^3.0.0",
     "comment-parser": "^1.4.1",
     "docdash": "^2.0.2",
     "docsify-cli": "^4.4.4",
