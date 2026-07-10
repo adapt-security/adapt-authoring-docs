@@ -5,6 +5,7 @@
   "homepage": "https://github.com/adapt-security/adapt-authoring-docs",
   "license": "GPL-3.0",
   "type": "module",
+  "main": "./lib/buildDocs.js",
   "bin": {
     "at-docgen": "./bin/docgen.js",
     "at-docserve": "./bin/docserve.js"
